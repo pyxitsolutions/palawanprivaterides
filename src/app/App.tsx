@@ -343,9 +343,9 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">About DriveNow</h2>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">About PyX Rental</h2>
               <p className="text-lg text-muted-foreground mb-4">
-                Based in Puerto Princesa, DriveNow is your trusted local partner for exploring everything Palawan has to offer — from the underground river to the white sand beaches of El Nido and Coron.
+                Based in Puerto Princesa, PyX Rental is your trusted local partner for exploring everything Palawan has to offer — from the underground river to the white sand beaches of El Nido and Coron.
               </p>
               <p className="text-lg text-muted-foreground mb-4">
                 We offer a well-maintained fleet of cars, SUVs, vans, and motorcycles suited for every type of traveler — whether you're a solo backpacker, a family on vacation, or a group of friends on a road trip.
@@ -459,7 +459,21 @@ export default function App() {
             </a>
           </div>
 
-          <div className="mt-12 bg-card p-8 rounded-xl border border-border max-w-3xl mx-auto">
+          {/* Google Map */}
+          <div className="mt-12 max-w-3xl mx-auto rounded-xl overflow-hidden shadow-lg border border-border">
+            <iframe
+              src="https://maps.google.com/maps?q=9.748963,118.747713&z=16&output=embed"
+              width="100%"
+              height="350"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="PyX Rental Vehicle Rental Location"
+            />
+          </div>
+
+          <div className="mt-6 bg-card p-8 rounded-xl border border-border max-w-3xl mx-auto">
             <div className="flex items-start gap-4">
               <div className="text-primary mt-1">
                 <MapPin size={32} />
@@ -467,13 +481,22 @@ export default function App() {
               <div>
                 <h3 className="text-xl font-semibold mb-2 text-card-foreground">Visit Our Office</h3>
                 <p className="text-muted-foreground">
-                  Barangay San Pedro<br />
+                  National Highway, Barangay San Pedro<br />
                   Puerto Princesa City, Palawan<br />
                   Philippines
                 </p>
                 <p className="text-sm text-muted-foreground mt-3">
                   Open: Monday - Sunday, 8:00 AM - 10:00 PM
                 </p>
+                <a
+                  href="https://www.google.com/maps/dir/?api=1&destination=9.748963,118.747713"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 bg-primary text-primary-foreground rounded-full text-sm font-semibold hover:opacity-90 transition-opacity"
+                >
+                  <MapPin size={16} />
+                  Get Directions
+                </a>
               </div>
             </div>
           </div>
@@ -485,7 +508,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div>
-              <h3 className="text-2xl font-bold mb-4">DriveNow</h3>
+              <h3 className="text-2xl font-bold mb-4">PyX Rental</h3>
               <p className="text-primary-foreground/80">
                 Your trusted partner for premium car rentals. Experience luxury, performance, and exceptional service.
               </p>
@@ -551,7 +574,7 @@ export default function App() {
 
           <div className="border-t border-primary-foreground/20 pt-8 text-center">
             <p className="text-primary-foreground/80">
-              &copy; 2026 DriveNow Car Rental. All rights reserved.
+              &copy; 2026 PyX Rental Vehicle Rental. All rights reserved.
             </p>
           </div>
         </div>
