@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-Command pnpm -ErrorAction SilentlyContinue)",
+      "PowerShell(Get-Command npm -ErrorAction SilentlyContinue)",
+      "PowerShell(Get-Command node -ErrorAction SilentlyContinue)",
+      "PowerShell(npm install -g pnpm 2>&1)",
+      "PowerShell(Get-ChildItem \"d:\\\\Rio\\\\Personal Project\\\\Car Rental Website\\\\src\\\\\" -Recurse | Where-Object { $_.Extension -match '\\\\.\\(jpg|jpeg|png|webp\\)' } | Select-Object FullName)"
+    ]
+  }
+}
