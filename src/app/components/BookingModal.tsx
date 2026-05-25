@@ -59,6 +59,12 @@ export function BookingModal({ isOpen, onClose, carName, carPrice }: BookingModa
       );
 
       localStorage.setItem('lastBookingSent', Date.now().toString());
+
+      const waMessage = encodeURIComponent(
+        `🚗 New Booking!\nCar: ${carName} — ₱${carPrice}/day\nName: ${formData.fullName}\nEmail: ${formData.email}\nPhone: ${formData.phone}\nPickup: ${formData.pickupDate}\nReturn: ${formData.returnDate}\nMessage: ${formData.message || 'None'}`
+      );
+      fetch(`https://api.callmebot.com/whatsapp.php?phone=639166846547&text=${waMessage}&apikey=1170670`).catch(() => {});
+
       setSubmitted(true);
       setTimeout(() => {
         setSubmitted(false);
