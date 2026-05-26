@@ -247,11 +247,11 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className={labelClass}>{tourType === 'Tour Package' ? 'Lead Guest Name' : 'Full Name'} *</label>
-                  <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} required className={inputClass} placeholder="Juan Dela Cruz" />
+                  <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} required className={inputClass} placeholder="ex. Juan Dela Cruz" />
                 </div>
                 <div>
                   <label className={labelClass}>Phone Number *</label>
-                  <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required className={inputClass} placeholder="+63 912 345 6789" />
+                  <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required className={inputClass} placeholder="ex. 09123456789" />
                 </div>
               </div>
 
@@ -309,18 +309,18 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
               <div>
                 <label className={labelClass}><Users size={12} className="inline mr-1" />Number of Passengers *</label>
                 <input type="number" name="pax" value={formData.pax} onChange={handleChange} required min={1}
-                  max={selectedCapacity ?? undefined} placeholder="e.g. 3" className={inputClass} />
+                  max={selectedCapacity ?? undefined} placeholder="ex. 3" className={inputClass} />
               </div>
 
               {/* Pickup / Dropoff */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className={labelClass}><MapPin size={12} className="inline mr-1" />Pick-up *</label>
-                  <input type="text" name="pickupLocation" value={formData.pickupLocation} onChange={handleChange} required className={inputClass} placeholder="Hotel or address" />
+                  <input type="text" name="pickupLocation" value={formData.pickupLocation} onChange={handleChange} required className={inputClass} placeholder="ex. Sunlight Hotel" />
                 </div>
                 <div>
                   <label className={labelClass}><MapPin size={12} className="inline mr-1" />Drop-off *</label>
-                  <input type="text" name="dropoffLocation" value={formData.dropoffLocation} onChange={handleChange} required className={inputClass} placeholder="Destination" />
+                  <input type="text" name="dropoffLocation" value={formData.dropoffLocation} onChange={handleChange} required className={inputClass} placeholder="ex. El Nido Town" />
                 </div>
               </div>
 
@@ -336,7 +336,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
               <div>
                 <label className={labelClass}><MessageSquare size={12} className="inline mr-1" />Special Requests (Optional)</label>
                 <textarea name="message" value={formData.message} onChange={handleChange} rows={2}
-                  className={`${inputClass} resize-none`} placeholder="Any special requests or notes..." />
+                  className={`${inputClass} resize-none`} placeholder="ex. Need child seat, early pick-up, extra stop..." />
               </div>
 
               {/* Total */}
