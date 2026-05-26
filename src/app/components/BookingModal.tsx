@@ -395,12 +395,44 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
               <p className="text-[10px] text-gray-400 text-center">We'll contact you via WhatsApp or phone to confirm.</p>
             </form>
           ) : (
-            <div className="py-14 text-center">
-              <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Check size={32} className="text-white" />
+            <div className="text-center py-8 px-4">
+              {/* Icon */}
+              <div className="relative inline-flex items-center justify-center mb-6">
+                <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center">
+                  <div className="w-14 h-14 rounded-full bg-green-500 flex items-center justify-center shadow-lg">
+                    <Check size={28} className="text-white" strokeWidth={3} />
+                  </div>
+                </div>
               </div>
-              <h3 className="text-xl font-black text-gray-900 mb-1">Booking Request Sent!</h3>
-              <p className="text-gray-500 text-sm">We'll contact you via WhatsApp or phone to confirm.</p>
+
+              <h3 className="text-2xl font-black text-gray-900 mb-1">Request Sent!</h3>
+              <p className="text-gray-400 text-sm mb-6">Your booking request for <span className="font-semibold text-gray-600">{tourName}</span> has been received.</p>
+
+              {/* Info card */}
+              <div className="bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 text-left space-y-3 mb-6">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-[#25D366]/10 flex items-center justify-center flex-shrink-0">
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.552 4.103 1.518 5.829L.057 23.5l5.83-1.527A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.368l-.359-.213-3.72.975.993-3.635-.234-.373A9.818 9.818 0 1112 21.818z"/></svg>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-gray-700">We'll reach out via WhatsApp</p>
+                    <p className="text-xs text-gray-400 mt-0.5">Expect a confirmation message shortly.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Check size={14} className="text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-gray-700">Downpayment required to confirm</p>
+                    <p className="text-xs text-gray-400 mt-0.5">Your booking is held once downpayment is settled.</p>
+                  </div>
+                </div>
+              </div>
+
+              <button onClick={onClose} className="w-full py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity">
+                Done
+              </button>
             </div>
           )}
         </div>
