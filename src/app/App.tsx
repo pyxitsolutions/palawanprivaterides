@@ -447,22 +447,33 @@ export default function App() {
           <img src={whereImg} alt="" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-primary/80" />
         </div>
-        <div className="relative max-w-3xl mx-auto px-4 text-center">
-          <div className="text-5xl mb-5">🌴</div>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Ready to travel like locals do?
+        <div className="relative max-w-4xl mx-auto px-4 text-center">
+          <span className="inline-block bg-[#e8a020]/20 text-[#e8a020] text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full mb-6 border border-[#e8a020]/40">
+            Your Palawan Adventure Awaits
+          </span>
+          <h2 className="text-4xl md:text-6xl font-black text-white mb-6 leading-tight">
+            Ready to travel<br />
+            <span className="text-[#e8a020]">like locals do?</span>
           </h2>
-          <p className="text-white/70 text-lg mb-8">
-            Message us on WhatsApp — get a tailored quote within minutes.
+          <p className="text-white/70 text-lg md:text-xl mb-10 max-w-xl mx-auto leading-relaxed">
+            Private rides. Real experiences. No tourist traps. Message us on WhatsApp and get your tailored quote within minutes.
           </p>
-          <a
-            href="https://api.whatsapp.com/send?phone=639217792016&text=Hi!%20I%20want%20to%20book%20a%20tour%20in%20Palawan."
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-[#e8a020] text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-[#d49020] transition-colors"
-          >
-            Plan My Trip →
-          </a>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <a
+              href="https://api.whatsapp.com/send?phone=639217792016&text=Hi!%20I%20want%20to%20book%20a%20tour%20in%20Palawan."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-[#e8a020] text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-[#d49020] transition-colors shadow-lg shadow-black/20"
+            >
+              Plan My Trip →
+            </a>
+            <a
+              href={`tel:+639217792016`}
+              className="inline-flex items-center gap-2 bg-white/10 border border-white/30 text-white px-10 py-4 rounded-full font-semibold text-lg hover:bg-white/20 transition-colors"
+            >
+              Call Us Now
+            </a>
+          </div>
         </div>
       </section>
 
