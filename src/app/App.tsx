@@ -52,7 +52,7 @@ export default function App() {
       <Navbar />
 
       {/* Hero */}
-      <section id="home" className="pt-16">
+      <section id="home">
         <HeroCarousel />
       </section>
 
