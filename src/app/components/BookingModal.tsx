@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import emailjs from '@emailjs/browser';
 import { X, Calendar, User, Phone, MapPin, Users, Clock, MessageSquare, Car } from 'lucide-react';
+import { PolicyModal, type PolicyType } from './PolicyModal';
 
 const EMAILJS_SERVICE_ID = 'service_w5vk124';
 const EMAILJS_TEMPLATE_ID = 'template_pnxzs9s';
@@ -38,6 +39,8 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
   const [honeypot, setHoneypot] = useState('');
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [openPolicy, setOpenPolicy] = useState<PolicyType>(null);
 
   const selectedPrice = pricing && formData.vehicleType
     ? pricing.find((p) => p.vehicle === formData.vehicleType)?.price ?? tourPrice
@@ -84,6 +87,11 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
       return;
     }
 
+    if (!agreedToTerms) {
+      setError('Please agree to the Terms & Conditions before submitting.');
+      return;
+    }
+
     setSending(true);
     setError('');
 
@@ -120,6 +128,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
         setSubmitted(false);
         onClose();
         setFormData({ fullName: '', phone: '', tourDate: '', tourTime: '', tourPeriod: '', pax: '', pickupLocation: '', dropoffLocation: '', vehicleType: '', message: '' });
+        setAgreedToTerms(false);
       }, 3000);
     } catch {
       setError('Failed to send booking. Please contact us directly.');
@@ -369,6 +378,24 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                 </div>
               )}
 
+              {/* T&C Checkbox */}
+              <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                <input
+                  type="checkbox"
+                  id="agreeTerms"
+                  checked={agreedToTerms}
+                  onChange={(e) => setAgreedToTerms(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 accent-primary flex-shrink-0 cursor-pointer"
+                />
+                <label htmlFor="agreeTerms" className="text-xs text-gray-600 leading-relaxed cursor-pointer">
+                  I have read and agree to the{' '}
+                  <button type="button" onClick={() => setOpenPolicy('booking')} className="text-primary underline font-medium hover:opacity-80">Booking Policy</button>,{' '}
+                  <button type="button" onClick={() => setOpenPolicy('cancellation')} className="text-primary underline font-medium hover:opacity-80">Cancellation Policy</button>, and{' '}
+                  <button type="button" onClick={() => setOpenPolicy('terms')} className="text-primary underline font-medium hover:opacity-80">Terms & Conditions</button>{' '}
+                  of Palawan Private Rides.
+                </label>
+              </div>
+
               {error && <p className="text-sm text-red-500 text-center">{error}</p>}
 
               <div className="flex gap-3 pt-2">
@@ -376,7 +403,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                   className="flex-1 px-6 py-3 border border-border rounded-lg hover:bg-accent transition-colors text-card-foreground">
                   Cancel
                 </button>
-                <button type="submit" disabled={sending}
+                <button type="submit" disabled={sending || !agreedToTerms}
                   className="flex-1 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity font-semibold disabled:opacity-60 disabled:cursor-not-allowed">
                   {sending ? 'Sending...' : 'Submit Booking Request'}
                 </button>
@@ -399,6 +426,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
           )}
         </div>
       </div>
+      <PolicyModal policy={openPolicy} onClose={() => setOpenPolicy(null)} />
     </div>
   );
 }

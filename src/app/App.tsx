@@ -3,6 +3,7 @@ import { Navbar } from './components/Navbar';
 import { CarCard } from './components/CarCard';
 import { HeroCarousel } from './components/HeroCarousel';
 import { Testimonials } from './components/Testimonials';
+import { PolicyModal, type PolicyType } from './components/PolicyModal';
 import {
   Car, Shield, Clock, Award, Phone, Mail, Facebook, MapPin,
   MessageCircle, CheckCircle, ArrowRight,
@@ -48,6 +49,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 
 export default function App() {
   const [typeFilter, setTypeFilter] = useState('all');
+  const [openPolicy, setOpenPolicy] = useState<PolicyType>(null);
 
   const tours = [
     {
@@ -541,6 +543,8 @@ export default function App() {
         </div>
       </section>
 
+      <PolicyModal policy={openPolicy} onClose={() => setOpenPolicy(null)} />
+
       {/* Footer */}
       <footer className="bg-primary text-white py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -608,9 +612,17 @@ export default function App() {
             <div>
               <h4 className="font-bold mb-4 text-white/90">Policies</h4>
               <ul className="space-y-2">
-                {['Booking Policy', 'Cancellation Policy', 'Privacy Policy', 'Terms & Conditions'].map((p) => (
-                  <li key={p}>
-                    <button className="text-white/60 hover:text-white text-sm transition-colors">{p}</button>
+                {[
+                  { label: 'Booking Policy', key: 'booking' },
+                  { label: 'Cancellation Policy', key: 'cancellation' },
+                  { label: 'Privacy Policy', key: 'privacy' },
+                  { label: 'Terms & Conditions', key: 'terms' },
+                ].map((p) => (
+                  <li key={p.key}>
+                    <button
+                      onClick={() => setOpenPolicy(p.key as PolicyType)}
+                      className="text-white/60 hover:text-white text-sm transition-colors text-left"
+                    >{p.label}</button>
                   </li>
                 ))}
               </ul>
