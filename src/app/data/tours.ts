@@ -73,7 +73,7 @@ export const tours: Tour[] = [
   },
   {
     images: [rides4],
-    name: 'PPS → Astotia Palawan',
+    name: 'PPS → Astoria Palawan',
     price: '3000',
     type: 'Private Ride',
     duration: 'Travel Duration (2 hrs)',
