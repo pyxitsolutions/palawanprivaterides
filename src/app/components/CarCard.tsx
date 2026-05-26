@@ -16,13 +16,14 @@ interface TourCardProps {
   name: string;
   price: string;
   type: string;
-  duration: string;
+  duration?: string;
   pax: string;
   description: string;
   pricing?: PricingTier[];
+  whatsIncluded?: string[];
 }
 
-export function CarCard({ images, name, price, type, duration, pax, description, pricing }: TourCardProps) {
+export function CarCard({ images, name, price, type, duration, pax, description, pricing, whatsIncluded }: TourCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
@@ -38,7 +39,7 @@ export function CarCard({ images, name, price, type, duration, pax, description,
     pauseOnHover: true,
   };
 
-  const tourData = { images, name, price, type, duration, pax, description, pricing };
+  const tourData = { images, name, price, type, duration, pax, description, pricing, whatsIncluded };
 
   return (
     <div className="bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-border group">
@@ -88,7 +89,7 @@ export function CarCard({ images, name, price, type, duration, pax, description,
           ) : (
             <div className="text-right flex-shrink-0">
               <p className="text-xl font-bold text-primary">₱{parseInt(price).toLocaleString()}</p>
-              <p className="text-xs text-muted-foreground">per booking</p>
+              <p className="text-xs text-muted-foreground">{type === 'Tour Package' ? 'per person' : 'per booking'}</p>
             </div>
           )}
         </div>
@@ -101,15 +102,13 @@ export function CarCard({ images, name, price, type, duration, pax, description,
           </p>
         )}
 
-        <div className="grid grid-cols-3 gap-2 mb-4 py-3 border-y border-border">
-          <div className="flex flex-col items-center gap-1">
-            <Clock size={16} className="text-muted-foreground" />
-            <span className="text-xs text-muted-foreground text-center leading-tight">{duration}</span>
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <Users size={16} className="text-muted-foreground" />
-            <span className="text-xs text-muted-foreground">{pax}</span>
-          </div>
+        <div className={`grid gap-2 mb-4 py-3 border-y border-border ${type === 'Transfer' ? 'grid-cols-1' : 'grid-cols-2'}`}>
+          {type !== 'Transfer' && (
+            <div className="flex flex-col items-center gap-1">
+              <Clock size={16} className="text-muted-foreground" />
+              <span className="text-xs text-muted-foreground text-center leading-tight">{duration}</span>
+            </div>
+          )}
           <div className="flex flex-col items-center gap-1">
             <MapPin size={16} className="text-muted-foreground" />
             <span className="text-xs text-muted-foreground">Palawan</span>
@@ -129,6 +128,7 @@ export function CarCard({ images, name, price, type, duration, pax, description,
         onClose={() => setIsModalOpen(false)}
         tourName={name}
         tourPrice={price}
+        tourType={type}
         pricing={pricing}
       />
 

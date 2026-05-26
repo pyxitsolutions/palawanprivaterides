@@ -139,13 +139,20 @@ export default function App() {
       duration: 'Travel Duration (2 hrs)',
       pax: 'Up to 8 pax',
       description: 'Visit the UNESCO World Heritage Underground River in Sabang. Includes private van transport. Permits must be arranged in advance.',
+      whatsIncluded: [
+        'Hotel Pickup & Drop-off',
+        'Air-conditioned Transport',
+        'Boat Transfers',
+        'Licensed Tour Guide',
+        'Buffet Lunch',
+        'Permits & Entrance Fees',
+      ],
     },
     {
       images: [transfers1],
       name: 'Airport / Hotel Transfer',
       price: '500',
       type: 'Transfer',
-      duration: '30–60 mins',
       pax: 'Up to 8 pax',
       description: 'Reliable, on-time pick-up from Puerto Princesa Airport to your hotel — or hotel to airport drop-off. No hidden charges.',
     },
@@ -603,8 +610,6 @@ export default function App() {
               <ul className="space-y-2 text-sm text-white/60">
                 <li>+63 916-684-6547</li>
                 <li>palawanprivaterides@gmail.com</li>
-                <li>National Highway, San Pedro</li>
-                <li>Puerto Princesa, Palawan</li>
               </ul>
             </div>
 

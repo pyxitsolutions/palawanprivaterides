@@ -14,10 +14,11 @@ interface TourDetailsModalProps {
     name: string;
     price: string;
     type: string;
-    duration: string;
+    duration?: string;
     pax: string;
     description: string;
     pricing?: PricingTier[];
+    whatsIncluded?: string[];
   };
   onBookNow: () => void;
 }
@@ -152,12 +153,12 @@ export function CarDetailsModal({ isOpen, onClose, tour, onBookNow }: TourDetail
           <div>
             <h3 className="text-xl font-semibold mb-4 text-card-foreground">What's Included</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {[
+              {(tour.whatsIncluded ?? [
                 'Private vehicle & professional driver',
                 'Door-to-door service',
                 'Air-conditioned vehicle',
                 'Friendly & knowledgeable local driver',
-              ].map((item, i) => (
+              ]).map((item, i) => (
                 <div key={i} className="flex items-start gap-2">
                   <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
                   <span className="text-muted-foreground">{item}</span>
