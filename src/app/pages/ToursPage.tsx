@@ -3,10 +3,19 @@ import { Navbar } from '../components/Navbar';
 import { SiteFooter } from '../components/SiteFooter';
 import { CarCard } from '../components/CarCard';
 import { cityTours } from '../data/tours';
+import { Star, Users, MapPin, Coffee, MessageCircle } from 'lucide-react';
+import heroImg from '../../tour/tour-honda.png';
 
 const filters = [
   { label: 'All', value: 'all' },
   { label: 'Tour Packages', value: 'Tour Package' },
+];
+
+const highlights = [
+  { icon: <Star size={18} />, label: 'Licensed Tour Guides' },
+  { icon: <Users size={18} />, label: 'Private Groups Only' },
+  { icon: <MapPin size={18} />, label: 'Hotel Pickup Included' },
+  { icon: <Coffee size={18} />, label: 'All-in Packages' },
 ];
 
 export default function ToursPage() {
@@ -20,14 +29,39 @@ export default function ToursPage() {
     <div className="min-h-screen bg-white">
       <Navbar />
 
-      {/* Page Header */}
-      <section className="pt-28 pb-12 bg-primary">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-sm font-bold text-[#e8a020] uppercase tracking-widest mb-3">Puerto Princesa</p>
-          <h1 className="text-4xl md:text-5xl font-black text-white mb-4">City Tours & Transfers</h1>
-          <p className="text-white/70 text-lg max-w-xl mx-auto">
-            Guided day tours and airport transfers around Puerto Princesa — local knowledge, private service.
+      {/* Hero */}
+      <section className="relative min-h-[55vh] flex items-end">
+        <img
+          src={heroImg}
+          alt="Palawan Tours"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+
+        <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-14 pt-32">
+          <p className="text-[#e8a020] text-sm font-bold uppercase tracking-widest mb-3">
+            Puerto Princesa, Palawan
           </p>
+          <h1 className="text-5xl md:text-6xl font-black text-white leading-tight mb-4">
+            Tour<br />
+            <span className="text-[#e8a020]">Packages</span>
+          </h1>
+          <p className="text-white/70 text-lg max-w-xl mb-8">
+            Guided day tours around Puerto Princesa — local knowledge, private service, all-in packages.
+          </p>
+
+          {/* Highlight pills */}
+          <div className="flex flex-wrap gap-3">
+            {highlights.map((h, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-medium px-4 py-2 rounded-full"
+              >
+                <span className="text-[#e8a020]">{h.icon}</span>
+                {h.label}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -58,20 +92,26 @@ export default function ToursPage() {
             ))}
           </div>
 
-          {/* Custom tour note */}
-          <div className="mt-12 bg-white border border-gray-100 rounded-2xl p-6 text-center">
-            <p className="text-gray-500 text-sm">
-              Want a custom tour itinerary?{' '}
+          {/* CTA */}
+          <div className="mt-14 rounded-3xl bg-primary overflow-hidden">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6 px-8 py-8">
+              <div>
+                <p className="text-[#e8a020] text-xs font-bold uppercase tracking-widest mb-1">Custom Itinerary</p>
+                <h3 className="text-2xl font-black text-white mb-1">Want a custom tour?</h3>
+                <p className="text-white/60 text-sm">We'll plan the perfect Palawan experience for your group.</p>
+              </div>
               <a
                 href="https://api.whatsapp.com/send?phone=639217792016&text=Hi!%20I%20want%20to%20plan%20a%20custom%20tour%20in%20Palawan."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary font-semibold underline hover:opacity-80"
+                className="flex-shrink-0 inline-flex items-center gap-2 bg-[#e8a020] text-white px-7 py-3.5 rounded-full font-bold text-sm hover:bg-[#d49020] transition-colors"
               >
-                Message us on WhatsApp →
+                <MessageCircle size={18} />
+                Chat on WhatsApp
               </a>
-            </p>
+            </div>
           </div>
+
         </div>
       </section>
 
