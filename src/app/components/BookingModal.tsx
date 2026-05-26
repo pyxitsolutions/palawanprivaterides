@@ -16,17 +16,20 @@ interface BookingModalProps {
   onClose: () => void;
   tourName: string;
   tourPrice: string;
+  tourType?: string;
   pricing?: PricingTier[];
 }
 
-export function BookingModal({ isOpen, onClose, tourName, tourPrice, pricing }: BookingModalProps) {
+export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, pricing }: BookingModalProps) {
   const [formData, setFormData] = useState({
     fullName: '',
     phone: '',
     tourDate: '',
     tourTime: '',
+    tourPeriod: '',
     pax: '',
     pickupLocation: '',
+    dropoffLocation: '',
     vehicleType: '',
     message: '',
   });
@@ -40,6 +43,24 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, pricing }: 
     ? pricing.find((p) => p.vehicle === formData.vehicleType)?.price ?? tourPrice
     : tourPrice;
 
+  const vehicleCapacity: Record<string, number> = {
+    'Sedan/Hatchback': 3,
+    'SUV': 6,
+    'Van': 13,
+  };
+
+  const getVehicleTip = () => {
+    const pax = parseInt(formData.pax);
+    if (!pax) return null;
+    if (pax <= 3) return { type: 'info', msg: `For ${pax} passenger${pax > 1 ? 's' : ''}, a Sedan/Hatchback is the most affordable option.` };
+    if (pax <= 6) return { type: 'info', msg: `For ${pax} passengers, we recommend an SUV or Van for comfort.` };
+    return { type: 'info', msg: `For ${pax} passengers, a Van is required.` };
+  };
+
+  const vehicleTip = pricing ? getVehicleTip() : null;
+  const selectedCapacity = formData.vehicleType ? vehicleCapacity[formData.vehicleType] : null;
+  const overCapacity = selectedCapacity && formData.pax && parseInt(formData.pax) > selectedCapacity;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (honeypot) return;
@@ -47,6 +68,14 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, pricing }: 
     if (pricing && !formData.vehicleType) {
       setError('Please select a vehicle type.');
       return;
+    }
+
+    if (pricing && formData.vehicleType && formData.pax) {
+      const cap = vehicleCapacity[formData.vehicleType];
+      if (cap && parseInt(formData.pax) > cap) {
+        setError(`Your group of ${formData.pax} exceeds the ${formData.vehicleType} capacity (${cap} pax). Please choose a larger vehicle.`);
+        return;
+      }
     }
 
     const lastSent = localStorage.getItem('lastBookingSent');
@@ -69,9 +98,10 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, pricing }: 
           vehicle_type: formData.vehicleType || 'N/A',
           tour_price: selectedPrice,
           tour_date: formData.tourDate,
-          tour_time: formData.tourTime,
+          tour_time: formData.tourTime || formData.tourPeriod,
           pax: formData.pax,
           pickup_location: formData.pickupLocation,
+          dropoff_location: formData.dropoffLocation,
           message: formData.message || 'No additional message.',
         },
         EMAILJS_PUBLIC_KEY
@@ -81,7 +111,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, pricing }: 
 
       const vehicleInfo = formData.vehicleType ? ` (${formData.vehicleType})` : '';
       const waMessage = encodeURIComponent(
-        `🏝️ New Booking!\nRoute: ${tourName}${vehicleInfo}\nPrice: ₱${parseInt(selectedPrice).toLocaleString()}\nName: ${formData.fullName}\nPhone: ${formData.phone}\nDate: ${formData.tourDate} at ${formData.tourTime}\nPax: ${formData.pax}\nPickup: ${formData.pickupLocation}\nNotes: ${formData.message || 'None'}`
+        `🏝️ New Booking!\nRoute: ${tourName}${vehicleInfo}\nPrice: ₱${parseInt(selectedPrice).toLocaleString()}\nName: ${formData.fullName}\nPhone: ${formData.phone}\nDate: ${formData.tourDate} at ${formData.tourTime || formData.tourPeriod}\nPax: ${formData.pax}\nPickup: ${formData.pickupLocation}\nDrop-off: ${formData.dropoffLocation}\nNotes: ${formData.message || 'None'}`
       );
       fetch(`https://api.callmebot.com/whatsapp.php?phone=639217792016&text=${waMessage}&apikey=1091963`).catch(() => {});
 
@@ -89,7 +119,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, pricing }: 
       setTimeout(() => {
         setSubmitted(false);
         onClose();
-        setFormData({ fullName: '', phone: '', tourDate: '', tourTime: '', pax: '', pickupLocation: '', vehicleType: '', message: '' });
+        setFormData({ fullName: '', phone: '', tourDate: '', tourTime: '', tourPeriod: '', pax: '', pickupLocation: '', dropoffLocation: '', vehicleType: '', message: '' });
       }, 3000);
     } catch {
       setError('Failed to send booking. Please contact us directly.');
@@ -102,6 +132,15 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, pricing }: 
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const paxCount = parseInt(formData.pax) || 0;
+  const basePrice = parseInt(selectedPrice) || 0;
+  const hasEnvFee = tourType === 'Tour Package' && !tourName.includes('City Tour');
+  const envFee = hasEnvFee ? 150 : 0;
+  const subtotal = tourType === 'Tour Package' ? basePrice * paxCount : basePrice;
+  const envTotal = envFee * paxCount;
+  const grandTotal = subtotal + envTotal;
+  const showTotal = !!formData.pax && !!selectedPrice;
+
   if (!isOpen) return null;
 
   return (
@@ -110,7 +149,9 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, pricing }: 
         {/* Header */}
         <div className="sticky top-0 bg-card border-b border-border p-6 flex justify-between items-start rounded-t-2xl">
           <div>
-            <h2 className="text-2xl font-bold text-card-foreground">Book This Tour</h2>
+            <h2 className="text-2xl font-bold text-card-foreground">
+              {tourType === 'Private Ride' ? 'Book This Ride' : tourType === 'Transfer' ? 'Book a Transfer' : 'Book This Tour'}
+            </h2>
             <p className="text-muted-foreground mt-1">{tourName}</p>
             {pricing && formData.vehicleType && (
               <p className="text-primary font-semibold mt-1">
@@ -140,7 +181,11 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, pricing }: 
                       <button
                         key={p.vehicle}
                         type="button"
-                        onClick={() => setFormData({ ...formData, vehicleType: p.vehicle })}
+                        onClick={() => {
+                          const cap = vehicleCapacity[p.vehicle];
+                          const currentPax = parseInt(formData.pax);
+                          setFormData({ ...formData, vehicleType: p.vehicle, pax: currentPax > cap ? '' : formData.pax });
+                        }}
                         className={`p-3 border-2 rounded-xl text-center transition-all ${
                           formData.vehicleType === p.vehicle
                             ? 'border-primary bg-primary/5'
@@ -149,16 +194,31 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, pricing }: 
                       >
                         <div className="text-xs text-muted-foreground mb-1">{p.vehicle}</div>
                         <div className="text-primary font-bold text-base">₱{parseInt(p.price).toLocaleString()}</div>
+                        <div className="text-xs text-muted-foreground mt-1">Max {vehicleCapacity[p.vehicle]} pax</div>
                       </button>
                     ))}
                   </div>
+
+                  {/* Over capacity warning */}
+                  {overCapacity && (
+                    <p className="text-sm text-red-500 mt-2 flex items-center gap-1">
+                      ⚠️ Your group of {formData.pax} exceeds the {formData.vehicleType} capacity ({selectedCapacity} pax). Please choose a larger vehicle.
+                    </p>
+                  )}
+
+                  {/* Pax tip */}
+                  {vehicleTip && !overCapacity && (
+                    <p className="text-sm text-blue-600 mt-2 flex items-center gap-1">
+                      💡 {vehicleTip.msg}
+                    </p>
+                  )}
                 </div>
               )}
 
-              {/* Full Name */}
+              {/* Full Name / Lead Guest */}
               <div>
                 <label className="block text-sm font-medium text-card-foreground mb-2">
-                  <User size={16} className="inline mr-2" />Full Name *
+                  <User size={16} className="inline mr-2" />{tourType === 'Tour Package' ? 'Lead Guest Name' : 'Full Name'} *
                 </label>
                 <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} required
                   className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
@@ -176,22 +236,54 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, pricing }: 
               </div>
 
               {/* Tour Date & Time */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className={`grid gap-4 ${tourType === 'Private Ride' ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
                 <div>
                   <label className="block text-sm font-medium text-card-foreground mb-2">
-                    <Calendar size={16} className="inline mr-2" />Tour Date *
+                    <Calendar size={16} className="inline mr-2" />{tourType === 'Private Ride' ? 'Travel Date' : tourType === 'Transfer' ? 'Pick-up Date' : 'Tour Date'} *
                   </label>
                   <input type="date" name="tourDate" value={formData.tourDate} onChange={handleChange} required
                     min={new Date().toISOString().split('T')[0]}
                     className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground" />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-card-foreground mb-2">
-                    <Clock size={16} className="inline mr-2" />Preferred Time *
-                  </label>
-                  <input type="time" name="tourTime" value={formData.tourTime} onChange={handleChange} required
-                    className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground" />
-                </div>
+                {tourType === 'Private Ride' ? (
+                  <div>
+                    <label className="block text-sm font-medium text-card-foreground mb-2">
+                      <Clock size={16} className="inline mr-2" />Preferred Time *
+                    </label>
+                    <input type="time" name="tourTime" value={formData.tourTime} onChange={handleChange} required
+                      className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground" />
+                  </div>
+                ) : tourType === 'Transfer' ? (
+                  <div>
+                    <label className="block text-sm font-medium text-card-foreground mb-2">
+                      <Clock size={16} className="inline mr-2" />Pick-up Time *
+                    </label>
+                    <input type="time" name="tourTime" value={formData.tourTime} onChange={handleChange} required
+                      className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground" />
+                  </div>
+                ) : tourType === 'Tour Package' ? (
+                  <div>
+                    <label className="block text-sm font-medium text-card-foreground mb-2">
+                      <Clock size={16} className="inline mr-2" />Time of Tour *
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {['AM (Morning)', 'PM (Afternoon)'].map((period) => (
+                        <button
+                          key={period}
+                          type="button"
+                          onClick={() => setFormData({ ...formData, tourPeriod: period })}
+                          className={`py-3 border-2 rounded-xl text-sm font-semibold transition-all ${
+                            formData.tourPeriod === period
+                              ? 'border-primary bg-primary/5 text-primary'
+                              : 'border-border hover:border-primary/40 text-muted-foreground'
+                          }`}
+                        >
+                          {period}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
               </div>
 
               {/* Pax */}
@@ -199,24 +291,46 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, pricing }: 
                 <label className="block text-sm font-medium text-card-foreground mb-2">
                   <Users size={16} className="inline mr-2" />Number of Passengers *
                 </label>
-                <select name="pax" value={formData.pax} onChange={handleChange} required
-                  className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground">
-                  <option value="">Select number of passengers</option>
-                  {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
-                    <option key={n} value={n}>{n} {n === 1 ? 'passenger' : 'passengers'}</option>
-                  ))}
-                </select>
+                <input
+                  type="number"
+                  name="pax"
+                  value={formData.pax}
+                  onChange={handleChange}
+                  required
+                  min={1}
+                  max={selectedCapacity ?? undefined}
+                  placeholder="Enter number of passengers"
+                  className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
+                />
               </div>
 
-              {/* Pick-up Location */}
-              <div>
-                <label className="block text-sm font-medium text-card-foreground mb-2">
-                  <MapPin size={16} className="inline mr-2" />Pick-up Location / Hotel *
-                </label>
-                <input type="text" name="pickupLocation" value={formData.pickupLocation} onChange={handleChange} required
-                  className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
-                  placeholder="Hotel name or address" />
+              {/* Pick-up & Drop-off */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-card-foreground mb-2">
+                    <MapPin size={16} className="inline mr-2" />Pick-up Location *
+                  </label>
+                  <input type="text" name="pickupLocation" value={formData.pickupLocation} onChange={handleChange} required
+                    className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
+                    placeholder="Hotel name or address" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-card-foreground mb-2">
+                    <MapPin size={16} className="inline mr-2" />Drop-off Location *
+                  </label>
+                  <input type="text" name="dropoffLocation" value={formData.dropoffLocation} onChange={handleChange} required
+                    className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
+                    placeholder="Destination or address" />
+                </div>
               </div>
+
+              {/* El Nido drop-off note */}
+              {tourName.includes('El Nido') && (
+                <p className="text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 flex items-start gap-2">
+                  <span className="flex-shrink-0">⚠️</span>
+                  <span>For <strong>El Nido</strong> bookings: drop-off within El Nido town is included. Drop-off outside of town (e.g. resorts beyond the town center) may incur an additional charge of <strong>₱500–₱1,500</strong> depending on location.</span>
+                </p>
+              )}
 
               {/* Message */}
               <div>
@@ -227,6 +341,33 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, pricing }: 
                   className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground resize-none"
                   placeholder="Any special requests or notes..." />
               </div>
+
+              {/* Total */}
+              {showTotal && (
+                <div className="bg-primary/5 border border-primary/20 rounded-xl px-5 py-4 space-y-2">
+                  {tourType === 'Tour Package' && (
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>₱{basePrice.toLocaleString()} × {paxCount} pax</span>
+                      <span>₱{subtotal.toLocaleString()}</span>
+                    </div>
+                  )}
+                  {hasEnvFee && (
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>Environmental fee (₱150 × {paxCount} pax)</span>
+                      <span>₱{envTotal.toLocaleString()}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between items-center border-t border-primary/20 pt-2">
+                    <div className="text-sm font-semibold text-card-foreground">
+                      {tourType === 'Tour Package' ? 'Estimated Total' : 'Total (flat rate)'}
+                    </div>
+                    <div className="text-xl font-black text-primary">₱{grandTotal.toLocaleString()}</div>
+                  </div>
+                  {tourType === 'Tour Package' && (
+                    <p className="text-xs text-muted-foreground mt-1">Price per person × number of passengers</p>
+                  )}
+                </div>
+              )}
 
               {error && <p className="text-sm text-red-500 text-center">{error}</p>}
 
