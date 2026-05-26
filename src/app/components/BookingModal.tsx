@@ -4,7 +4,8 @@ import { X, Calendar, User, Phone, MapPin, Users, Clock, MessageSquare, Car } fr
 import { PolicyModal, type PolicyType } from './PolicyModal';
 
 const EMAILJS_SERVICE_ID = 'service_w5vk124';
-const EMAILJS_TEMPLATE_ID = 'template_pnxzs9s';
+const EMAILJS_TEMPLATE_RIDES = 'template_pnxzs9s';
+const EMAILJS_TEMPLATE_TOURS = 'template_vxsclk9';
 const EMAILJS_PUBLIC_KEY = 'RaznTonJuUEVxkdZp';
 
 interface PricingTier {
@@ -106,7 +107,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
     try {
       await emailjs.send(
         EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
+        tourType === 'Tour Package' ? EMAILJS_TEMPLATE_TOURS : EMAILJS_TEMPLATE_RIDES,
         {
           from_name: formData.fullName,
           phone: formData.phone,
