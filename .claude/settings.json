@@ -16,7 +16,12 @@
       "PowerShell(cd \"d:\\\\Rio\\\\Personal Project\\\\palawanprivaterides\"; $env:CI = \"true\"; pnpm install 2>&1)",
       "Bash(pnpm run *)",
       "Bash(git branch *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(powershell -command \"[Convert]::ToBase64String\\([IO.File]::ReadAllBytes\\('public\\\\favicon.jpg'\\)\\)\")",
+      "Bash(node -e ' *)",
+      "Bash(del public\\\\logo_b64.txt)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
     ]
   }
 }
