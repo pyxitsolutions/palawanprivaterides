@@ -436,7 +436,9 @@ export default function App() {
       </section>
 
       {/* Testimonials */}
-      <Testimonials />
+      <div id="reviews">
+        <Testimonials />
+      </div>
 
       {/* CTA Banner */}
       <section className="py-24 bg-primary">
