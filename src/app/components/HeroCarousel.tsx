@@ -36,12 +36,6 @@ export function HeroCarousel() {
 
           {/* CTA Buttons */}
           <div className="flex flex-wrap gap-3">
-            <button
-              onClick={() => document.getElementById('tours')?.scrollIntoView({ behavior: 'smooth' })}
-              className="border-2 border-white/50 text-white px-8 py-3.5 rounded-full font-semibold hover:bg-white/10 transition-all"
-            >
-              View Packages
-            </button>
             <a
               href="https://api.whatsapp.com/send?phone=639166846547&text=Hi!%20I%20want%20to%20book%20a%20tour%20in%20Palawan."
               target="_blank"
