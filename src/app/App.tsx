@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { HeroCarousel } from './components/HeroCarousel';
 import { Testimonials } from './components/Testimonials';
@@ -15,8 +15,6 @@ import dest2 from '../dest/dest-2.png';
 import dest3 from '../dest/dest-3.png';
 import dest4 from '../dest/dest-4.png';
 import dest5 from '../dest/dest-5.png';
-import ridesHero from '../rides/rides-1.png';
-import toursHero from '../tour/tour-city.png';
 
 function FAQItem({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = useState(false);
@@ -172,62 +170,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* Browse Our Services */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <p className="text-sm font-bold text-[#e8a020] uppercase tracking-widest mb-3">Book a Ride</p>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Choose Your Journey</h2>
-            <p className="text-lg text-gray-500 max-w-xl mx-auto">
-              Private door-to-door transfers across Palawan or guided tours around Puerto Princesa — we've got you covered.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Private Rides Card */}
-            <Link
-              to="/rides"
-              className="group relative rounded-3xl overflow-hidden aspect-[4/3] block shadow-xl"
-            >
-              <img
-                src={ridesHero}
-                alt="Private Rides"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-8">
-                <p className="text-[#e8a020] text-xs font-bold uppercase tracking-widest mb-2">Intercity Transport</p>
-                <h3 className="text-3xl font-black text-white mb-2">Private Rides</h3>
-                <p className="text-white/70 text-sm mb-5">El Nido · Port Barton · San Vicente · Airport Transfer & more</p>
-                <span className="inline-flex items-center gap-2 bg-white text-primary px-5 py-2.5 rounded-full text-sm font-bold group-hover:bg-[#e8a020] group-hover:text-white transition-colors">
-                  View Rides <ArrowRight size={14} />
-                </span>
-              </div>
-            </Link>
-
-            {/* City Tours Card */}
-            <Link
-              to="/tours"
-              className="group relative rounded-3xl overflow-hidden aspect-[4/3] block shadow-xl"
-            >
-              <img
-                src={toursHero}
-                alt="City Tours"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-8">
-                <p className="text-[#e8a020] text-xs font-bold uppercase tracking-widest mb-2">Puerto Princesa</p>
-                <h3 className="text-3xl font-black text-white mb-2">Tour Packages</h3>
-                <p className="text-white/70 text-sm mb-5">Underground River · Honda Bay · Firefly · Beach Day Trip</p>
-                <span className="inline-flex items-center gap-2 bg-white text-primary px-5 py-2.5 rounded-full text-sm font-bold group-hover:bg-[#e8a020] group-hover:text-white transition-colors">
-                  View Tours <ArrowRight size={14} />
-                </span>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* Why Us / Comfort Section */}
       <section className="py-24 bg-gray-50">
