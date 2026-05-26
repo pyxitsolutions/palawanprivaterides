@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { HeroCarousel } from './components/HeroCarousel';
+import { ScrollToTopButton } from './components/ScrollToTopButton';
 import { Testimonials } from './components/Testimonials';
 import { SiteFooter } from './components/SiteFooter';
 import {
@@ -348,6 +349,7 @@ export default function App() {
       </section>
 
       <SiteFooter />
+      <ScrollToTopButton />
     </div>
   );
 }

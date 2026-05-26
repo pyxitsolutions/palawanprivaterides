@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Navbar } from '../components/Navbar';
 import { SiteFooter } from '../components/SiteFooter';
+import { ScrollToTopButton } from '../components/ScrollToTopButton';
 import { CarCard } from '../components/CarCard';
 import { privateRides } from '../data/tours';
 import { Shield, Users, MapPin, Clock, MessageCircle } from 'lucide-react';
@@ -117,6 +118,7 @@ export default function RidesPage() {
       </section>
 
       <SiteFooter />
+      <ScrollToTopButton />
     </div>
   );
 }

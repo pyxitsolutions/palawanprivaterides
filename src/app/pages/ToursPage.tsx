@@ -1,5 +1,6 @@
 import { Navbar } from '../components/Navbar';
 import { SiteFooter } from '../components/SiteFooter';
+import { ScrollToTopButton } from '../components/ScrollToTopButton';
 import { CarCard } from '../components/CarCard';
 import { cityTours } from '../data/tours';
 import { Star, Users, MapPin, Coffee, MessageCircle } from 'lucide-react';
@@ -88,6 +89,7 @@ export default function ToursPage() {
       </section>
 
       <SiteFooter />
+      <ScrollToTopButton />
     </div>
   );
 }
