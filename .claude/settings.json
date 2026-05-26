@@ -5,7 +5,18 @@
       "PowerShell(Get-Command npm -ErrorAction SilentlyContinue)",
       "PowerShell(Get-Command node -ErrorAction SilentlyContinue)",
       "PowerShell(npm install -g pnpm 2>&1)",
-      "PowerShell(Get-ChildItem \"d:\\\\Rio\\\\Personal Project\\\\Car Rental Website\\\\src\\\\\" -Recurse | Where-Object { $_.Extension -match '\\\\.\\(jpg|jpeg|png|webp\\)' } | Select-Object FullName)"
+      "PowerShell(Get-ChildItem \"d:\\\\Rio\\\\Personal Project\\\\Car Rental Website\\\\src\\\\\" -Recurse | Where-Object { $_.Extension -match '\\\\.\\(jpg|jpeg|png|webp\\)' } | Select-Object FullName)",
+      "Bash(git remote *)",
+      "Bash(Get-ChildItem -Path \"d:\\\\Rio\\\\Personal Project\\\\palawanprivaterides\" -Recurse -Force)",
+      "Bash(Select-Object FullName, PSIsContainer)",
+      "Bash(Sort-Object FullName)",
+      "Bash(Format-Table -AutoSize)",
+      "Bash(pnpm build *)",
+      "Bash(pnpm install *)",
+      "PowerShell(cd \"d:\\\\Rio\\\\Personal Project\\\\palawanprivaterides\"; $env:CI = \"true\"; pnpm install 2>&1)",
+      "Bash(pnpm run *)",
+      "Bash(git branch *)",
+      "Bash(git push *)"
     ]
   }
 }

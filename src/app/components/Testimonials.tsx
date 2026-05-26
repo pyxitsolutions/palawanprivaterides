@@ -1,38 +1,38 @@
 import { Star } from 'lucide-react';
-import image1 from '../../imports/image-1.png';
-import image4 from '../../imports/image-4.png';
-import image5 from '../../imports/image-5.png';
-import image6 from '../../imports/image-6.png';
+import reviews1 from '../../reviews/reviews-1.jpg';
+import reviews4 from '../../reviews/reviews-4.jpg';
+import reviews5 from '../../reviews/reviews-5.jpg';
+import reviews6 from '../../reviews/reviews-6.jpg';
 
 export function Testimonials() {
   const testimonials = [
     {
-      image: image1,
+      image: reviews1,
       name: 'Maria Santos',
-      review: 'Excellent service! The car was in perfect condition and the rental process was smooth. Highly recommended!',
+      review: 'Amazing private ride to El Nido! The van was super comfortable and our driver was very friendly and knowledgeable. Highly recommend!',
       rating: 5,
-      carRented: 'Toyota Wigo',
+      tourBooked: 'Puerto to El Nido Private Van',
     },
     {
-      image: image4,
+      image: reviews4,
       name: 'Juan Reyes',
-      review: 'Amazing experience! Professional staff and well-maintained vehicles. Will definitely rent again.',
+      review: 'Booked the Underground River tour and it was absolutely worth it. Everything was arranged for us — stress-free and enjoyable!',
       rating: 5,
-      carRented: 'Mitsubishi Montero',
+      tourBooked: 'Underground River Day Tour',
     },
     {
-      image: image5,
+      image: reviews5,
       name: 'Anna Cruz',
-      review: 'Great value for money! The booking was easy and the car exceeded my expectations. Thank you!',
+      review: 'Great service and fair pricing! The city tour covered all the best spots in Puerto Princesa. Will definitely book again.',
       rating: 5,
-      carRented: 'Mitsubishi Mirage',
+      tourBooked: 'Puerto Princesa City Tour',
     },
     {
-      image: image6,
+      image: reviews6,
       name: 'Pedro Gomez',
-      review: 'Very satisfied with the service. Clean car, fair prices, and friendly customer support!',
+      review: 'Airport pick-up was on time and the vehicle was clean and comfortable. Simple, reliable, and professional. Thank you!',
       rating: 5,
-      carRented: 'Mitsubishi Mirage G4',
+      tourBooked: 'Airport Transfer',
     },
   ];
 
@@ -42,7 +42,7 @@ export function Testimonials() {
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">Happy Customers</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            See what our satisfied customers have to say about their rental experience
+            See what our satisfied travelers have to say about their Palawan experience
           </p>
         </div>
 
@@ -72,7 +72,7 @@ export function Testimonials() {
                   {testimonial.review}
                 </p>
                 <p className="text-xs text-primary font-medium">
-                  Rented: {testimonial.carRented}
+                  Booked: {testimonial.tourBooked}
                 </p>
               </div>
             </div>
@@ -81,13 +81,11 @@ export function Testimonials() {
 
         <div className="mt-12 text-center">
           <div className="inline-flex items-center gap-3 bg-card px-8 py-4 rounded-full border border-border shadow-md">
-            <div className="flex -space-x-2">
-              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-semibold border-2 border-background">
-                500+
-              </div>
+            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-semibold border-2 border-background">
+              500+
             </div>
             <p className="text-sm text-muted-foreground">
-              <span className="font-bold text-foreground">500+</span> satisfied customers and counting
+              <span className="font-bold text-foreground">500+</span> satisfied travelers and counting
             </p>
           </div>
         </div>

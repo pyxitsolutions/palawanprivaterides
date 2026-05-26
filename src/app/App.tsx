@@ -1,458 +1,480 @@
 import { useState } from 'react';
+import { Navbar } from './components/Navbar';
+import { CarCard } from './components/CarCard';
+import { HeroCarousel } from './components/HeroCarousel';
+import { Testimonials } from './components/Testimonials';
+import {
+  Car, Shield, Clock, Award, Phone, Mail, Facebook, MapPin,
+  MessageCircle, CheckCircle, ArrowRight,
+} from 'lucide-react';
+import ad2 from '../ad/ad-2.png';
+import ad3 from '../ad/ad-3.png';
+import ad4 from '../ad/ad-4.png';
+import ad5 from '../ad/ad-5.png';
+import ad6 from '../ad/ad-6.png';
+import ad7 from '../ad/ad-7.png';
+import ad8 from '../ad/ad-8.png';
+import aboutImg from '../about/about-1.png';
+import dest1 from '../dest/dest-1.png';
+import dest2 from '../dest/dest-2.png';
+import dest3 from '../dest/dest-3.png';
+import dest4 from '../dest/dest-4.png';
+import dest5 from '../dest/dest-5.png';
+import rides1 from '../rides/rides-1.png';
+import rides2 from '../rides/rides-2.png';
+import rides3 from '../rides/rides-3.png';
+import rides4 from '../rides/rides-4.png';
+import rides5 from '../rides/rides-5.png';
+import transfers1 from '../transfers/transfers-1.png';
+import tourFirefly from '../tour/tour-firefly.png';
+import tourCity from '../tour/tour-city.png';
+import tourRiver from '../tour/tour-river.png';
+import tourTala from '../tour/tour-tala.png';
+import tourHonda from '../tour/tour-honda.png';
 
 function FAQItem({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="bg-card border border-border rounded-xl overflow-hidden">
+    <div className="border border-gray-200 rounded-xl overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full text-left px-6 py-5 flex justify-between items-center hover:bg-accent/50 transition-colors"
+        className="w-full text-left px-6 py-5 flex justify-between items-center hover:bg-gray-50 transition-colors"
       >
-        <span className="font-semibold text-card-foreground pr-4">{question}</span>
+        <span className="font-semibold text-gray-800 pr-4">{question}</span>
         <span className="text-primary text-xl flex-shrink-0">{open ? '−' : '+'}</span>
       </button>
       {open && (
-        <div className="px-6 pb-5 text-muted-foreground border-t border-border pt-4">
+        <div className="px-6 pb-5 text-gray-500 border-t border-gray-100 pt-4 leading-relaxed">
           {answer}
         </div>
       )}
     </div>
   );
 }
-import { Navbar } from './components/Navbar';
-import { CarCard } from './components/CarCard';
-import { HeroCarousel } from './components/HeroCarousel';
-import { Testimonials } from './components/Testimonials';
-import { Car, Shield, Clock, Award, Phone, Mail, Facebook, MapPin, MessageCircle } from 'lucide-react';
-import click125_1 from '../motors/click125-1.jpg';
-import click125_2 from '../motors/click125-2.jpg';
-import click125_3 from '../motors/click125-3.jpg';
-import aerox155_1 from '../motors/aerox155-1.jpg';
-import aerox155_2 from '../motors/aerox155-2.jpg';
-import mirageAbout from '../hero/mirage-4.png';
-import aboutImg from '../about/about-1.png';
 
 export default function App() {
-  const [priceRange, setPriceRange] = useState([300, 10000]);
   const [typeFilter, setTypeFilter] = useState('all');
-  const cars = [
+
+  const tours = [
     {
-      images: [
-        'https://images.unsplash.com/photo-1596429916858-6f97b5b9cf48?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-        'https://images.unsplash.com/photo-1749058983469-11eaef8d7bc5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-        'https://images.unsplash.com/photo-1749058983232-59b967855b18?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-        'https://images.unsplash.com/photo-1749058983193-4fc66ce597ce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-        'https://images.unsplash.com/photo-1749058982938-8a028edd392f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+      images: [rides1],
+      name: 'PPS → El Nido',
+      price: '7000',
+      type: 'Private Ride',
+      duration: 'Full Day (6-8 hrs)',
+      pax: 'Up to 8 pax',
+      description: 'Private door-to-door transfer from Puerto Princesa to El Nido Town. No stopovers, no shared vans — just your group and a trusted local driver.',
+      pricing: [
+        { vehicle: 'Sedan/Hatchback', price: '7000' },
+        { vehicle: 'SUV', price: '7500' },
+        { vehicle: 'Van', price: '8000' },
       ],
-      name: 'Toyota Vios',
-      price: '1500',
-      type: 'Sedan',
-      transmission: 'Automatic',
-      seats: 5,
-      fuelType: 'Petrol',
-      description: 'Reliable and fuel-efficient sedan, perfect for daily commutes and family trips around the city.',
     },
     {
-      images: [
-        'https://images.unsplash.com/photo-1708401265955-bef493b523e7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-        'https://images.unsplash.com/photo-1678002239411-d633292ecbc4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-        'https://images.unsplash.com/photo-1772903849126-694a1e819bd4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-        'https://images.unsplash.com/photo-1760101832548-1870e1c2ad6b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-        'https://images.unsplash.com/photo-1772903849037-57a8c10abf9e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+      images: [rides2],
+      name: 'PPS → Port Barton',
+      price: '5500',
+      type: 'Private Ride',
+      duration: 'Full Day (4-5 hrs)',
+      pax: 'Up to 8 pax',
+      description: 'Private transfer from Puerto Princesa to Port Barton. Comfortable, air-conditioned ride straight to this hidden gem of Palawan.',
+      pricing: [
+        { vehicle: 'Sedan/Hatchback', price: '5500' },
+        { vehicle: 'SUV', price: '6000' },
+        { vehicle: 'Van', price: '6500' },
       ],
-      name: 'Honda City',
-      price: '1600',
-      type: 'Sedan',
-      transmission: 'Automatic',
-      seats: 5,
-      fuelType: 'Petrol',
-      description: 'Stylish and spacious sedan with excellent fuel economy, ideal for comfortable city driving.',
     },
     {
-      images: [
-        'https://images.unsplash.com/photo-1642006247818-3334db5656c9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-        'https://images.unsplash.com/photo-1655300368482-9a4aad8450a9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-        'https://images.unsplash.com/photo-1628960410432-a6f72617a880?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-        'https://images.unsplash.com/photo-1597423506044-83f5f2ab580a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-        'https://images.unsplash.com/photo-1695105451888-e488333b9bc8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+      images: [rides3],
+      name: 'PPS → San Vicente',
+      price: '6000',
+      type: 'Private Ride',
+      duration: 'Full Day (5-6 hrs)',
+      pax: 'Up to 8 pax',
+      description: 'Private transfer to San Vicente, home of the famous Long Beach — one of the longest white sand beaches in the Philippines.',
+      pricing: [
+        { vehicle: 'Sedan/Hatchback', price: '6000' },
+        { vehicle: 'SUV', price: '6500' },
+        { vehicle: 'Van', price: '7000' },
       ],
-      name: 'Mitsubishi Mirage',
-      price: '1200',
-      type: 'Hatchback',
-      transmission: 'Manual',
-      seats: 5,
-      fuelType: 'Petrol',
-      description: 'Compact and economical hatchback, perfect for easy parking and navigating busy Metro Manila streets.',
     },
     {
-      images: [
-        'https://images.unsplash.com/photo-1664783856972-ac9922d7b2d3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-        'https://images.unsplash.com/photo-1670054953044-2605dbd0d747?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-        'https://images.unsplash.com/photo-1742697167580-af91e3ead35e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-        'https://images.unsplash.com/photo-1661096478555-4d0ce10169b6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-        'https://images.unsplash.com/photo-1667971289521-4c8050b844a3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
+      images: [rides4],
+      name: 'PPS → Astotia Palawan',
+      price: '3000',
+      type: 'Private Ride',
+      duration: 'Half Day (2-3 hrs)',
+      pax: 'Up to 8 pax',
+      description: 'Private transfer from Puerto Princesa to Astotia Palawan. Affordable and comfortable door-to-door service.',
+      pricing: [
+        { vehicle: 'Sedan/Hatchback', price: '3000' },
+        { vehicle: 'SUV', price: '3500' },
+        { vehicle: 'Van', price: '4000' },
       ],
-      name: 'Toyota Fortuner',
+    },
+    {
+      images: [rides5],
+      name: 'PPS → Sabang / Four Points',
       price: '3500',
-      type: 'SUV',
-      transmission: 'Automatic',
-      seats: 7,
-      fuelType: 'Diesel',
-      description: 'Powerful and spacious 7-seater SUV, perfect for family road trips and provincial adventures.',
+      type: 'Private Ride',
+      duration: 'Half Day (2-3 hrs)',
+      pax: 'Up to 8 pax',
+      description: 'Private transfer to Sabang — gateway to the UNESCO Underground River. Perfect for day trips or overnight stays.',
+      pricing: [
+        { vehicle: 'Sedan/Hatchback', price: '3500' },
+        { vehicle: 'SUV', price: '4000' },
+        { vehicle: 'Van', price: '4500' },
+      ],
     },
     {
-      images: [
-        'https://images.unsplash.com/photo-1594978100646-ccd2ae32b711?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-        'https://images.unsplash.com/photo-1628684014602-88da45adfb43?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-        'https://images.unsplash.com/photo-1611580568660-28050c1d5b5c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-        'https://images.unsplash.com/photo-1611580568467-a8e2bb344bbf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-        'https://images.unsplash.com/photo-1652509328308-7f0d7804e678?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-      ],
-      name: 'Mitsubishi Montero Sport',
-      price: '3200',
-      type: 'SUV',
-      transmission: 'Automatic',
-      seats: 7,
-      fuelType: 'Diesel',
-      description: 'Premium 7-seater SUV with rugged capability and modern comfort for any journey.',
+      images: [tourCity],
+      name: 'Puerto Princesa City Tour',
+      price: '1500',
+      type: 'Tour Package',
+      duration: 'Half Day (4-5 hrs)',
+      pax: 'Up to 8 pax',
+      description: "Explore Puerto Princesa's highlights — Crocodile Farm, Baker's Hill, Mitra Ranch & more. Great for first-time Palawan visitors.",
     },
     {
-      images: [
-        'https://images.unsplash.com/photo-1748215210939-ad8b6c8c086d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-        'https://images.unsplash.com/photo-1748215210950-536c6621629a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-        'https://images.unsplash.com/photo-1709620435392-c1ecacde8bd5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-        'https://images.unsplash.com/photo-1627927141576-0256f4c21ab1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-        'https://images.unsplash.com/photo-1712649415937-63f60ec6742e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-      ],
-      name: 'Toyota Innova',
+      images: [tourRiver],
+      name: 'Underground River Day Tour',
       price: '2500',
-      type: 'Van',
-      transmission: 'Manual',
-      seats: 8,
-      fuelType: 'Diesel',
-      description: 'Spacious and versatile 8-seater MPV, ideal for large families and group outings.',
+      type: 'Tour Package',
+      duration: 'Full Day (8-10 hrs)',
+      pax: 'Up to 8 pax',
+      description: 'Visit the UNESCO World Heritage Underground River in Sabang. Includes private van transport. Permits must be arranged in advance.',
     },
     {
-      images: [click125_1, click125_2, click125_3],
-      name: 'Honda Click 125',
-      price: '400',
-      type: 'Motorcycle',
-      transmission: 'Automatic',
-      seats: 2,
-      fuelType: 'Petrol',
-      description: 'Fuel-efficient automatic scooter, perfect for daily commutes and navigating through Puerto Princesa traffic.',
-    },
-    {
-      images: [aerox155_1, aerox155_2],
-      name: 'Yamaha Aerox 155',
+      images: [transfers1],
+      name: 'Airport / Hotel Transfer',
       price: '500',
-      type: 'Motorcycle',
-      transmission: 'Automatic',
-      seats: 2,
-      fuelType: 'Petrol',
-      description: 'Sporty and powerful maxi-scooter with aggressive styling, perfect for both city riding and open road adventures.',
+      type: 'Transfer',
+      duration: '30–60 mins',
+      pax: 'Up to 8 pax',
+      description: 'Reliable, on-time pick-up from Puerto Princesa Airport to your hotel — or hotel to airport drop-off. No hidden charges.',
+    },
+    {
+      images: [tourFirefly],
+      name: 'Iwahig Firefly Watching',
+      price: '1799',
+      type: 'Tour Package',
+      duration: 'Evening (3–4 hrs)',
+      pax: 'Up to 8 pax',
+      description: 'Witness thousands of fireflies lighting up the Iwahig River at night. Includes round-trip transfers, welcome drinks, buffet dinner, guided boat tour, life jackets & safety gear. ₱150 environmental fee applies.',
+    },
+    {
+      images: [tourTala],
+      name: 'Tala Beach Day Trip',
+      price: '2500',
+      type: 'Tour Package',
+      duration: 'Full Day',
+      pax: 'Up to 8 pax',
+      description: 'Escape to Tala Beach — a pristine hidden shore perfect for couples, families & small groups. Includes private transport, free fuel, and a professional driver for the full day.',
+    },
+    {
+      images: [tourHonda],
+      name: 'Honda Bay Island Tour',
+      price: '1800',
+      type: 'Tour Package',
+      duration: 'Full Day (6–8 hrs)',
+      pax: 'Up to 8 pax',
+      description: 'Island-hop Cowrie Island, Starfish Island, Luli Island & Pambato Reef. Includes roundtrip van transfer, island hopping boat, entrance fees, licensed tour guide, lunch, and life vest. ₱150 environmental fee applies.',
     },
   ];
 
-  const services = [
-    {
-      icon: <Car size={40} />,
-      title: 'Cars & Motorcycles',
-      description: 'From spacious SUVs to fuel-efficient scooters — we have the right ride for every Palawan adventure.',
-    },
-    {
-      icon: <Shield size={40} />,
-      title: 'Safe & Maintained',
-      description: 'All our vehicles are regularly checked and well-maintained so you can focus on enjoying Palawan.',
-    },
-    {
-      icon: <Clock size={40} />,
-      title: 'Flexible Rentals',
-      description: 'Daily, weekly, or long-term — rent on your schedule and explore Palawan at your own pace.',
-    },
-    {
-      icon: <Award size={40} />,
-      title: 'Local Best Rates',
-      description: 'Honest and affordable pricing with no hidden charges — because Palawan should be enjoyed, not stressful.',
-    },
+  const destinations = [
+    { name: 'El Nido', image: dest1, desc: 'Limestone cliffs & lagoons' },
+    { name: 'Sabang', image: dest3, desc: 'Underground River & mangroves' },
+    { name: 'Port Barton', image: dest4, desc: 'Secluded beaches & reefs' },
+    { name: 'San Vicente', image: dest5, desc: 'Long Beach & sunsets' },
+    { name: 'Puerto Princesa', image: dest2, desc: 'City tours & transfers' },
   ];
+
+
+  const filteredTours = tours.filter(
+    (tour) => typeFilter === 'all' || tour.type === typeFilter
+  );
 
   const typeFilters = [
-    { label: 'All Types', value: 'all' },
-    { label: 'Sedan', value: 'Sedan' },
-    { label: 'SUV', value: 'SUV' },
-    { label: 'Van', value: 'Van' },
-    { label: 'Hatchback', value: 'Hatchback' },
-    { label: 'Motorcycle', value: 'Motorcycle' },
+    { label: 'All', value: 'all' },
+    { label: 'Private Ride', value: 'Private Ride' },
+    { label: 'Tour Package', value: 'Tour Package' },
+    { label: 'Transfer', value: 'Transfer' },
   ];
 
-  const filteredCars = cars.filter((car) => {
-    const price = parseInt(car.price);
-
-    // Price filter - check if price is within range
-    const priceMatch = price >= priceRange[0] && price <= priceRange[1];
-
-    // Type filter
-    const typeMatch = typeFilter === 'all' || car.type === typeFilter;
-
-    return priceMatch && typeMatch;
-  });
-
-  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const newValue = parseInt(e.target.value);
-    const newRange = [...priceRange];
-    newRange[index] = newValue;
-
-    // Ensure min doesn't exceed max and vice versa
-    if (index === 0 && newValue > priceRange[1]) {
-      newRange[1] = newValue;
-    } else if (index === 1 && newValue < priceRange[0]) {
-      newRange[0] = newValue;
-    }
-
-    setPriceRange(newRange);
-  };
+  const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       <Navbar />
 
-      {/* Hero Section */}
+      {/* Hero */}
       <section id="home" className="pt-16">
         <HeroCarousel />
       </section>
 
-      {/* Available Cars Section */}
-      <section id="cars" className="py-20 bg-background">
+      {/* Trust Badges */}
+      <section className="py-6 bg-white border-b border-gray-100">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[
+              { icon: <Shield size={20} />, label: 'Verified Operator' },
+              { icon: <Car size={20} />, label: 'Private 8-seater SUV' },
+              { icon: <Clock size={20} />, label: 'On-Time Guarantee' },
+              { icon: <Award size={20} />, label: '5-Star Rated' },
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <div className="text-primary flex-shrink-0">{item.icon}</div>
+                <span className="text-sm font-semibold text-gray-700">{item.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Premium Services */}
+      <section id="services" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">Available Cars</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Choose from our premium selection of luxury and performance vehicles
+          <div className="max-w-2xl mb-14">
+            <p className="text-sm font-bold text-[#e8a020] uppercase tracking-widest mb-3">What We Offer</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-4">
+              Premium services,<br />locally crafted.
+            </h2>
+            <p className="text-lg text-gray-500">
+              One trusted local team for every leg of your Palawan trip — private rides, tours, and full multi-day journeys.
             </p>
           </div>
 
-          {/* Filters */}
-          <div className="max-w-5xl mx-auto mb-12">
-            <div className="bg-card border border-border rounded-2xl p-6 shadow-lg">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Car Type Filter */}
-                <div>
-                  <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
-                    <Car size={20} className="text-primary" />
-                    Car Type
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {typeFilters.map((filter) => (
-                      <button
-                        key={filter.value}
-                        onClick={() => setTypeFilter(filter.value)}
-                        className={`px-4 py-2 rounded-lg text-sm transition-all duration-300 ${
-                          typeFilter === filter.value
-                            ? 'bg-primary text-primary-foreground shadow-md'
-                            : 'bg-secondary text-secondary-foreground hover:bg-primary/10 hover:border-primary border border-transparent'
-                        }`}
-                      >
-                        {filter.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Price Range Slider */}
-                <div>
-                  <h3 className="font-semibold text-foreground mb-4 flex items-center justify-between">
-                    <span className="flex items-center gap-2">
-                      <span className="text-primary">₱</span>
-                      Price Range
-                    </span>
-                    <span className="text-sm font-normal text-muted-foreground">
-                      ₱{priceRange[0].toLocaleString()} - ₱{priceRange[1].toLocaleString()}
-                    </span>
-                  </h3>
-                  <div className="space-y-4">
-                    {/* Min Price Slider */}
-                    <div>
-                      <label className="text-xs text-muted-foreground mb-1 block">Minimum: ₱{priceRange[0].toLocaleString()}</label>
-                      <input
-                        type="range"
-                        min="300"
-                        max="10000"
-                        step="50"
-                        value={priceRange[0]}
-                        onChange={(e) => handlePriceChange(e, 0)}
-                        className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
-                      />
-                    </div>
-                    {/* Max Price Slider */}
-                    <div>
-                      <label className="text-xs text-muted-foreground mb-1 block">Maximum: ₱{priceRange[1].toLocaleString()}</label>
-                      <input
-                        type="range"
-                        min="300"
-                        max="10000"
-                        step="50"
-                        value={priceRange[1]}
-                        onChange={(e) => handlePriceChange(e, 1)}
-                        className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
-                      />
-                    </div>
-                  </div>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                icon: <Car size={28} />,
+                title: 'Private Transfers',
+                desc: 'Door-to-door rides from Puerto Princesa to El Nido, Port Barton, San Vicente, Sabang & beyond. No shared vans, no detours.',
+              },
+              {
+                icon: <MapPin size={28} />,
+                title: 'Island Tours',
+                desc: 'Guided day tours to Palawan\'s top destinations — Underground River, City Tour, Nacpan & more.',
+              },
+              {
+                icon: <Clock size={28} />,
+                title: 'Multi-Day Packages',
+                desc: 'Planning a longer stay? We can arrange multi-day private rides and tour packages for your entire trip.',
+              },
+              {
+                icon: <Shield size={28} />,
+                title: 'Airport Transfers',
+                desc: 'Reliable pick-up and drop-off at Puerto Princesa Airport. Always on time, no hidden fees.',
+              },
+            ].map((s, i) => (
+              <div
+                key={i}
+                className="group p-7 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg transition-all duration-300 cursor-pointer"
+                onClick={() => scrollTo('tours')}
+              >
+                <div className="text-primary mb-4 group-hover:scale-110 transition-transform inline-block">{s.icon}</div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">{s.title}</h3>
+                <p className="text-gray-500 text-sm leading-relaxed mb-4">{s.desc}</p>
+                <span className="text-primary text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
+                  Explore <ArrowRight size={14} />
+                </span>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-              {/* Active Filters & Reset */}
-              {((priceRange[0] !== 300 || priceRange[1] !== 10000) || typeFilter !== 'all') && (
-                <div className="mt-6 pt-6 border-t border-border">
-                  <div className="flex items-center justify-between flex-wrap gap-3">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <span>Active filters:</span>
-                      {typeFilter !== 'all' && (
-                        <span className="px-3 py-1 bg-primary/10 text-primary rounded-full">
-                          {typeFilter}
-                        </span>
-                      )}
-                      {(priceRange[0] !== 300 || priceRange[1] !== 10000) && (
-                        <span className="px-3 py-1 bg-primary/10 text-primary rounded-full">
-                          ₱{priceRange[0].toLocaleString()} - ₱{priceRange[1].toLocaleString()}
-                        </span>
-                      )}
-                    </div>
-                    <button
-                      onClick={() => {
-                        setPriceRange([300, 10000]);
-                        setTypeFilter('all');
-                      }}
-                      className="text-sm text-muted-foreground hover:text-primary transition-colors underline"
-                    >
-                      Clear all filters
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
+      {/* Discover Destinations */}
+      <section id="destinations" className="py-24 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <p className="text-sm font-bold text-[#e8a020] uppercase tracking-widest mb-3">Where We Go</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Discover Palawan, your way.
+            </h2>
+            <p className="text-lg text-gray-500 max-w-xl mx-auto">
+              From limestone lagoons to mystical caves and quiet shores — we connect every dot, privately.
+            </p>
           </div>
 
-          {/* Cars Grid */}
-          {filteredCars.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            {destinations.map((dest, i) => (
+              <div
+                key={i}
+                className="group relative rounded-2xl overflow-hidden aspect-[3/4] cursor-pointer"
+                onClick={() => scrollTo('tours')}
+              >
+                <img
+                  src={dest.image}
+                  alt={dest.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <p className="text-white font-bold text-lg leading-tight">{dest.name}</p>
+                  <p className="text-white/70 text-xs mt-0.5">{dest.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Tours & Packages */}
+      <section id="tours" className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <p className="text-sm font-bold text-[#e8a020] uppercase tracking-widest mb-3">Book a Ride</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Tours & Private Rides</h2>
+            <p className="text-lg text-gray-500 max-w-xl mx-auto">
+              Choose from our curated packages or message us for a custom itinerary.
+            </p>
+          </div>
+
+          {/* Type Filter */}
+          <div className="flex flex-wrap gap-2 justify-center mb-10">
+            {typeFilters.map((f) => (
+              <button
+                key={f.value}
+                onClick={() => setTypeFilter(f.value)}
+                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
+                  typeFilter === f.value
+                    ? 'bg-primary text-white shadow-md'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+
+          {filteredTours.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredCars.map((car, index) => (
-                <CarCard key={index} {...car} />
+              {filteredTours.map((tour, index) => (
+                <CarCard key={index} {...tour} />
               ))}
             </div>
           ) : (
             <div className="text-center py-16">
-              <p className="text-xl text-muted-foreground mb-2">No cars found matching your filters.</p>
-              <p className="text-muted-foreground mb-6">Try adjusting your filter selections.</p>
+              <p className="text-xl text-gray-400 mb-6">No tours found for this filter.</p>
               <button
-                onClick={() => {
-                  setPriceFilter('all');
-                  setTypeFilter('all');
-                }}
-                className="mt-2 px-6 py-3 bg-primary text-primary-foreground rounded-full hover:opacity-90 transition-opacity"
+                onClick={() => setTypeFilter('all')}
+                className="px-6 py-3 bg-primary text-white rounded-full hover:opacity-90 transition-opacity"
               >
-                Reset All Filters
+                Show All Tours
               </button>
             </div>
           )}
         </div>
       </section>
 
-      {/* About Us Section */}
-      <section id="about" className="py-20 bg-accent/30">
+      {/* Why Us / Comfort Section */}
+      <section className="py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">About PyX Rental</h2>
-              <p className="text-lg text-muted-foreground mb-4">
-                Based in Puerto Princesa, PyX Rental is your trusted local partner for exploring everything Palawan has to offer — from the underground river to the white sand beaches of El Nido and Coron.
-              </p>
-              <p className="text-lg text-muted-foreground mb-4">
-                We offer a well-maintained fleet of cars, SUVs, vans, and motorcycles suited for every type of traveler — whether you're a solo backpacker, a family on vacation, or a group of friends on a road trip.
-              </p>
-              <p className="text-lg text-muted-foreground">
-                We keep things simple — fair prices, reliable rides, and friendly service. Because in Palawan, the journey is just as beautiful as the destination.
-              </p>
+              <p className="text-sm font-bold text-[#e8a020] uppercase tracking-widest mb-4">Why Choose Us</p>
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-8">
+                Comfort isn't a luxury here.{' '}
+                <span className="text-primary">It's the standard.</span>
+              </h2>
+              <div className="space-y-5">
+                {[
+                  { title: 'Truly Private', desc: 'Your group, your schedule. No shared rides, no strangers, no detours.' },
+                  { title: 'Spacious Vehicles', desc: 'Air-conditioned vans and SUVs for all group sizes, up to 8 passengers.' },
+                  { title: 'Local Expert Drivers', desc: 'Our drivers know Palawan inside and out — every shortcut, every gem.' },
+                  { title: 'Transparent Pricing', desc: 'Per booking, no surprise fees, ever. What you see is what you pay.' },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-start gap-4">
+                    <div className="flex-shrink-0 mt-0.5">
+                      <CheckCircle size={22} className="text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-bold text-gray-900">{item.title}</p>
+                      <p className="text-gray-500 text-sm mt-0.5">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="relative h-96 rounded-2xl overflow-hidden shadow-2xl">
+            <div className="relative h-[500px] rounded-2xl overflow-hidden shadow-2xl">
               <img
                 src={aboutImg}
-                alt="Toyota Hilux in Puerto Princesa"
+                alt="Private ride in Palawan"
                 className="w-full h-full object-cover"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Services Section */}
-      <section id="services" className="py-20 bg-background">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">Our Services</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              We offer comprehensive services to make your rental experience seamless
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {services.map((service, index) => (
-              <div
-                key={index}
-                className="bg-card p-8 rounded-xl border border-border hover:shadow-lg transition-all duration-300 text-center group hover:border-primary"
-              >
-                <div className="inline-block mb-4 text-primary group-hover:scale-110 transition-transform">
-                  {service.icon}
-                </div>
-                <h3 className="text-xl font-semibold mb-3 text-card-foreground">{service.title}</h3>
-                <p className="text-muted-foreground">{service.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works Section */}
-      <section className="py-20 bg-background">
+      {/* How It Works */}
+      <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">How It Works</h2>
-            <p className="text-lg text-muted-foreground">3 easy steps to get you on the road</p>
+            <p className="text-sm font-bold text-[#e8a020] uppercase tracking-widest mb-3">Simple Process</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">How It Works</h2>
+            <p className="text-lg text-gray-500">3 easy steps to book your Palawan adventure</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { step: '1', icon: '🚗', title: 'Choose Your Vehicle', desc: 'Browse our fleet of cars and motorcycles. Pick the one that fits your trip and budget.' },
-              { step: '2', icon: '📋', title: 'Submit Booking Request', desc: 'Fill out the booking form with your pickup date, return date, and contact details.' },
-              { step: '3', icon: '✅', title: 'We Confirm & You Ride', desc: 'We will contact you via WhatsApp or email to confirm your booking. Pick up and enjoy Palawan!' },
+              { step: '01', emoji: '🏝️', title: 'Choose Your Tour', desc: 'Browse our private rides and tour packages. Pick the one that fits your itinerary and budget.' },
+              { step: '02', emoji: '📋', title: 'Submit Booking', desc: 'Fill out the form with your date, time, pick-up location, and number of passengers.' },
+              { step: '03', emoji: '✅', title: 'We Confirm & You Ride', desc: "We'll contact you via WhatsApp or phone to confirm. Then just sit back and enjoy Palawan!" },
             ].map((item, i) => (
-              <div key={i} className="relative text-center p-8 bg-card rounded-2xl border border-border hover:shadow-lg transition-all duration-300">
-                <div className="w-16 h-16 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
-                  {item.step}
-                </div>
-                <div className="text-4xl mb-4">{item.icon}</div>
-                <h3 className="text-xl font-bold text-card-foreground mb-3">{item.title}</h3>
-                <p className="text-muted-foreground">{item.desc}</p>
+              <div key={i} className="relative p-8 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg transition-all duration-300">
+                <p className="text-6xl font-black text-gray-100 mb-4 leading-none">{item.step}</p>
+                <div className="text-4xl mb-3">{item.emoji}</div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
+                <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="py-20 bg-accent/30">
+      {/* Testimonials */}
+      <Testimonials />
+
+      {/* CTA Banner */}
+      <section className="py-24 bg-primary">
+        <div className="max-w-3xl mx-auto px-4 text-center">
+          <div className="text-5xl mb-5">🌴</div>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            Ready to travel like locals do?
+          </h2>
+          <p className="text-white/70 text-lg mb-8">
+            Message us on WhatsApp — get a tailored quote within minutes.
+          </p>
+          <a
+            href="https://api.whatsapp.com/send?phone=639217792016&text=Hi!%20I%20want%20to%20book%20a%20tour%20in%20Palawan."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-[#e8a020] text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-[#d49020] transition-colors"
+          >
+            Plan My Trip →
+          </a>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-24 bg-gray-50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">Frequently Asked Questions</h2>
-            <p className="text-lg text-muted-foreground">Everything you need to know before renting</p>
+            <p className="text-sm font-bold text-[#e8a020] uppercase tracking-widest mb-3">FAQ</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+            <p className="text-lg text-gray-500">Everything you need to know before booking</p>
           </div>
           <div className="space-y-4">
             {[
-              { q: 'What documents do I need to rent a vehicle?', a: 'You will need a valid government-issued ID (e.g. Driver\'s License, Passport, or any valid ID). For motorcycles, a valid driver\'s license with motorcycle restriction is required.' },
-              { q: 'Is there a deposit required?', a: 'Yes, a refundable deposit may be required depending on the vehicle. This will be discussed upon confirmation of your booking.' },
-              { q: 'Do you offer airport or hotel pickup?', a: 'Yes! We can arrange pickup and drop-off at the Puerto Princesa Airport or your hotel. Just let us know in your booking request.' },
-              { q: 'Can I rent per hour or half day?', a: 'Our standard rental is per day. For special arrangements, feel free to message us directly on WhatsApp or Messenger and we will try to accommodate your request.' },
-              { q: 'What happens if the vehicle breaks down?', a: 'Don\'t worry — we will assist you as soon as possible. Contact us immediately via WhatsApp or call and we will handle it.' },
-              { q: 'How do I confirm my booking?', a: 'After submitting the booking form, we will contact you via WhatsApp or email within a few hours to confirm your reservation.' },
+              { q: "What's included in the tour price?", a: "All bookings include a private vehicle and professional driver. For tour packages, a local guide may also be included. Entrance fees, boat rides, or permits (e.g. Underground River) are not included unless specified." },
+              { q: 'Can I customize my itinerary?', a: "Absolutely! We offer custom private rides to any destination in Palawan. Just message us on WhatsApp or Messenger and we'll plan the trip together." },
+              { q: 'How many passengers can join per booking?', a: 'Our vehicles can accommodate up to 8 passengers. For larger groups, please contact us directly and we will arrange accordingly.' },
+              { q: 'Do you offer airport or hotel pick-up?', a: 'Yes! All our bookings include hotel or accommodation pick-up in Puerto Princesa. Just provide your hotel name or address when booking.' },
+              { q: 'What if I need to cancel or reschedule?', a: 'We understand that plans change. Please contact us as soon as possible via WhatsApp and we will do our best to accommodate your request.' },
+              { q: 'How do I confirm my booking?', a: 'After submitting the booking form, we will contact you via WhatsApp or phone within a few hours to confirm your reservation and discuss details.' },
             ].map((item, i) => (
               <FAQItem key={i} question={item.q} answer={item.a} />
             ))}
@@ -460,190 +482,123 @@ export default function App() {
         </div>
       </section>
 
-      {/* Customer Testimonials Section */}
-      <Testimonials />
-
-      {/* Contact Section */}
-      <section id="contact" className="py-20 bg-accent/30">
+      {/* Contact */}
+      <section id="contact" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">Get In Touch</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Contact us today to reserve your vehicle or ask any questions
+            <p className="text-sm font-bold text-[#e8a020] uppercase tracking-widest mb-3">Get In Touch</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Contact Us</h2>
+            <p className="text-lg text-gray-500 max-w-xl mx-auto">
+              Message us to book a tour, ask questions, or get a custom quote.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
-            <a
-              href="tel:+639166846547"
-              className="bg-card p-8 rounded-xl border border-border hover:shadow-lg transition-all duration-300 text-center group hover:border-primary"
-            >
-              <div className="inline-block mb-4 text-primary group-hover:scale-110 transition-transform">
-                <Phone size={40} />
-              </div>
-              <h3 className="text-xl font-semibold mb-3 text-card-foreground">Phone</h3>
-              <p className="text-muted-foreground">0916-684-6547</p>
-              <p className="text-sm text-muted-foreground mt-2">Mon-Sun: 8AM - 10PM</p>
-            </a>
-
-            <a
-              href="mailto:pyxitsolutions@gmail.com"
-              className="bg-card p-8 rounded-xl border border-border hover:shadow-lg transition-all duration-300 text-center group hover:border-primary"
-            >
-              <div className="inline-block mb-4 text-primary group-hover:scale-110 transition-transform">
-                <Mail size={40} />
-              </div>
-              <h3 className="text-xl font-semibold mb-3 text-card-foreground">Email</h3>
-              <p className="text-muted-foreground">pyxitsolutions@gmail.com</p>
-              <p className="text-sm text-muted-foreground mt-2">We reply within 24 hours</p>
-            </a>
-
-            <a
-              href="https://m.me/pyxsolutions"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-card p-8 rounded-xl border border-border hover:shadow-lg transition-all duration-300 text-center group hover:border-primary"
-            >
-              <div className="inline-block mb-4 text-primary group-hover:scale-110 transition-transform">
-                <Facebook size={40} />
-              </div>
-              <h3 className="text-xl font-semibold mb-3 text-card-foreground">Messenger</h3>
-              <p className="text-muted-foreground">facebook.com/pyxsolutions</p>
-              <p className="text-sm text-muted-foreground mt-2">Instant responses</p>
-            </a>
-
-            <a
-              href="https://api.whatsapp.com/send?phone=639166846547&text=Hi!%20I%20want%20to%20rent%20a%20vehicle%20in%20Palawan."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-card p-8 rounded-xl border border-border hover:shadow-lg transition-all duration-300 text-center group hover:border-primary"
-            >
-              <div className="inline-block mb-4 text-green-500 group-hover:scale-110 transition-transform">
-                <MessageCircle size={40} />
-              </div>
-              <h3 className="text-xl font-semibold mb-3 text-card-foreground">WhatsApp</h3>
-              <p className="text-muted-foreground">0916-684-6547</p>
-              <p className="text-sm text-muted-foreground mt-2">Chat with us on WhatsApp</p>
-            </a>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto mb-12">
+            {[
+              { href: 'tel:+639217792016', icon: <Phone size={32} />, title: 'Phone', line1: '0921-779-2016', line2: 'Mon–Sun: 8AM–10PM' },
+              { href: 'mailto:palawanprivaterides@gmail.com', icon: <Mail size={32} />, title: 'Email', line1: 'palawanprivaterides@gmail.com', line2: 'Reply within 24 hours' },
+              { href: 'https://www.facebook.com/profile.php?id=61564208219838', icon: <Facebook size={32} />, title: 'Facebook', line1: 'Palawan Private Rides', line2: 'Message us on Facebook' },
+              { href: 'https://api.whatsapp.com/send?phone=639217792016&text=Hi!%20I%20want%20to%20book%20a%20tour%20in%20Palawan.', icon: <MessageCircle size={32} />, title: 'WhatsApp', line1: '0921-779-2016', line2: 'Fastest response', green: true },
+            ].map((c, i) => (
+              <a
+                key={i}
+                href={c.href}
+                target={c.href.startsWith('http') ? '_blank' : undefined}
+                rel={c.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                className="bg-white p-7 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg transition-all duration-300 text-center group"
+              >
+                <div className={`inline-block mb-4 group-hover:scale-110 transition-transform ${c.green ? 'text-green-500' : 'text-primary'}`}>
+                  {c.icon}
+                </div>
+                <h3 className="text-lg font-bold mb-2 text-gray-900">{c.title}</h3>
+                <p className="text-gray-500 text-sm">{c.line1}</p>
+                <p className="text-xs text-gray-400 mt-1">{c.line2}</p>
+              </a>
+            ))}
           </div>
 
-          {/* Google Map */}
-          <div className="mt-12 max-w-3xl mx-auto rounded-xl overflow-hidden shadow-lg border border-border">
-            <iframe
-              src="https://maps.google.com/maps?q=9.748963,118.747713&z=16&output=embed"
-              width="100%"
-              height="350"
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="PyX Rental Vehicle Rental Location"
-            />
-          </div>
-
-          <div className="mt-6 bg-card p-8 rounded-xl border border-border max-w-3xl mx-auto">
-            <div className="flex items-start gap-4">
-              <div className="text-primary mt-1">
-                <MapPin size={32} />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold mb-2 text-card-foreground">Visit Our Office</h3>
-                <p className="text-muted-foreground">
-                  National Highway, Barangay San Pedro<br />
-                  Puerto Princesa City, Palawan<br />
-                  Philippines
-                </p>
-                <p className="text-sm text-muted-foreground mt-3">
-                  Open: Monday - Sunday, 8:00 AM - 10:00 PM
-                </p>
-                <a
-                  href="https://www.google.com/maps/dir/?api=1&destination=9.748963,118.747713"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 bg-primary text-primary-foreground rounded-full text-sm font-semibold hover:opacity-90 transition-opacity"
-                >
-                  <MapPin size={16} />
-                  Get Directions
-                </a>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-primary text-primary-foreground py-12">
+      <footer className="bg-primary text-white py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            <div>
-              <h3 className="text-2xl font-bold mb-4">PyX Rental</h3>
-              <p className="text-primary-foreground/80">
-                Your trusted partner for premium car rentals. Experience luxury, performance, and exceptional service.
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
+            {/* Brand */}
+            <div className="md:col-span-1">
+              <h3 className="text-xl font-bold mb-3">Palawan Private Rides</h3>
+              <p className="text-white/60 text-sm leading-relaxed">
+                Your trusted local partner for private rides and tours throughout Palawan.
               </p>
+              <div className="flex gap-3 mt-5">
+                {[
+                  { href: 'https://www.facebook.com/profile.php?id=61564208219838', icon: <Facebook size={18} /> },
+                  { href: 'tel:+639217792016', icon: <Phone size={18} /> },
+                  { href: 'mailto:palawanprivaterides@gmail.com', icon: <Mail size={18} /> },
+                  { href: 'https://api.whatsapp.com/send?phone=639217792016', icon: <MessageCircle size={18} /> },
+                ].map((s, i) => (
+                  <a
+                    key={i}
+                    href={s.href}
+                    target={s.href.startsWith('http') ? '_blank' : undefined}
+                    rel={s.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                    className="w-9 h-9 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors"
+                  >
+                    {s.icon}
+                  </a>
+                ))}
+              </div>
             </div>
 
+            {/* Business */}
             <div>
-              <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
+              <h4 className="font-bold mb-4 text-white/90">Business</h4>
               <ul className="space-y-2">
-                <li>
-                  <button onClick={() => document.getElementById('home')?.scrollIntoView({ behavior: 'smooth' })} className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
-                    Home
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => document.getElementById('cars')?.scrollIntoView({ behavior: 'smooth' })} className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
-                    Cars
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })} className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
-                    About
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })} className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
-                    Services
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => document.getElementById('reviews')?.scrollIntoView({ behavior: 'smooth' })} className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
-                    Reviews
-                  </button>
-                </li>
+                {[
+                  ['Tours', 'tours'],
+                  ['Destinations', 'destinations'],
+                  ['Services', 'services'],
+                  ['How It Works', 'services'],
+                ].map(([label, id]) => (
+                  <li key={id}>
+                    <button
+                      onClick={() => scrollTo(id)}
+                      className="text-white/60 hover:text-white text-sm transition-colors"
+                    >
+                      {label}
+                    </button>
+                  </li>
+                ))}
               </ul>
             </div>
 
+            {/* Contact */}
             <div>
-              <h4 className="text-lg font-semibold mb-4">Connect With Us</h4>
-              <div className="flex gap-4">
-                <a
-                  href="https://www.facebook.com/pyxsolutions"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-primary-foreground text-primary p-3 rounded-full hover:opacity-80 transition-opacity"
-                >
-                  <Facebook size={20} />
-                </a>
-                <a
-                  href="tel:+639166846547"
-                  className="bg-primary-foreground text-primary p-3 rounded-full hover:opacity-80 transition-opacity"
-                >
-                  <Phone size={20} />
-                </a>
-                <a
-                  href="mailto:pyxitsolutions@gmail.com"
-                  className="bg-primary-foreground text-primary p-3 rounded-full hover:opacity-80 transition-opacity"
-                >
-                  <Mail size={20} />
-                </a>
-              </div>
+              <h4 className="font-bold mb-4 text-white/90">Contact</h4>
+              <ul className="space-y-2 text-sm text-white/60">
+                <li>+63 916-684-6547</li>
+                <li>palawanprivaterides@gmail.com</li>
+                <li>National Highway, San Pedro</li>
+                <li>Puerto Princesa, Palawan</li>
+              </ul>
+            </div>
+
+            {/* Policies */}
+            <div>
+              <h4 className="font-bold mb-4 text-white/90">Policies</h4>
+              <ul className="space-y-2">
+                {['Booking Policy', 'Cancellation Policy', 'Privacy Policy', 'Terms & Conditions'].map((p) => (
+                  <li key={p}>
+                    <button className="text-white/60 hover:text-white text-sm transition-colors">{p}</button>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
 
-          <div className="border-t border-primary-foreground/20 pt-8 text-center">
-            <p className="text-primary-foreground/80">
-              &copy; 2026 PyX Rental Vehicle Rental. All rights reserved.
-            </p>
+          <div className="border-t border-white/10 pt-7 flex flex-col md:flex-row justify-between items-center gap-3">
+            <p className="text-white/50 text-sm">&copy; 2026 Palawan Private Rides. All rights reserved.</p>
+            <p className="text-white/30 text-xs">Puerto Princesa, Palawan, Philippines</p>
           </div>
         </div>
       </footer>
