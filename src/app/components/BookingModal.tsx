@@ -286,7 +286,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
               </div>
 
               {/* Tour Date & Time */}
-              <div className={`grid gap-4 ${tourType === 'Private Ride' ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
+              <div className={`grid gap-3 ${(tourType === 'Private Ride' || tourType === 'Transfer') ? 'grid-cols-2' : 'grid-cols-1'}`}>
                 <div>
                   <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
                     <Calendar size={16} className="inline mr-2" />{tourType === 'Private Ride' ? 'Travel Date' : tourType === 'Transfer' ? 'Pick-up Date' : 'Tour Date'} *
@@ -376,14 +376,14 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
               </div>
 
               {/* Pick-up & Drop-off */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
                     <MapPin size={16} className="inline mr-2" />Pick-up Location *
                   </label>
                   <input type="text" name="pickupLocation" value={formData.pickupLocation} onChange={handleChange} required
                     className="w-full px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm"
-                    placeholder="Hotel name or address" />
+                    placeholder="Hotel or address" />
                 </div>
                 <div>
                   <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
@@ -391,7 +391,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                   </label>
                   <input type="text" name="dropoffLocation" value={formData.dropoffLocation} onChange={handleChange} required
                     className="w-full px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm"
-                    placeholder="Destination or address" />
+                    placeholder="Destination" />
                 </div>
               </div>
 
