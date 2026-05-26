@@ -163,7 +163,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
   const basePrice = parseInt(selectedPrice) || 0;
   const hasEnvFee = tourType === 'Tour Package' && !tourName.includes('City Tour') && !tourName.includes('PPC Beach');
   const envFee = hasEnvFee ? 150 : 0;
-  const subtotal = (tourType === 'Tour Package' && !pricing) ? basePrice * paxCount : basePrice;
+  const subtotal = (!pricing && (tourType === 'Tour Package' || tourType === 'Transfer')) ? basePrice * paxCount : basePrice;
   const envTotal = envFee * paxCount;
   const grandTotal = subtotal + envTotal;
   const showTotal = !!formData.pax && !!selectedPrice;
@@ -209,13 +209,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                         key={p.vehicle}
                         type="button"
                         onClick={() => {
-                          const idx = pricing.indexOf(p);
-                          const cap = p.capacity ?? defaultCapacity[p.vehicle] ?? 13;
-                          const prevCap = idx > 0 ? (pricing[idx - 1].capacity ?? defaultCapacity[pricing[idx - 1].vehicle] ?? 1) : 0;
-                          const minPax = prevCap + 1;
-                          const currentPax = parseInt(formData.pax) || 0;
-                          const newPax = currentPax > cap ? cap : currentPax < minPax ? minPax : currentPax;
-                          setFormData({ ...formData, vehicleType: p.vehicle, pax: String(newPax) });
+                          setFormData({ ...formData, vehicleType: p.vehicle });
                         }}
                         className={`p-3 border-2 rounded-xl text-center transition-all ${
                           formData.vehicleType === p.vehicle
@@ -422,7 +416,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
               {/* Total */}
               {showTotal && (
                 <div className="bg-primary/5 border border-primary/20 rounded-xl px-5 py-4 space-y-2">
-                  {tourType === 'Tour Package' && !pricing && (
+                  {!pricing && (tourType === 'Tour Package' || tourType === 'Transfer') && (
                     <div className="flex justify-between text-sm text-muted-foreground">
                       <span>₱{basePrice.toLocaleString()} × {paxCount} pax</span>
                       <span>₱{subtotal.toLocaleString()}</span>
@@ -436,7 +430,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                   )}
                   <div className="flex justify-between items-center border-t border-primary/20 pt-2">
                     <div className="text-sm font-semibold text-card-foreground">
-                      {tourType === 'Transfer' ? 'Starting rate' : (tourType === 'Tour Package' && !pricing) ? 'Estimated Total' : 'Total (flat rate)'}
+                      {(tourType === 'Tour Package' && !pricing) || tourType === 'Transfer' ? 'Estimated Total' : 'Total (flat rate)'}
                     </div>
                     <div className="text-xl font-black text-primary">₱{grandTotal.toLocaleString()}</div>
                   </div>
@@ -446,7 +440,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                   {tourType === 'Transfer' && (
                     <p className="text-xs text-amber-600 mt-1 flex items-start gap-1">
                       <span className="flex-shrink-0">⚠️</span>
-                      <span>Minimum rate is ₱500. Final rate may vary depending on your drop-off location.</span>
+                      <span>Minimum rate is ₱550. Final rate may vary depending on your drop-off location.</span>
                     </p>
                   )}
                 </div>

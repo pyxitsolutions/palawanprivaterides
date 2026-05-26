@@ -3,11 +3,20 @@ import { Navbar } from '../components/Navbar';
 import { SiteFooter } from '../components/SiteFooter';
 import { CarCard } from '../components/CarCard';
 import { privateRides } from '../data/tours';
+import { Shield, Users, MapPin, Clock, MessageCircle } from 'lucide-react';
+import heroImg from '../../rides/rides-1.png';
 
 const filters = [
   { label: 'All', value: 'all' },
   { label: 'Private Rides', value: 'Private Ride' },
-  { label: 'Transfer', value: 'Transfer' },
+  { label: 'Airport Transfer', value: 'Transfer' },
+];
+
+const highlights = [
+  { icon: <Shield size={18} />, label: 'No Shared Rides' },
+  { icon: <Users size={18} />, label: 'Private Group Only' },
+  { icon: <MapPin size={18} />, label: 'Door-to-Door' },
+  { icon: <Clock size={18} />, label: 'Flexible Schedule' },
 ];
 
 export default function RidesPage() {
@@ -21,14 +30,39 @@ export default function RidesPage() {
     <div className="min-h-screen bg-white">
       <Navbar />
 
-      {/* Page Header */}
-      <section className="pt-28 pb-12 bg-primary">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-sm font-bold text-[#e8a020] uppercase tracking-widest mb-3">Private Land Transport</p>
-          <h1 className="text-4xl md:text-5xl font-black text-white mb-4">Private Rides & Transfers</h1>
-          <p className="text-white/70 text-lg max-w-xl mx-auto">
+      {/* Hero */}
+      <section className="relative min-h-[55vh] flex items-end">
+        <img
+          src={heroImg}
+          alt="Private Rides Palawan"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+
+        <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-14 pt-32">
+          <p className="text-[#e8a020] text-sm font-bold uppercase tracking-widest mb-3">
+            Private Land Transport
+          </p>
+          <h1 className="text-5xl md:text-6xl font-black text-white leading-tight mb-4">
+            Private Rides<br />
+            <span className="text-[#e8a020]">& Transfers</span>
+          </h1>
+          <p className="text-white/70 text-lg max-w-xl mb-8">
             Door-to-door transfers across Palawan — just your group, your driver, and the open road.
           </p>
+
+          {/* Highlight pills */}
+          <div className="flex flex-wrap gap-3">
+            {highlights.map((h, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-medium px-4 py-2 rounded-full"
+              >
+                <span className="text-[#e8a020]">{h.icon}</span>
+                {h.label}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -59,20 +93,26 @@ export default function RidesPage() {
             ))}
           </div>
 
-          {/* Note */}
-          <div className="mt-12 bg-white border border-gray-100 rounded-2xl p-6 text-center">
-            <p className="text-gray-500 text-sm">
-              Don't see your destination? <strong className="text-gray-800">We go anywhere in Palawan.</strong>{' '}
+          {/* CTA */}
+          <div className="mt-14 rounded-3xl bg-primary overflow-hidden">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6 px-8 py-8">
+              <div>
+                <p className="text-[#e8a020] text-xs font-bold uppercase tracking-widest mb-1">Custom Route</p>
+                <h3 className="text-2xl font-black text-white mb-1">Don't see your destination?</h3>
+                <p className="text-white/60 text-sm">We go anywhere in Palawan — just ask us for a quote.</p>
+              </div>
               <a
                 href="https://api.whatsapp.com/send?phone=639217792016&text=Hi!%20I%20need%20a%20custom%20transfer%20in%20Palawan."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary font-semibold underline hover:opacity-80"
+                className="flex-shrink-0 inline-flex items-center gap-2 bg-[#e8a020] text-white px-7 py-3.5 rounded-full font-bold text-sm hover:bg-[#d49020] transition-colors"
               >
-                Message us for a custom quote →
+                <MessageCircle size={18} />
+                Chat on WhatsApp
               </a>
-            </p>
+            </div>
           </div>
+
         </div>
       </section>
 

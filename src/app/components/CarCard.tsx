@@ -1,8 +1,5 @@
 import { useState } from 'react';
-import { Clock, Users, MapPin } from 'lucide-react';
-import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+import { MapPin, Clock } from 'lucide-react';
 import { BookingModal } from './BookingModal';
 import { CarDetailsModal } from './CarDetailsModal';
 
@@ -24,104 +21,87 @@ interface TourCardProps {
   whatsIncluded?: string[];
 }
 
+const typeColors: Record<string, string> = {
+  'Private Ride': 'bg-blue-100 text-blue-700',
+  'Tour Package': 'bg-green-100 text-green-700',
+  'Transfer': 'bg-orange-100 text-orange-700',
+};
+
 export function CarCard({ images, name, price, type, duration, pax, description, pricing, whatsIncluded }: TourCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
-  const sliderSettings = {
-    dots: true,
-    infinite: images.length > 1,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: images.length > 1,
-    autoplaySpeed: 3000,
-    arrows: false,
-    pauseOnHover: true,
-  };
-
   const tourData = { images, name, price, type, duration, pax, description, pricing, whatsIncluded };
+  const startingPrice = pricing
+    ? Math.min(...pricing.map((p) => parseInt(p.price)))
+    : parseInt(price);
+  const perLabel = (type === 'Tour Package' || type === 'Transfer') ? 'per person' : 'per booking';
 
   return (
-    <div className="bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-border group">
+    <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-200 hover:shadow-lg transition-shadow duration-300 flex flex-col">
+
+      {/* Image */}
       <div
-        className="relative overflow-hidden h-56 tour-card-slider cursor-pointer"
+        className="relative h-52 overflow-hidden cursor-pointer flex-shrink-0"
         onClick={() => setIsDetailsOpen(true)}
       >
-        <Slider {...sliderSettings}>
-          {images.map((image, index) => (
-            <div key={index} className="h-56">
-              <img src={image} alt={`${name} - ${index + 1}`} className="w-full h-56 object-cover" />
-            </div>
-          ))}
-        </Slider>
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
-          <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 px-4 py-2 rounded-full text-sm">
-            Click to view details
+        <img
+          src={images[0]}
+          alt={name}
+          className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+        />
+        {/* Type badge over image */}
+        <div className="absolute top-3 left-3">
+          <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${typeColors[type] ?? 'bg-gray-100 text-gray-700'}`}>
+            {type}
           </span>
         </div>
       </div>
 
-      <style>{`
-        .tour-card-slider .slick-dots { bottom: 8px; }
-        .tour-card-slider .slick-dots li button:before { font-size: 7px; color: white; opacity: 0.7; }
-        .tour-card-slider .slick-dots li.slick-active button:before { color: white; opacity: 1; }
-      `}</style>
+      {/* Content */}
+      <div className="p-4 flex flex-col flex-1">
 
-      <div className="p-5">
-        <div className="flex justify-between items-start mb-3">
-          <div className="flex-1 mr-3">
-            <h3 className="text-base font-bold text-card-foreground leading-tight">{name}</h3>
-            <span className="inline-block mt-1 px-2.5 py-0.5 bg-accent text-accent-foreground text-xs rounded-full">
-              {type}
-            </span>
-          </div>
+        {/* Title */}
+        <h3
+          className="font-bold text-gray-900 text-base leading-snug mb-1 cursor-pointer hover:text-primary transition-colors line-clamp-2"
+          onClick={() => setIsDetailsOpen(true)}
+        >
+          {name}
+        </h3>
 
-          {/* Pricing */}
-          {pricing ? (
-            <div className="text-right space-y-1 flex-shrink-0">
-              {pricing.map((p) => (
-                <div key={p.vehicle} className="flex items-center gap-2 justify-end">
-                  <span className="text-xs text-muted-foreground">{p.vehicle}</span>
-                  <span className="text-sm font-bold text-primary">₱{parseInt(p.price).toLocaleString()}</span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-right flex-shrink-0">
-              <p className="text-xl font-bold text-primary">₱{parseInt(price).toLocaleString()}</p>
-              <p className="text-xs text-muted-foreground">{type === 'Tour Package' ? 'per person' : 'per booking'}</p>
-            </div>
-          )}
+        {/* Location */}
+        <div className="flex items-center gap-1 text-gray-500 text-xs mb-3">
+          <MapPin size={11} className="flex-shrink-0" />
+          <span>Palawan, Philippines</span>
         </div>
 
-        <p className="text-muted-foreground text-xs mb-3 line-clamp-2">{description}</p>
-
-        {pricing && (
-          <p className="text-xs text-green-600 font-semibold mb-3 flex items-center gap-1">
-            <span>✓</span> Rates include fuel and professional driver
-          </p>
+        {/* Duration */}
+        {duration && (
+          <div className="flex items-center gap-1.5 text-gray-400 text-xs mb-3">
+            <Clock size={11} className="flex-shrink-0" />
+            <span>{duration}</span>
+          </div>
         )}
 
-        <div className={`grid gap-2 mb-4 py-3 border-y border-border ${type === 'Transfer' ? 'grid-cols-1' : 'grid-cols-2'}`}>
-          {type !== 'Transfer' && (
-            <div className="flex flex-col items-center gap-1">
-              <Clock size={16} className="text-muted-foreground" />
-              <span className="text-xs text-muted-foreground text-center leading-tight">{duration}</span>
-            </div>
-          )}
-          <div className="flex flex-col items-center gap-1">
-            <MapPin size={16} className="text-muted-foreground" />
-            <span className="text-xs text-muted-foreground">Palawan</span>
-          </div>
-        </div>
+        {/* Spacer */}
+        <div className="flex-1" />
 
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="w-full bg-primary text-primary-foreground px-4 py-2.5 rounded-lg hover:opacity-90 transition-all font-semibold text-sm"
-        >
-          Book Now
-        </button>
+        {/* Price + Book */}
+        <div className="flex items-end justify-between pt-3 border-t border-gray-100 mt-2">
+          <div>
+            <p className="text-[10px] text-gray-400 mb-0.5">Starting from</p>
+            <p className="text-xl font-black text-gray-900">
+              ₱{startingPrice.toLocaleString()}
+            </p>
+            <p className="text-[10px] text-gray-400">{perLabel}</p>
+          </div>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="bg-primary text-white text-sm font-bold px-5 py-2.5 rounded-xl hover:opacity-90 transition-opacity"
+          >
+            Book Now
+          </button>
+        </div>
       </div>
 
       <BookingModal
