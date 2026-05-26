@@ -368,12 +368,18 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                   )}
                   <div className="flex justify-between items-center border-t border-primary/20 pt-2">
                     <div className="text-sm font-semibold text-card-foreground">
-                      {tourType === 'Tour Package' ? 'Estimated Total' : 'Total (flat rate)'}
+                      {tourType === 'Tour Package' ? 'Estimated Total' : tourType === 'Transfer' ? 'Starting rate' : 'Total (flat rate)'}
                     </div>
                     <div className="text-xl font-black text-primary">₱{grandTotal.toLocaleString()}</div>
                   </div>
                   {tourType === 'Tour Package' && (
                     <p className="text-xs text-muted-foreground mt-1">Price per person × number of passengers</p>
+                  )}
+                  {tourType === 'Transfer' && (
+                    <p className="text-xs text-amber-600 mt-1 flex items-start gap-1">
+                      <span className="flex-shrink-0">⚠️</span>
+                      <span>Minimum rate is ₱500. Final rate may vary depending on your drop-off location.</span>
+                    </p>
                   )}
                 </div>
               )}
