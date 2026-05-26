@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import emailjs from '@emailjs/browser';
-import { X, Calendar, User, Phone, MapPin, Users, Clock, MessageSquare, Car } from 'lucide-react';
+import { X, Calendar, Clock, MapPin, Users, MessageSquare, Car, Check } from 'lucide-react';
 import { PolicyModal, type PolicyType } from './PolicyModal';
 
 const EMAILJS_SERVICE_ID = 'service_w5vk124';
@@ -22,6 +22,9 @@ interface BookingModalProps {
   tourType?: string;
   pricing?: PricingTier[];
 }
+
+const inputClass = 'w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white text-sm text-gray-900 transition-colors';
+const labelClass = 'block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5';
 
 export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, pricing }: BookingModalProps) {
   const [formData, setFormData] = useState({
@@ -64,28 +67,25 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
   const getVehicleTip = () => {
     const pax = parseInt(formData.pax);
     if (!pax) return null;
-    if (pax <= 3) return { type: 'info', msg: `For ${pax} passenger${pax > 1 ? 's' : ''}, a Sedan/Hatchback is the most affordable option.` };
-    if (pax <= 6) return { type: 'info', msg: `For ${pax} passengers, we recommend an SUV or Van for comfort.` };
-    return { type: 'info', msg: `For ${pax} passengers, a Van is required.` };
+    if (pax <= 3) return `For ${pax} pax, Sedan/Hatchback is most affordable.`;
+    if (pax <= 6) return `For ${pax} pax, we recommend an SUV or Van.`;
+    return `For ${pax} pax, a Van is required.`;
   };
 
-  const vehicleTip = pricing ? getVehicleTip() : null;
   const selectedCapacity = getSelectedCapacity();
   const overCapacity = selectedCapacity && formData.pax && parseInt(formData.pax) > selectedCapacity;
+  const vehicleTip = pricing ? getVehicleTip() : null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (honeypot) return;
 
-    if (pricing && !formData.vehicleType) {
-      setError('Please select a vehicle type.');
-      return;
-    }
+    if (pricing && !formData.vehicleType) { setError('Please select a vehicle type.'); return; }
 
     if (pricing && formData.vehicleType && formData.pax) {
       const cap = defaultCapacity[formData.vehicleType];
       if (cap && parseInt(formData.pax) > cap) {
-        setError(`Your group of ${formData.pax} exceeds the ${formData.vehicleType} capacity (${cap} pax). Please choose a larger vehicle.`);
+        setError(`Your group of ${formData.pax} exceeds ${formData.vehicleType} capacity (${cap} pax).`);
         return;
       }
     }
@@ -96,10 +96,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
       return;
     }
 
-    if (!agreedToTerms) {
-      setError('Please agree to the Terms & Conditions before submitting.');
-      return;
-    }
+    if (!agreedToTerms) { setError('Please agree to the Terms & Conditions.'); return; }
 
     setSending(true);
     setError('');
@@ -172,82 +169,62 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-card rounded-2xl shadow-2xl max-w-2xl w-full max-h-[96vh] sm:max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[96vh] sm:max-h-[90vh] overflow-y-auto">
+
         {/* Header */}
-        <div className="sticky top-0 bg-card border-b border-border p-4 sm:p-6 flex justify-between items-start rounded-t-2xl">
+        <div className="sticky top-0 z-10 bg-primary rounded-t-2xl px-5 py-4 flex justify-between items-start">
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-card-foreground">
+            <p className="text-white/60 text-xs font-semibold uppercase tracking-widest mb-0.5">
+              {tourType === 'Private Ride' ? 'Private Ride' : tourType === 'Transfer' ? 'Airport Transfer' : 'Tour Package'}
+            </p>
+            <h2 className="text-white font-black text-lg leading-tight">
               {tourType === 'Private Ride' ? 'Book This Ride' : tourType === 'Transfer' ? 'Book a Transfer' : 'Book This Tour'}
             </h2>
-            <p className="text-muted-foreground mt-1 text-sm">{tourName}</p>
-            {pricing && formData.vehicleType && (
-              <p className="text-primary font-semibold mt-1 text-sm">
-                ₱{parseInt(selectedPrice).toLocaleString()} — {formData.vehicleType}
-              </p>
-            )}
+            <p className="text-white/70 text-xs mt-0.5">{tourName}</p>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-accent rounded-full transition-colors flex-shrink-0">
-            <X size={20} />
+          <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors flex-shrink-0 mt-0.5">
+            <X size={16} className="text-white" />
           </button>
         </div>
 
-        <div className="p-4 sm:p-6">
+        <div className="p-4 sm:p-5">
           {!submitted ? (
             <form onSubmit={handleSubmit} className="space-y-4">
               <input type="text" value={honeypot} onChange={(e) => setHoneypot(e.target.value)} style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
 
-              {/* Vehicle Type (only for private rides with pricing tiers) */}
+              {/* Vehicle Type */}
               {pricing && pricing.length > 0 && (
                 <div>
-                  <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
-                    <Car size={16} className="inline mr-2" />
-                    Vehicle Type *
-                  </label>
+                  <label className={labelClass}><Car size={12} className="inline mr-1" />Vehicle Type *</label>
                   <div className="grid grid-cols-3 gap-2">
                     {pricing.map((p) => (
                       <button
                         key={p.vehicle}
                         type="button"
-                        onClick={() => {
-                          setFormData({ ...formData, vehicleType: p.vehicle });
-                        }}
-                        className={`p-2 sm:p-3 border-2 rounded-xl text-center transition-all ${
+                        onClick={() => setFormData({ ...formData, vehicleType: p.vehicle })}
+                        className={`p-2.5 border-2 rounded-xl text-center transition-all ${
                           formData.vehicleType === p.vehicle
                             ? 'border-primary bg-primary/5'
-                            : 'border-border hover:border-primary/40'
+                            : 'border-gray-200 hover:border-primary/40 bg-gray-50'
                         }`}
                       >
-                        <div className="text-[10px] sm:text-xs text-muted-foreground mb-0.5">{p.vehicle}</div>
-                        <div className="text-primary font-bold text-sm sm:text-base">₱{parseInt(p.price).toLocaleString()}</div>
-                        <div className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">Max {p.capacity ?? defaultCapacity[p.vehicle]} pax</div>
+                        <div className="text-[10px] text-gray-500 mb-0.5">{p.vehicle}</div>
+                        <div className="text-primary font-black text-sm">₱{parseInt(p.price).toLocaleString()}</div>
+                        <div className="text-[10px] text-gray-400 mt-0.5">Max {p.capacity ?? defaultCapacity[p.vehicle]} pax</div>
                       </button>
                     ))}
                   </div>
-
-                  {/* Over capacity warning */}
-                  {overCapacity && (
-                    <p className="text-sm text-red-500 mt-2 flex items-center gap-1">
-                      ⚠️ Your group of {formData.pax} exceeds the {formData.vehicleType} capacity ({selectedCapacity} pax). Please choose a larger vehicle.
-                    </p>
-                  )}
-
-                  {/* Pax tip */}
-                  {vehicleTip && !overCapacity && (
-                    <p className="text-sm text-blue-600 mt-2 flex items-center gap-1">
-                      💡 {vehicleTip.msg}
-                    </p>
-                  )}
+                  {overCapacity && <p className="text-xs text-red-500 mt-2">⚠️ Exceeds {formData.vehicleType} capacity ({selectedCapacity} pax). Choose a larger vehicle.</p>}
+                  {vehicleTip && !overCapacity && <p className="text-xs text-blue-600 mt-2">💡 {vehicleTip}</p>}
                 </div>
               )}
 
-              {/* Beach Selection (PPC Beach Day Trip only) */}
+              {/* Beach Selection */}
               {tourName.includes('PPC Beach') && (
                 <div>
-                  <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
-                    🏖️ Select Beach *
-                  </label>
-                  <div className="grid grid-cols-3 gap-3">
+                  <label className={labelClass}>🏖️ Select Beach *</label>
+                  <div className="grid grid-cols-3 gap-2">
                     {['Tala Beach', 'Nagtabon Beach', 'Pakpak Lauin'].map((beach) => (
                       <button
                         key={beach}
@@ -256,7 +233,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                         className={`py-2 px-1 border-2 rounded-xl text-xs font-semibold text-center transition-all ${
                           formData.beachSelection === beach
                             ? 'border-primary bg-primary/5 text-primary'
-                            : 'border-border hover:border-primary/40 text-muted-foreground'
+                            : 'border-gray-200 hover:border-primary/40 text-gray-500 bg-gray-50'
                         }`}
                       >
                         {beach}
@@ -266,231 +243,164 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                 </div>
               )}
 
-              {/* Full Name / Lead Guest */}
-              <div>
-                <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
-                  <User size={16} className="inline mr-2" />{tourType === 'Tour Package' ? 'Lead Guest Name' : 'Full Name'} *
-                </label>
-                <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} required
-                  className="w-full px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm text-sm"
-                  placeholder="Juan Dela Cruz" />
-              </div>
-
-              {/* Phone */}
-              <div>
-                <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
-                  <Phone size={16} className="inline mr-2" />Phone Number *
-                </label>
-                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required
-                  className="w-full px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm"
-                  placeholder="+63 912 345 6789" />
-              </div>
-
-              {/* Tour Date & Time */}
-              <div className="grid gap-3 grid-cols-1">
+              {/* Contact Info */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
-                    <Calendar size={14} className="inline mr-1.5" />{tourType === 'Private Ride' ? 'Travel Date' : tourType === 'Transfer' ? 'Pick-up Date' : 'Tour Date'} *
-                  </label>
-                  <input type="date" name="tourDate" value={formData.tourDate} onChange={handleChange} required
-                    min={new Date().toISOString().split('T')[0]}
-                    className="w-full min-w-0 px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm" />
+                  <label className={labelClass}>{tourType === 'Tour Package' ? 'Lead Guest Name' : 'Full Name'} *</label>
+                  <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} required className={inputClass} placeholder="Juan Dela Cruz" />
                 </div>
-                {tourType === 'Private Ride' ? (
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
-                      <Clock size={14} className="inline mr-1.5" />Preferred Time *
-                    </label>
-                    <input type="time" name="tourTime" value={formData.tourTime} onChange={handleChange} required
-                      className="w-full min-w-0 px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm" />
-                  </div>
-                ) : tourType === 'Transfer' ? (
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
-                      <Clock size={14} className="inline mr-1.5" />Pick-up Time *
-                    </label>
-                    <input type="time" name="tourTime" value={formData.tourTime} onChange={handleChange} required
-                      className="w-full min-w-0 px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm" />
-                  </div>
-                ) : tourType === 'Tour Package' ? (
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
-                      <Clock size={16} className="inline mr-2" />Time of Tour *
-                    </label>
-                    {(() => {
-                      const isUnderground = tourName.includes('Underground River');
-                      const isFirefly = tourName.includes('Firefly');
-                      const periods = isUnderground ? ['AM (Morning)'] : isFirefly ? ['PM (Afternoon)'] : ['AM (Morning)', 'PM (Afternoon)'];
-                      return (
-                        <>
-                          <div className={`grid gap-3 ${periods.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
-                            {periods.map((period) => (
-                              <button
-                                key={period}
-                                type="button"
-                                onClick={() => setFormData({ ...formData, tourPeriod: period })}
-                                className={`py-2.5 border-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
-                                  formData.tourPeriod === period
-                                    ? 'border-primary bg-primary/5 text-primary'
-                                    : 'border-border hover:border-primary/40 text-muted-foreground'
-                                }`}
-                              >
-                                {period}
-                              </button>
-                            ))}
-                          </div>
-                          {isUnderground && (
-                            <p className="text-xs text-amber-600 mt-2 flex items-start gap-1">
-                              <span className="flex-shrink-0">⚠️</span>
-                              <span>Underground River tours operate <strong>AM only (8:00 AM – 4:00 PM)</strong>. PM tours are not available.</span>
-                            </p>
-                          )}
-                          {isFirefly && (
-                            <p className="text-xs text-amber-600 mt-2 flex items-start gap-1">
-                              <span className="flex-shrink-0">⚠️</span>
-                              <span>Firefly Watching is an <strong>evening tour (PM only)</strong>. Tours depart after sundown.</span>
-                            </p>
-                          )}
-                        </>
-                      );
-                    })()}
-                  </div>
-                ) : null}
+                <div>
+                  <label className={labelClass}>Phone Number *</label>
+                  <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required className={inputClass} placeholder="+63 912 345 6789" />
+                </div>
               </div>
+
+              {/* Date */}
+              <div>
+                <label className={labelClass}>
+                  <Calendar size={12} className="inline mr-1" />
+                  {tourType === 'Private Ride' ? 'Travel Date' : tourType === 'Transfer' ? 'Pick-up Date' : 'Tour Date'} *
+                </label>
+                <input type="date" name="tourDate" value={formData.tourDate} onChange={handleChange} required
+                  min={new Date().toISOString().split('T')[0]} className={inputClass} />
+              </div>
+
+              {/* Time */}
+              {tourType === 'Private Ride' && (
+                <div>
+                  <label className={labelClass}><Clock size={12} className="inline mr-1" />Preferred Time *</label>
+                  <input type="time" name="tourTime" value={formData.tourTime} onChange={handleChange} required className={inputClass} />
+                </div>
+              )}
+              {tourType === 'Transfer' && (
+                <div>
+                  <label className={labelClass}><Clock size={12} className="inline mr-1" />Pick-up Time *</label>
+                  <input type="time" name="tourTime" value={formData.tourTime} onChange={handleChange} required className={inputClass} />
+                </div>
+              )}
+              {tourType === 'Tour Package' && (() => {
+                const isUnderground = tourName.includes('Underground River');
+                const isFirefly = tourName.includes('Firefly');
+                const periods = isUnderground ? ['AM (Morning)'] : isFirefly ? ['PM (Afternoon)'] : ['AM (Morning)', 'PM (Afternoon)'];
+                return (
+                  <div>
+                    <label className={labelClass}><Clock size={12} className="inline mr-1" />Time of Tour *</label>
+                    <div className={`grid gap-2 ${periods.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
+                      {periods.map((period) => (
+                        <button key={period} type="button"
+                          onClick={() => setFormData({ ...formData, tourPeriod: period })}
+                          className={`py-2.5 border-2 rounded-xl text-sm font-semibold transition-all ${
+                            formData.tourPeriod === period
+                              ? 'border-primary bg-primary text-white'
+                              : 'border-gray-200 bg-gray-50 text-gray-600 hover:border-primary/40'
+                          }`}
+                        >
+                          {period}
+                        </button>
+                      ))}
+                    </div>
+                    {isUnderground && <p className="text-xs text-amber-600 mt-2 flex items-start gap-1"><span>⚠️</span><span>AM only (8:00 AM – 4:00 PM). PM tours are not available.</span></p>}
+                    {isFirefly && <p className="text-xs text-amber-600 mt-2 flex items-start gap-1"><span>⚠️</span><span>Evening tour (PM only). Tours depart after sundown.</span></p>}
+                  </div>
+                );
+              })()}
 
               {/* Pax */}
               <div>
-                <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
-                  <Users size={16} className="inline mr-2" />Number of Passengers *
-                </label>
-                <input
-                  type="number"
-                  name="pax"
-                  value={formData.pax}
-                  onChange={handleChange}
-                  required
-                  min={1}
-                  max={selectedCapacity ?? undefined}
-                  placeholder="Enter number of passengers"
-                  className="w-full px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm"
-                />
+                <label className={labelClass}><Users size={12} className="inline mr-1" />Number of Passengers *</label>
+                <input type="number" name="pax" value={formData.pax} onChange={handleChange} required min={1}
+                  max={selectedCapacity ?? undefined} placeholder="e.g. 3" className={inputClass} />
               </div>
 
-              {/* Pick-up & Drop-off */}
-              <div className="grid grid-cols-2 gap-4">
+              {/* Pickup / Dropoff */}
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
-                    <MapPin size={16} className="inline mr-2" />Pick-up Location *
-                  </label>
-                  <input type="text" name="pickupLocation" value={formData.pickupLocation} onChange={handleChange} required
-                    className="w-full px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm"
-                    placeholder="Hotel or address" />
+                  <label className={labelClass}><MapPin size={12} className="inline mr-1" />Pick-up *</label>
+                  <input type="text" name="pickupLocation" value={formData.pickupLocation} onChange={handleChange} required className={inputClass} placeholder="Hotel or address" />
                 </div>
                 <div>
-                  <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
-                    <MapPin size={16} className="inline mr-2" />Drop-off Location *
-                  </label>
-                  <input type="text" name="dropoffLocation" value={formData.dropoffLocation} onChange={handleChange} required
-                    className="w-full px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm"
-                    placeholder="Destination" />
+                  <label className={labelClass}><MapPin size={12} className="inline mr-1" />Drop-off *</label>
+                  <input type="text" name="dropoffLocation" value={formData.dropoffLocation} onChange={handleChange} required className={inputClass} placeholder="Destination" />
                 </div>
               </div>
 
-              {/* El Nido drop-off note */}
+              {/* El Nido note */}
               {tourName.includes('El Nido') && (
-                <p className="text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 flex items-start gap-2">
+                <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2.5 flex items-start gap-2">
                   <span className="flex-shrink-0">⚠️</span>
-                  <span>For <strong>El Nido</strong> bookings: drop-off within El Nido town is included. Drop-off outside of town (e.g. resorts beyond the town center) may incur an additional charge of <strong>₱500–₱1,500</strong> depending on location.</span>
+                  <span>Drop-off within El Nido town is included. Resorts outside town may incur <strong>₱500–₱1,500</strong> extra.</span>
                 </p>
               )}
 
-              {/* Message */}
+              {/* Notes */}
               <div>
-                <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
-                  <MessageSquare size={16} className="inline mr-2" />Special Requests (Optional)
-                </label>
+                <label className={labelClass}><MessageSquare size={12} className="inline mr-1" />Special Requests (Optional)</label>
                 <textarea name="message" value={formData.message} onChange={handleChange} rows={2}
-                  className="w-full px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm resize-none"
-                  placeholder="Any special requests or notes..." />
+                  className={`${inputClass} resize-none`} placeholder="Any special requests or notes..." />
               </div>
 
               {/* Total */}
               {showTotal && (
-                <div className="bg-primary/5 border border-primary/20 rounded-xl px-5 py-4 space-y-2">
+                <div className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 space-y-1.5">
                   {!pricing && (tourType === 'Tour Package' || tourType === 'Transfer') && (
-                    <div className="flex justify-between text-sm text-muted-foreground">
+                    <div className="flex justify-between text-xs text-gray-500">
                       <span>₱{basePrice.toLocaleString()} × {paxCount} pax</span>
                       <span>₱{subtotal.toLocaleString()}</span>
                     </div>
                   )}
                   {hasEnvFee && (
-                    <div className="flex justify-between text-sm text-muted-foreground">
-                      <span>Environmental fee (₱150 × {paxCount} pax)</span>
+                    <div className="flex justify-between text-xs text-gray-500">
+                      <span>Environmental fee × {paxCount} pax</span>
                       <span>₱{envTotal.toLocaleString()}</span>
                     </div>
                   )}
-                  <div className="flex justify-between items-center border-t border-primary/20 pt-2">
-                    <div className="text-sm font-semibold text-card-foreground">
+                  <div className="flex justify-between items-center border-t border-gray-200 pt-2 mt-1">
+                    <span className="text-sm font-semibold text-gray-700">
                       {(tourType === 'Tour Package' && !pricing) || tourType === 'Transfer' ? 'Estimated Total' : 'Total (flat rate)'}
-                    </div>
-                    <div className="text-xl font-black text-primary">₱{grandTotal.toLocaleString()}</div>
+                    </span>
+                    <span className="text-xl font-black text-primary">₱{grandTotal.toLocaleString()}</span>
                   </div>
-                  {tourType === 'Tour Package' && !pricing && (
-                    <p className="text-xs text-muted-foreground mt-1">Price per person × number of passengers</p>
-                  )}
                   {tourType === 'Transfer' && (
-                    <p className="text-xs text-amber-600 mt-1 flex items-start gap-1">
-                      <span className="flex-shrink-0">⚠️</span>
-                      <span>Minimum rate is ₱550. Final rate may vary depending on your drop-off location.</span>
-                    </p>
+                    <p className="text-[10px] text-amber-600">⚠️ Minimum ₱550. Final rate may vary by drop-off location.</p>
                   )}
                 </div>
               )}
 
-              {/* T&C Checkbox */}
-              <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
-                <input
-                  type="checkbox"
-                  id="agreeTerms"
-                  checked={agreedToTerms}
+              {/* T&C */}
+              <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl border border-gray-200">
+                <input type="checkbox" id="agreeTerms" checked={agreedToTerms}
                   onChange={(e) => setAgreedToTerms(e.target.checked)}
-                  className="mt-0.5 w-4 h-4 accent-primary flex-shrink-0 cursor-pointer"
-                />
+                  className="mt-0.5 w-4 h-4 accent-primary flex-shrink-0 cursor-pointer" />
                 <label htmlFor="agreeTerms" className="text-xs text-gray-600 leading-relaxed cursor-pointer">
-                  I have read and agree to the{' '}
-                  <button type="button" onClick={() => setOpenPolicy('booking')} className="text-primary underline font-medium hover:opacity-80">Booking Policy</button>,{' '}
-                  <button type="button" onClick={() => setOpenPolicy('cancellation')} className="text-primary underline font-medium hover:opacity-80">Cancellation Policy</button>, and{' '}
-                  <button type="button" onClick={() => setOpenPolicy('terms')} className="text-primary underline font-medium hover:opacity-80">Terms & Conditions</button>{' '}
-                  of Palawan Private Rides.
+                  I agree to the{' '}
+                  <button type="button" onClick={() => setOpenPolicy('booking')} className="text-primary underline font-medium">Booking Policy</button>,{' '}
+                  <button type="button" onClick={() => setOpenPolicy('cancellation')} className="text-primary underline font-medium">Cancellation Policy</button>, and{' '}
+                  <button type="button" onClick={() => setOpenPolicy('terms')} className="text-primary underline font-medium">Terms & Conditions</button>.
                 </label>
               </div>
 
-              {error && <p className="text-sm text-red-500 text-center">{error}</p>}
+              {error && <p className="text-xs text-red-500 text-center bg-red-50 rounded-lg py-2">{error}</p>}
 
-              <div className="flex gap-3 pt-1">
+              <div className="flex gap-3">
                 <button type="button" onClick={onClose}
-                  className="flex-1 px-4 py-2.5 border border-border rounded-lg hover:bg-accent transition-colors text-card-foreground text-sm">
+                  className="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors">
                   Cancel
                 </button>
                 <button type="submit" disabled={sending || !agreedToTerms}
-                  className="flex-1 px-4 py-2.5 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity font-semibold text-sm disabled:opacity-60 disabled:cursor-not-allowed">
-                  {sending ? 'Sending...' : 'Submit Booking Request'}
+                  className="flex-1 px-4 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                  {sending ? 'Sending...' : <><Check size={15} />Submit Booking</>}
                 </button>
               </div>
 
-              <p className="text-xs text-muted-foreground text-center">
-                * We'll contact you via WhatsApp or phone to confirm your booking
-              </p>
+              <p className="text-[10px] text-gray-400 text-center">We'll contact you via WhatsApp or phone to confirm.</p>
             </form>
           ) : (
-            <div className="py-12 text-center">
+            <div className="py-14 text-center">
               <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
+                <Check size={32} className="text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-card-foreground mb-2">Booking Request Sent!</h3>
-              <p className="text-muted-foreground">We'll contact you via WhatsApp or phone to confirm.</p>
+              <h3 className="text-xl font-black text-gray-900 mb-1">Booking Request Sent!</h3>
+              <p className="text-gray-500 text-sm">We'll contact you via WhatsApp or phone to confirm.</p>
             </div>
           )}
         </div>
