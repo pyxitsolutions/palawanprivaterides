@@ -175,7 +175,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
         {/* Header */}
         <div className="sticky top-0 z-10 bg-white border-b border-gray-100 rounded-t-2xl px-5 py-4 flex justify-between items-start">
           <div>
-            <span className="inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full mb-2 bg-amber-100 text-[#e8a020]">
+            <span className="inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full mb-2 bg-[#e8a020] text-white">
               {tourType === 'Private Ride' ? 'Private Ride' : tourType === 'Transfer' ? 'Airport Transfer' : 'Tour Package'}
             </span>
             <h2 className="text-gray-900 font-black text-xl leading-tight">
