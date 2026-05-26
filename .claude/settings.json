@@ -21,7 +21,8 @@
       "Bash(node -e ' *)",
       "Bash(del public\\\\logo_b64.txt)",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(git rm *)"
     ]
   }
 }
