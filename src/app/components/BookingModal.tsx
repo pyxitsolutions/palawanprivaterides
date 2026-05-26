@@ -275,8 +275,8 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                     <label className="block text-sm font-medium text-card-foreground mb-2">
                       <Clock size={16} className="inline mr-2" />Time of Tour *
                     </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      {['AM (Morning)', 'PM (Afternoon)'].map((period) => (
+                    <div className={`grid gap-3 ${tourName.includes('Underground River') ? 'grid-cols-1' : 'grid-cols-2'}`}>
+                      {(tourName.includes('Underground River') ? ['AM (Morning)'] : ['AM (Morning)', 'PM (Afternoon)']).map((period) => (
                         <button
                           key={period}
                           type="button"
@@ -291,6 +291,12 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                         </button>
                       ))}
                     </div>
+                    {tourName.includes('Underground River') && (
+                      <p className="text-xs text-amber-600 mt-2 flex items-start gap-1">
+                        <span className="flex-shrink-0">⚠️</span>
+                        <span>Underground River tours operate <strong>AM only (8:00 AM – 4:00 PM)</strong>. PM tours are not available.</span>
+                      </p>
+                    )}
                   </div>
                 ) : null}
               </div>
