@@ -171,39 +171,39 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-card rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/50 backdrop-blur-sm">
+      <div className="bg-card rounded-2xl shadow-2xl max-w-2xl w-full max-h-[96vh] sm:max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-card border-b border-border p-6 flex justify-between items-start rounded-t-2xl">
+        <div className="sticky top-0 bg-card border-b border-border p-4 sm:p-6 flex justify-between items-start rounded-t-2xl">
           <div>
-            <h2 className="text-2xl font-bold text-card-foreground">
+            <h2 className="text-xl sm:text-2xl font-bold text-card-foreground">
               {tourType === 'Private Ride' ? 'Book This Ride' : tourType === 'Transfer' ? 'Book a Transfer' : 'Book This Tour'}
             </h2>
-            <p className="text-muted-foreground mt-1">{tourName}</p>
+            <p className="text-muted-foreground mt-1 text-sm">{tourName}</p>
             {pricing && formData.vehicleType && (
-              <p className="text-primary font-semibold mt-1">
+              <p className="text-primary font-semibold mt-1 text-sm">
                 ₱{parseInt(selectedPrice).toLocaleString()} — {formData.vehicleType}
               </p>
             )}
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-accent rounded-full transition-colors">
-            <X size={24} />
+          <button onClick={onClose} className="p-2 hover:bg-accent rounded-full transition-colors flex-shrink-0">
+            <X size={20} />
           </button>
         </div>
 
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {!submitted ? (
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <input type="text" value={honeypot} onChange={(e) => setHoneypot(e.target.value)} style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
 
               {/* Vehicle Type (only for private rides with pricing tiers) */}
               {pricing && pricing.length > 0 && (
                 <div>
-                  <label className="block text-sm font-medium text-card-foreground mb-2">
+                  <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
                     <Car size={16} className="inline mr-2" />
                     Vehicle Type *
                   </label>
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-3 gap-2">
                     {pricing.map((p) => (
                       <button
                         key={p.vehicle}
@@ -211,15 +211,15 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                         onClick={() => {
                           setFormData({ ...formData, vehicleType: p.vehicle });
                         }}
-                        className={`p-3 border-2 rounded-xl text-center transition-all ${
+                        className={`p-2 sm:p-3 border-2 rounded-xl text-center transition-all ${
                           formData.vehicleType === p.vehicle
                             ? 'border-primary bg-primary/5'
                             : 'border-border hover:border-primary/40'
                         }`}
                       >
-                        <div className="text-xs text-muted-foreground mb-1">{p.vehicle}</div>
-                        <div className="text-primary font-bold text-base">₱{parseInt(p.price).toLocaleString()}</div>
-                        <div className="text-xs text-muted-foreground mt-1">Max {p.capacity ?? defaultCapacity[p.vehicle]} pax</div>
+                        <div className="text-[10px] sm:text-xs text-muted-foreground mb-0.5">{p.vehicle}</div>
+                        <div className="text-primary font-bold text-sm sm:text-base">₱{parseInt(p.price).toLocaleString()}</div>
+                        <div className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">Max {p.capacity ?? defaultCapacity[p.vehicle]} pax</div>
                       </button>
                     ))}
                   </div>
@@ -243,7 +243,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
               {/* Beach Selection (PPC Beach Day Trip only) */}
               {tourName.includes('PPC Beach') && (
                 <div>
-                  <label className="block text-sm font-medium text-card-foreground mb-2">
+                  <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
                     🏖️ Select Beach *
                   </label>
                   <div className="grid grid-cols-3 gap-3">
@@ -252,7 +252,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                         key={beach}
                         type="button"
                         onClick={() => setFormData({ ...formData, beachSelection: beach })}
-                        className={`py-3 px-2 border-2 rounded-xl text-xs font-semibold text-center transition-all ${
+                        className={`py-2 px-1 border-2 rounded-xl text-xs font-semibold text-center transition-all ${
                           formData.beachSelection === beach
                             ? 'border-primary bg-primary/5 text-primary'
                             : 'border-border hover:border-primary/40 text-muted-foreground'
@@ -267,53 +267,53 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
 
               {/* Full Name / Lead Guest */}
               <div>
-                <label className="block text-sm font-medium text-card-foreground mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
                   <User size={16} className="inline mr-2" />{tourType === 'Tour Package' ? 'Lead Guest Name' : 'Full Name'} *
                 </label>
                 <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} required
-                  className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
+                  className="w-full px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm text-sm"
                   placeholder="Juan Dela Cruz" />
               </div>
 
               {/* Phone */}
               <div>
-                <label className="block text-sm font-medium text-card-foreground mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
                   <Phone size={16} className="inline mr-2" />Phone Number *
                 </label>
                 <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required
-                  className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
+                  className="w-full px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm"
                   placeholder="+63 912 345 6789" />
               </div>
 
               {/* Tour Date & Time */}
               <div className={`grid gap-4 ${tourType === 'Private Ride' ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
                 <div>
-                  <label className="block text-sm font-medium text-card-foreground mb-2">
+                  <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
                     <Calendar size={16} className="inline mr-2" />{tourType === 'Private Ride' ? 'Travel Date' : tourType === 'Transfer' ? 'Pick-up Date' : 'Tour Date'} *
                   </label>
                   <input type="date" name="tourDate" value={formData.tourDate} onChange={handleChange} required
                     min={new Date().toISOString().split('T')[0]}
-                    className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground" />
+                    className="w-full px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm" />
                 </div>
                 {tourType === 'Private Ride' ? (
                   <div>
-                    <label className="block text-sm font-medium text-card-foreground mb-2">
+                    <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
                       <Clock size={16} className="inline mr-2" />Preferred Time *
                     </label>
                     <input type="time" name="tourTime" value={formData.tourTime} onChange={handleChange} required
-                      className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground" />
+                      className="w-full px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm" />
                   </div>
                 ) : tourType === 'Transfer' ? (
                   <div>
-                    <label className="block text-sm font-medium text-card-foreground mb-2">
+                    <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
                       <Clock size={16} className="inline mr-2" />Pick-up Time *
                     </label>
                     <input type="time" name="tourTime" value={formData.tourTime} onChange={handleChange} required
-                      className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground" />
+                      className="w-full px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm" />
                   </div>
                 ) : tourType === 'Tour Package' ? (
                   <div>
-                    <label className="block text-sm font-medium text-card-foreground mb-2">
+                    <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
                       <Clock size={16} className="inline mr-2" />Time of Tour *
                     </label>
                     {(() => {
@@ -328,7 +328,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                                 key={period}
                                 type="button"
                                 onClick={() => setFormData({ ...formData, tourPeriod: period })}
-                                className={`py-3 border-2 rounded-xl text-sm font-semibold transition-all ${
+                                className={`py-2.5 border-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
                                   formData.tourPeriod === period
                                     ? 'border-primary bg-primary/5 text-primary'
                                     : 'border-border hover:border-primary/40 text-muted-foreground'
@@ -359,7 +359,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
 
               {/* Pax */}
               <div>
-                <label className="block text-sm font-medium text-card-foreground mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
                   <Users size={16} className="inline mr-2" />Number of Passengers *
                 </label>
                 <input
@@ -371,26 +371,26 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                   min={1}
                   max={selectedCapacity ?? undefined}
                   placeholder="Enter number of passengers"
-                  className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
+                  className="w-full px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm"
                 />
               </div>
 
               {/* Pick-up & Drop-off */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-card-foreground mb-2">
+                  <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
                     <MapPin size={16} className="inline mr-2" />Pick-up Location *
                   </label>
                   <input type="text" name="pickupLocation" value={formData.pickupLocation} onChange={handleChange} required
-                    className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
+                    className="w-full px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm"
                     placeholder="Hotel name or address" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-card-foreground mb-2">
+                  <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
                     <MapPin size={16} className="inline mr-2" />Drop-off Location *
                   </label>
                   <input type="text" name="dropoffLocation" value={formData.dropoffLocation} onChange={handleChange} required
-                    className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
+                    className="w-full px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm"
                     placeholder="Destination or address" />
                 </div>
               </div>
@@ -405,11 +405,11 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
 
               {/* Message */}
               <div>
-                <label className="block text-sm font-medium text-card-foreground mb-2">
+                <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
                   <MessageSquare size={16} className="inline mr-2" />Special Requests (Optional)
                 </label>
                 <textarea name="message" value={formData.message} onChange={handleChange} rows={3}
-                  className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground resize-none"
+                  className="w-full px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm resize-none"
                   placeholder="Any special requests or notes..." />
               </div>
 
@@ -466,13 +466,13 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
 
               {error && <p className="text-sm text-red-500 text-center">{error}</p>}
 
-              <div className="flex gap-3 pt-2">
+              <div className="flex gap-3 pt-1">
                 <button type="button" onClick={onClose}
-                  className="flex-1 px-6 py-3 border border-border rounded-lg hover:bg-accent transition-colors text-card-foreground">
+                  className="flex-1 px-4 py-2.5 border border-border rounded-lg hover:bg-accent transition-colors text-card-foreground text-sm">
                   Cancel
                 </button>
                 <button type="submit" disabled={sending || !agreedToTerms}
-                  className="flex-1 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity font-semibold disabled:opacity-60 disabled:cursor-not-allowed">
+                  className="flex-1 px-4 py-2.5 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity font-semibold text-sm disabled:opacity-60 disabled:cursor-not-allowed">
                   {sending ? 'Sending...' : 'Submit Booking Request'}
                 </button>
               </div>
