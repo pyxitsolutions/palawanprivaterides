@@ -31,7 +31,7 @@ export function HeroCarousel() {
 
           {/* Subtitle */}
           <p className="text-lg md:text-xl text-white/80 mb-8 max-w-xl leading-relaxed">
-            Comfortable, private, and reliable rides from Puerto Princesa to El Nido & beyond. One trusted local team.
+            Explore Palawan the easy way with reliable private transportation and affordable tour packages. Safe rides, friendly local drivers, and stress-free adventures await.
           </p>
 
           {/* CTA Buttons */}

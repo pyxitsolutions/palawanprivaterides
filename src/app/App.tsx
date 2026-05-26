@@ -47,8 +47,6 @@ export default function App() {
     { name: 'Puerto Princesa', image: dest2, desc: 'City tours & transfers' },
   ];
 
-  const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
@@ -114,7 +112,7 @@ export default function App() {
                 icon: <Shield size={28} />,
                 title: 'Airport Transfers',
                 desc: 'Reliable pick-up and drop-off at Puerto Princesa Airport. Always on time, no hidden fees.',
-                href: '/tours',
+                href: '/rides',
               },
             ].map((s, i) => (
               <div
@@ -300,10 +298,11 @@ export default function App() {
             {[
               { q: "What's included in the tour price?", a: "All bookings include a private vehicle and professional driver. For tour packages, a local guide may also be included. Entrance fees, boat rides, or permits (e.g. Underground River) are not included unless specified." },
               { q: 'Can I customize my itinerary?', a: "Absolutely! We offer custom private rides to any destination in Palawan. Just message us on WhatsApp or Messenger and we'll plan the trip together." },
-              { q: 'How many passengers can join per booking?', a: 'Our vehicles can accommodate up to 8 passengers. For larger groups, please contact us directly and we will arrange accordingly.' },
+              { q: 'How many passengers can join per booking?', a: 'Our vehicles can accommodate up to 13 passengers. For larger groups, please contact us directly and we will arrange accordingly.' },
               { q: 'Do you offer airport or hotel pick-up?', a: 'Yes! All our bookings include hotel or accommodation pick-up in Puerto Princesa. Just provide your hotel name or address when booking.' },
               { q: 'What if I need to cancel or reschedule?', a: 'We understand that plans change. Please contact us as soon as possible via WhatsApp and we will do our best to accommodate your request.' },
               { q: 'How do I confirm my booking?', a: 'After submitting the booking form, we will contact you via WhatsApp or phone within a few hours to confirm your reservation and discuss details.' },
+              { q: 'Is a downpayment required to confirm my booking?', a: 'Yes, a downpayment is required to secure and confirm your booking. Once we get in touch via WhatsApp or phone, we will provide the downpayment details. Your reservation will only be confirmed upon receipt of the downpayment.' },
             ].map((item, i) => (
               <FAQItem key={i} question={item.q} answer={item.a} />
             ))}
