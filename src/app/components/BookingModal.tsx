@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import emailjs from '@emailjs/browser';
-import { X, User, Phone, MapPin, Users, Clock, MessageSquare, Car } from 'lucide-react';
+import { X, Calendar, User, Phone, MapPin, Users, Clock, MessageSquare, Car } from 'lucide-react';
 import { PolicyModal, type PolicyType } from './PolicyModal';
 
 const EMAILJS_SERVICE_ID = 'service_w5vk124';
@@ -286,30 +286,30 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
               </div>
 
               {/* Tour Date & Time */}
-              <div className={`grid gap-3 ${(tourType === 'Private Ride' || tourType === 'Transfer') ? 'grid-cols-2' : 'grid-cols-1'}`}>
-                <div className="min-w-0">
+              <div className="grid gap-3 grid-cols-1">
+                <div>
                   <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
-                    {tourType === 'Private Ride' ? 'Travel Date' : tourType === 'Transfer' ? 'Pick-up Date' : 'Tour Date'} *
+                    <Calendar size={14} className="inline mr-1.5" />{tourType === 'Private Ride' ? 'Travel Date' : tourType === 'Transfer' ? 'Pick-up Date' : 'Tour Date'} *
                   </label>
                   <input type="date" name="tourDate" value={formData.tourDate} onChange={handleChange} required
                     min={new Date().toISOString().split('T')[0]}
-                    className="w-full min-w-0 px-2 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-xs sm:text-sm" />
+                    className="w-full px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm" />
                 </div>
                 {tourType === 'Private Ride' ? (
-                  <div className="min-w-0">
+                  <div>
                     <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
-                      Preferred Time *
+                      <Clock size={14} className="inline mr-1.5" />Preferred Time *
                     </label>
                     <input type="time" name="tourTime" value={formData.tourTime} onChange={handleChange} required
-                      className="w-full min-w-0 px-2 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-xs sm:text-sm" />
+                      className="w-full px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm" />
                   </div>
                 ) : tourType === 'Transfer' ? (
-                  <div className="min-w-0">
+                  <div>
                     <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
-                      Pick-up Time *
+                      <Clock size={14} className="inline mr-1.5" />Pick-up Time *
                     </label>
                     <input type="time" name="tourTime" value={formData.tourTime} onChange={handleChange} required
-                      className="w-full min-w-0 px-2 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-xs sm:text-sm" />
+                      className="w-full px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm" />
                   </div>
                 ) : tourType === 'Tour Package' ? (
                   <div>
@@ -408,7 +408,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                 <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
                   <MessageSquare size={16} className="inline mr-2" />Special Requests (Optional)
                 </label>
-                <textarea name="message" value={formData.message} onChange={handleChange} rows={3}
+                <textarea name="message" value={formData.message} onChange={handleChange} rows={2}
                   className="w-full px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm resize-none"
                   placeholder="Any special requests or notes..." />
               </div>
