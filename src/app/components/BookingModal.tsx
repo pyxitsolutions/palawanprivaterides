@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import emailjs from '@emailjs/browser';
-import { X, Calendar, User, Phone, MapPin, Users, Clock, MessageSquare, Car } from 'lucide-react';
+import { X, User, Phone, MapPin, Users, Clock, MessageSquare, Car } from 'lucide-react';
 import { PolicyModal, type PolicyType } from './PolicyModal';
 
 const EMAILJS_SERVICE_ID = 'service_w5vk124';
@@ -287,29 +287,29 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
 
               {/* Tour Date & Time */}
               <div className={`grid gap-3 ${(tourType === 'Private Ride' || tourType === 'Transfer') ? 'grid-cols-2' : 'grid-cols-1'}`}>
-                <div>
+                <div className="min-w-0">
                   <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
-                    <Calendar size={16} className="inline mr-2" />{tourType === 'Private Ride' ? 'Travel Date' : tourType === 'Transfer' ? 'Pick-up Date' : 'Tour Date'} *
+                    {tourType === 'Private Ride' ? 'Travel Date' : tourType === 'Transfer' ? 'Pick-up Date' : 'Tour Date'} *
                   </label>
                   <input type="date" name="tourDate" value={formData.tourDate} onChange={handleChange} required
                     min={new Date().toISOString().split('T')[0]}
-                    className="w-full px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm" />
+                    className="w-full min-w-0 px-2 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-xs sm:text-sm" />
                 </div>
                 {tourType === 'Private Ride' ? (
-                  <div>
+                  <div className="min-w-0">
                     <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
-                      <Clock size={16} className="inline mr-2" />Preferred Time *
+                      Preferred Time *
                     </label>
                     <input type="time" name="tourTime" value={formData.tourTime} onChange={handleChange} required
-                      className="w-full px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm" />
+                      className="w-full min-w-0 px-2 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-xs sm:text-sm" />
                   </div>
                 ) : tourType === 'Transfer' ? (
-                  <div>
+                  <div className="min-w-0">
                     <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
-                      <Clock size={16} className="inline mr-2" />Pick-up Time *
+                      Pick-up Time *
                     </label>
                     <input type="time" name="tourTime" value={formData.tourTime} onChange={handleChange} required
-                      className="w-full px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm" />
+                      className="w-full min-w-0 px-2 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-xs sm:text-sm" />
                   </div>
                 ) : tourType === 'Tour Package' ? (
                   <div>
