@@ -102,7 +102,7 @@ export const tours: Tour[] = [
   {
     images: [tourCity],
     name: 'Puerto Princesa City Tour',
-    price: '750',
+    price: '800',
     type: 'Tour Package',
     duration: 'Tour Duration (4-5 hrs)',
     pax: 'Up to 8 pax',
@@ -111,7 +111,7 @@ export const tours: Tour[] = [
   {
     images: [tourRiver],
     name: 'Underground River Day Tour',
-    price: '2500',
+    price: '2550',
     type: 'Tour Package',
     duration: 'Tour Duration (7–8 hrs)',
     pax: 'Up to 8 pax',
@@ -136,7 +136,7 @@ export const tours: Tour[] = [
   {
     images: [tourFirefly],
     name: 'Iwahig Firefly Watching',
-    price: '1800',
+    price: '1850',
     type: 'Tour Package',
     duration: 'Evening (3–4 hrs)',
     pax: 'Up to 8 pax',
@@ -157,15 +157,15 @@ export const tours: Tour[] = [
     pax: 'Up to 8 pax',
     description: "Escape to one of Puerto Princesa's hidden shores — choose between Tala Beach, Nagtabon Beach, or Pakpak Lauin. Perfect for couples, families & small groups. Includes private transport, free fuel, and a professional driver. Additional charges may vary.",
     pricing: [
-      { vehicle: 'Sedan/Hatchback', price: '2500', capacity: 4 },
-      { vehicle: 'SUV', price: '3000', capacity: 6 },
-      { vehicle: 'Van', price: '5000', capacity: 13 },
+      { vehicle: 'Sedan/Hatchback', price: '2700', capacity: 4 },
+      { vehicle: 'SUV', price: '3300', capacity: 6 },
+      { vehicle: 'Van', price: '5650', capacity: 13 },
     ],
   },
   {
     images: [tourHonda],
     name: 'Honda Bay Island Tour',
-    price: '1800',
+    price: '1850',
     type: 'Tour Package',
     duration: 'Tour Duration (6–8 hrs)',
     pax: 'Up to 8 pax',
