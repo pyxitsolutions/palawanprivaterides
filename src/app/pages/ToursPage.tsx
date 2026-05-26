@@ -1,15 +1,9 @@
-import { useState } from 'react';
 import { Navbar } from '../components/Navbar';
 import { SiteFooter } from '../components/SiteFooter';
 import { CarCard } from '../components/CarCard';
 import { cityTours } from '../data/tours';
 import { Star, Users, MapPin, Coffee, MessageCircle } from 'lucide-react';
 import heroImg from '../../tour/tour-honda.png';
-
-const filters = [
-  { label: 'All', value: 'all' },
-  { label: 'Tour Packages', value: 'Tour Package' },
-];
 
 const highlights = [
   { icon: <Star size={18} />, label: 'Licensed Tour Guides' },
@@ -19,11 +13,6 @@ const highlights = [
 ];
 
 export default function ToursPage() {
-  const [typeFilter, setTypeFilter] = useState('all');
-
-  const filtered = cityTours.filter(
-    (t) => typeFilter === 'all' || t.type === typeFilter
-  );
 
   return (
     <div className="min-h-screen bg-white">
@@ -69,25 +58,8 @@ export default function ToursPage() {
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-          {/* Filter Tabs */}
-          <div className="flex flex-wrap gap-2 justify-center mb-10">
-            {filters.map((f) => (
-              <button
-                key={f.value}
-                onClick={() => setTypeFilter(f.value)}
-                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
-                  typeFilter === f.value
-                    ? 'bg-primary text-white shadow-md'
-                    : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
-                }`}
-              >
-                {f.label}
-              </button>
-            ))}
-          </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filtered.map((tour, index) => (
+            {cityTours.map((tour, index) => (
               <CarCard key={index} {...tour} />
             ))}
           </div>
