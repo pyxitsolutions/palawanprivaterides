@@ -1,20 +1,25 @@
 import { useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import logo from '../../logo/logo.png';
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const scrollToSection = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     setIsOpen(false);
+    if (location.pathname === '/') {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      navigate('/');
+      setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 300);
+    }
   };
 
-  const navItems = [
-    { name: 'Tours', id: 'tours' },
+  const scrollLinks = [
     { name: 'Destinations', id: 'destinations' },
-    { name: 'Services', id: 'services' },
-    { name: 'Reviews', id: 'reviews' },
     { name: 'Contact', id: 'contact' },
   ];
 
@@ -23,17 +28,26 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <button
-            onClick={() => scrollToSection('home')}
-            className="flex items-center gap-2.5"
-          >
+          <Link to="/" className="flex items-center gap-2.5">
             <img src={logo} alt="Palawan Private Rides" className="h-9 w-9 rounded-full object-cover" />
             <span className="text-white font-bold text-lg">Palawan Private Rides</span>
-          </button>
+          </Link>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-6">
-            {navItems.map((item) => (
+            <Link
+              to="/rides"
+              className="text-white/80 hover:text-white transition-colors text-sm font-medium"
+            >
+              Private Rides
+            </Link>
+            <Link
+              to="/tours"
+              className="text-white/80 hover:text-white transition-colors text-sm font-medium"
+            >
+              City Tours
+            </Link>
+            {scrollLinks.map((item) => (
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
@@ -42,12 +56,12 @@ export function Navbar() {
                 {item.name}
               </button>
             ))}
-            <button
-              onClick={() => scrollToSection('tours')}
+            <Link
+              to="/rides"
               className="bg-[#e8a020] text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-[#d49020] transition-colors"
             >
               Book Now →
-            </button>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -64,7 +78,21 @@ export function Navbar() {
       {isOpen && (
         <div className="md:hidden bg-primary border-t border-white/10">
           <div className="px-4 py-3 space-y-1">
-            {navItems.map((item) => (
+            <Link
+              to="/rides"
+              onClick={() => setIsOpen(false)}
+              className="block px-3 py-2.5 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors text-sm"
+            >
+              Private Rides
+            </Link>
+            <Link
+              to="/tours"
+              onClick={() => setIsOpen(false)}
+              className="block px-3 py-2.5 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors text-sm"
+            >
+              City Tours
+            </Link>
+            {scrollLinks.map((item) => (
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
@@ -74,12 +102,13 @@ export function Navbar() {
               </button>
             ))}
             <div className="pt-2">
-              <button
-                onClick={() => scrollToSection('tours')}
-                className="w-full bg-[#e8a020] text-white px-5 py-2.5 rounded-full text-sm font-semibold"
+              <Link
+                to="/rides"
+                onClick={() => setIsOpen(false)}
+                className="block w-full text-center bg-[#e8a020] text-white px-5 py-2.5 rounded-full text-sm font-semibold"
               >
                 Book Now →
-              </button>
+              </Link>
             </div>
           </div>
         </div>
