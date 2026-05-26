@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Clock, Users, MapPin, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, Clock, MapPin, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface PricingTier {
   vehicle: string;
@@ -115,17 +115,14 @@ export function CarDetailsModal({ isOpen, onClose, tour, onBookNow }: TourDetail
 
           <div>
             <h3 className="text-xl font-semibold mb-4 text-card-foreground">Tour Details</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-              <div className="flex flex-col items-center p-4 bg-accent/50 rounded-lg">
-                <Clock size={32} className="text-primary mb-2" />
-                <span className="text-sm text-muted-foreground mb-1">Duration</span>
-                <span className="font-semibold text-card-foreground text-center">{tour.duration}</span>
-              </div>
-              <div className="flex flex-col items-center p-4 bg-accent/50 rounded-lg">
-                <Users size={32} className="text-primary mb-2" />
-                <span className="text-sm text-muted-foreground mb-1">Capacity</span>
-                <span className="font-semibold text-card-foreground">{tour.pax}</span>
-              </div>
+            <div className={`grid gap-6 ${tour.type === 'Transfer' ? 'grid-cols-1 max-w-xs mx-auto' : 'grid-cols-2'}`}>
+              {tour.type !== 'Transfer' && (
+                <div className="flex flex-col items-center p-4 bg-accent/50 rounded-lg">
+                  <Clock size={32} className="text-primary mb-2" />
+                  <span className="text-sm text-muted-foreground mb-1">Duration</span>
+                  <span className="font-semibold text-card-foreground text-center">{tour.duration}</span>
+                </div>
+              )}
               <div className="flex flex-col items-center p-4 bg-accent/50 rounded-lg">
                 <MapPin size={32} className="text-primary mb-2" />
                 <span className="text-sm text-muted-foreground mb-1">Location</span>
@@ -157,7 +154,7 @@ export function CarDetailsModal({ isOpen, onClose, tour, onBookNow }: TourDetail
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {[
                 'Private vehicle & professional driver',
-                'Hotel / accommodation pick-up & drop-off',
+                'Door-to-door service',
                 'Air-conditioned vehicle',
                 'Friendly & knowledgeable local driver',
               ].map((item, i) => (
