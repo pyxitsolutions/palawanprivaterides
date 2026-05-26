@@ -7,13 +7,6 @@ import {
   Car, Shield, Clock, Award, Phone, Mail, Facebook, MapPin,
   MessageCircle, CheckCircle, ArrowRight,
 } from 'lucide-react';
-import ad2 from '../ad/ad-2.png';
-import ad3 from '../ad/ad-3.png';
-import ad4 from '../ad/ad-4.png';
-import ad5 from '../ad/ad-5.png';
-import ad6 from '../ad/ad-6.png';
-import ad7 from '../ad/ad-7.png';
-import ad8 from '../ad/ad-8.png';
 import aboutImg from '../about/about-1.png';
 import whereImg from '../where/where-image.png';
 import dest1 from '../dest/dest-1.png';
@@ -62,9 +55,9 @@ export default function App() {
       name: 'PPS → El Nido',
       price: '7000',
       type: 'Private Ride',
-      duration: 'Full Day (6-8 hrs)',
+      duration: 'Travel Duration (5-6 hrs)',
       pax: 'Up to 8 pax',
-      description: 'Private door-to-door transfer from Puerto Princesa to El Nido Town. No stopovers, no shared vans — just your group and a trusted local driver.',
+      description: 'Private door-to-door transfer from Puerto Princesa to El Nido. Enjoy a comfortable and exclusive ride with your group and a trusted local driver — no shared vans, no crowded trips. Optional stopovers along the way are available for meals, sightseeing, or quick breaks upon request.',
       pricing: [
         { vehicle: 'Sedan/Hatchback', price: '7000' },
         { vehicle: 'SUV', price: '7500' },
@@ -76,7 +69,7 @@ export default function App() {
       name: 'PPS → Port Barton',
       price: '5500',
       type: 'Private Ride',
-      duration: 'Full Day (4-5 hrs)',
+      duration: 'Travel Duration (2-3 hrs)',
       pax: 'Up to 8 pax',
       description: 'Private transfer from Puerto Princesa to Port Barton. Comfortable, air-conditioned ride straight to this hidden gem of Palawan.',
       pricing: [
@@ -90,7 +83,7 @@ export default function App() {
       name: 'PPS → San Vicente',
       price: '6000',
       type: 'Private Ride',
-      duration: 'Full Day (5-6 hrs)',
+      duration: 'Travel Duration (3-4 hrs)',
       pax: 'Up to 8 pax',
       description: 'Private transfer to San Vicente, home of the famous Long Beach — one of the longest white sand beaches in the Philippines.',
       pricing: [
@@ -104,7 +97,7 @@ export default function App() {
       name: 'PPS → Astotia Palawan',
       price: '3000',
       type: 'Private Ride',
-      duration: 'Half Day (2-3 hrs)',
+      duration: 'Travel Duration (2 hrs)',
       pax: 'Up to 8 pax',
       description: 'Private transfer from Puerto Princesa to Astotia Palawan. Affordable and comfortable door-to-door service.',
       pricing: [
@@ -118,7 +111,7 @@ export default function App() {
       name: 'PPS → Sabang / Four Points',
       price: '3500',
       type: 'Private Ride',
-      duration: 'Half Day (2-3 hrs)',
+      duration: 'Travel Duration (2 hrs)',
       pax: 'Up to 8 pax',
       description: 'Private transfer to Sabang — gateway to the UNESCO Underground River. Perfect for day trips or overnight stays.',
       pricing: [
@@ -130,9 +123,9 @@ export default function App() {
     {
       images: [tourCity],
       name: 'Puerto Princesa City Tour',
-      price: '1500',
+      price: '750',
       type: 'Tour Package',
-      duration: 'Half Day (4-5 hrs)',
+      duration: 'Tour Duration (4-5 hrs)',
       pax: 'Up to 8 pax',
       description: "Explore Puerto Princesa's highlights — Crocodile Farm, Baker's Hill, Mitra Ranch & more. Great for first-time Palawan visitors.",
     },
@@ -141,7 +134,7 @@ export default function App() {
       name: 'Underground River Day Tour',
       price: '2500',
       type: 'Tour Package',
-      duration: 'Full Day (8-10 hrs)',
+      duration: 'Travel Duration (2 hrs)',
       pax: 'Up to 8 pax',
       description: 'Visit the UNESCO World Heritage Underground River in Sabang. Includes private van transport. Permits must be arranged in advance.',
     },
@@ -177,7 +170,7 @@ export default function App() {
       name: 'Honda Bay Island Tour',
       price: '1800',
       type: 'Tour Package',
-      duration: 'Full Day (6–8 hrs)',
+      duration: '(6–8 hrs)',
       pax: 'Up to 8 pax',
       description: 'Island-hop Cowrie Island, Starfish Island, Luli Island & Pambato Reef. Includes roundtrip van transfer, island hopping boat, entrance fees, licensed tour guide, lunch, and life vest. ₱150 environmental fee applies.',
     },
@@ -413,25 +406,35 @@ export default function App() {
 
       {/* How It Works */}
       <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
             <p className="text-sm font-bold text-[#e8a020] uppercase tracking-widest mb-3">Simple Process</p>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">How It Works</h2>
             <p className="text-lg text-gray-500">3 easy steps to book your Palawan adventure</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { step: '01', emoji: '🏝️', title: 'Choose Your Tour', desc: 'Browse our private rides and tour packages. Pick the one that fits your itinerary and budget.' },
-              { step: '02', emoji: '📋', title: 'Submit Booking', desc: 'Fill out the form with your date, time, pick-up location, and number of passengers.' },
-              { step: '03', emoji: '✅', title: 'We Confirm & You Ride', desc: "We'll contact you via WhatsApp or phone to confirm. Then just sit back and enjoy Palawan!" },
-            ].map((item, i) => (
-              <div key={i} className="relative p-8 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg transition-all duration-300">
-                <p className="text-6xl font-black text-gray-100 mb-4 leading-none">{item.step}</p>
-                <div className="text-4xl mb-3">{item.emoji}</div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
+
+          {/* Steps */}
+          <div className="relative">
+            {/* Connector line (desktop only) */}
+            <div className="hidden md:block absolute top-9 left-[calc(16.67%+12px)] right-[calc(16.67%+12px)] h-0.5 bg-primary/20" />
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+              {[
+                { step: '1', emoji: '🏝️', title: 'Choose Your Tour', desc: 'Browse our private rides and tour packages. Pick the one that fits your itinerary and budget.' },
+                { step: '2', emoji: '📋', title: 'Submit Booking', desc: 'Fill out the form with your date, time, pick-up location, and number of passengers.' },
+                { step: '3', emoji: '✅', title: 'We Confirm & You Ride', desc: "We'll contact you via WhatsApp or phone to confirm. Then just sit back and enjoy Palawan!" },
+              ].map((item, i) => (
+                <div key={i} className="flex flex-col items-center text-center">
+                  {/* Number circle */}
+                  <div className="relative z-10 w-[72px] h-[72px] rounded-full bg-primary flex items-center justify-center mb-6 shadow-lg shadow-primary/30 flex-shrink-0">
+                    <span className="text-2xl font-black text-white">{item.step}</span>
+                  </div>
+                  <div className="text-4xl mb-3">{item.emoji}</div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed max-w-[220px]">{item.desc}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
