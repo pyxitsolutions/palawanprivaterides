@@ -22,9 +22,9 @@ interface TourCardProps {
 }
 
 const typeColors: Record<string, string> = {
-  'Private Ride': 'bg-blue-100 text-blue-700',
-  'Tour Package': 'bg-green-100 text-green-700',
-  'Transfer': 'bg-orange-100 text-orange-700',
+  'Private Ride': 'bg-amber-100 text-[#e8a020]',
+  'Tour Package': 'bg-amber-100 text-[#e8a020]',
+  'Transfer': 'bg-amber-100 text-[#e8a020]',
 };
 
 export function CarCard({ images, name, price, type, duration, pax, description, pricing, whatsIncluded }: TourCardProps) {
