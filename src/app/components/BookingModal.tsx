@@ -173,18 +173,22 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[96vh] sm:max-h-[90vh] overflow-y-auto">
 
         {/* Header */}
-        <div className="sticky top-0 z-10 bg-primary rounded-t-2xl px-5 py-4 flex justify-between items-start">
+        <div className="sticky top-0 z-10 bg-white border-b border-gray-100 rounded-t-2xl px-5 py-4 flex justify-between items-start">
           <div>
-            <p className="text-white/60 text-xs font-semibold uppercase tracking-widest mb-0.5">
+            <span className={`inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full mb-2 ${
+              tourType === 'Private Ride' ? 'bg-blue-100 text-blue-700' :
+              tourType === 'Transfer' ? 'bg-orange-100 text-orange-700' :
+              'bg-green-100 text-green-700'
+            }`}>
               {tourType === 'Private Ride' ? 'Private Ride' : tourType === 'Transfer' ? 'Airport Transfer' : 'Tour Package'}
-            </p>
-            <h2 className="text-white font-black text-lg leading-tight">
+            </span>
+            <h2 className="text-gray-900 font-black text-xl leading-tight">
               {tourType === 'Private Ride' ? 'Book This Ride' : tourType === 'Transfer' ? 'Book a Transfer' : 'Book This Tour'}
             </h2>
-            <p className="text-white/70 text-xs mt-0.5">{tourName}</p>
+            <p className="text-gray-400 text-xs mt-0.5">{tourName}</p>
           </div>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors flex-shrink-0 mt-0.5">
-            <X size={16} className="text-white" />
+          <button onClick={onClose} className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors flex-shrink-0 mt-0.5">
+            <X size={16} className="text-gray-600" />
           </button>
         </div>
 
