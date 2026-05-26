@@ -17,7 +17,6 @@ export function Navbar() {
     { name: 'Cars', id: 'cars' },
     { name: 'About', id: 'about' },
     { name: 'Services', id: 'services' },
-    { name: 'Reviews', id: 'reviews' },
     { name: 'Contact', id: 'contact' },
   ];
 

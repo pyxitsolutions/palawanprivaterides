@@ -1,4 +1,24 @@
 import { useState } from 'react';
+
+function FAQItem({ question, answer }: { question: string; answer: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="bg-card border border-border rounded-xl overflow-hidden">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full text-left px-6 py-5 flex justify-between items-center hover:bg-accent/50 transition-colors"
+      >
+        <span className="font-semibold text-card-foreground pr-4">{question}</span>
+        <span className="text-primary text-xl flex-shrink-0">{open ? '−' : '+'}</span>
+      </button>
+      {open && (
+        <div className="px-6 pb-5 text-muted-foreground border-t border-border pt-4">
+          {answer}
+        </div>
+      )}
+    </div>
+  );
+}
 import { Navbar } from './components/Navbar';
 import { CarCard } from './components/CarCard';
 import { HeroCarousel } from './components/HeroCarousel';
@@ -387,6 +407,54 @@ export default function App() {
                 <h3 className="text-xl font-semibold mb-3 text-card-foreground">{service.title}</h3>
                 <p className="text-muted-foreground">{service.description}</p>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="py-20 bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">How It Works</h2>
+            <p className="text-lg text-muted-foreground">3 easy steps to get you on the road</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+            {[
+              { step: '1', icon: '🚗', title: 'Choose Your Vehicle', desc: 'Browse our fleet of cars and motorcycles. Pick the one that fits your trip and budget.' },
+              { step: '2', icon: '📋', title: 'Submit Booking Request', desc: 'Fill out the booking form with your pickup date, return date, and contact details.' },
+              { step: '3', icon: '✅', title: 'We Confirm & You Ride', desc: 'We will contact you via WhatsApp or email to confirm your booking. Pick up and enjoy Palawan!' },
+            ].map((item, i) => (
+              <div key={i} className="relative text-center p-8 bg-card rounded-2xl border border-border hover:shadow-lg transition-all duration-300">
+                <div className="w-16 h-16 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
+                  {item.step}
+                </div>
+                <div className="text-4xl mb-4">{item.icon}</div>
+                <h3 className="text-xl font-bold text-card-foreground mb-3">{item.title}</h3>
+                <p className="text-muted-foreground">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-20 bg-accent/30">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">Frequently Asked Questions</h2>
+            <p className="text-lg text-muted-foreground">Everything you need to know before renting</p>
+          </div>
+          <div className="space-y-4">
+            {[
+              { q: 'What documents do I need to rent a vehicle?', a: 'You will need a valid government-issued ID (e.g. Driver\'s License, Passport, or any valid ID). For motorcycles, a valid driver\'s license with motorcycle restriction is required.' },
+              { q: 'Is there a deposit required?', a: 'Yes, a refundable deposit may be required depending on the vehicle. This will be discussed upon confirmation of your booking.' },
+              { q: 'Do you offer airport or hotel pickup?', a: 'Yes! We can arrange pickup and drop-off at the Puerto Princesa Airport or your hotel. Just let us know in your booking request.' },
+              { q: 'Can I rent per hour or half day?', a: 'Our standard rental is per day. For special arrangements, feel free to message us directly on WhatsApp or Messenger and we will try to accommodate your request.' },
+              { q: 'What happens if the vehicle breaks down?', a: 'Don\'t worry — we will assist you as soon as possible. Contact us immediately via WhatsApp or call and we will handle it.' },
+              { q: 'How do I confirm my booking?', a: 'After submitting the booking form, we will contact you via WhatsApp or email within a few hours to confirm your reservation.' },
+            ].map((item, i) => (
+              <FAQItem key={i} question={item.q} answer={item.a} />
             ))}
           </div>
         </div>
