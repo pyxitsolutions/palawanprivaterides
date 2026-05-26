@@ -15,6 +15,7 @@ import ad6 from '../ad/ad-6.png';
 import ad7 from '../ad/ad-7.png';
 import ad8 from '../ad/ad-8.png';
 import aboutImg from '../about/about-1.png';
+import whereImg from '../where/where-image.png';
 import dest1 from '../dest/dest-1.png';
 import dest2 from '../dest/dest-2.png';
 import dest3 from '../dest/dest-3.png';
@@ -441,8 +442,12 @@ export default function App() {
       </div>
 
       {/* CTA Banner */}
-      <section className="py-24 bg-primary">
-        <div className="max-w-3xl mx-auto px-4 text-center">
+      <section className="py-24 relative bg-primary">
+        <div className="absolute inset-0">
+          <img src={whereImg} alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-primary/80" />
+        </div>
+        <div className="relative max-w-3xl mx-auto px-4 text-center">
           <div className="text-5xl mb-5">🌴</div>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
             Ready to travel like locals do?
