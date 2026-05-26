@@ -87,7 +87,7 @@ export const tours: Tour[] = [
   },
   {
     images: [rides5],
-    name: 'PPS → Sabang / Four Points',
+    name: 'PPS → Sabang · Four Points',
     price: '3500',
     type: 'Private Ride',
     duration: 'Travel Duration (2 hrs)',
