@@ -376,7 +376,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
               </div>
 
               {/* Pick-up & Drop-off */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
                     <MapPin size={16} className="inline mr-2" />Pick-up Location *
