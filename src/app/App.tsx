@@ -420,7 +420,7 @@ export default function App() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {[
-                { step: '1', emoji: '🏝️', title: 'Choose Your Tour', desc: 'Browse our private rides and tour packages. Pick the one that fits your itinerary and budget.' },
+                { step: '1', emoji: '🏝️', title: 'Choose Your Service', desc: 'Browse our private rides, tour packages, or airport transfers. Pick the one that fits your trip and budget.' },
                 { step: '2', emoji: '📋', title: 'Submit Booking', desc: 'Fill out the form with your date, time, pick-up location, and number of passengers.' },
                 { step: '3', emoji: '✅', title: 'We Confirm & You Ride', desc: "We'll contact you via WhatsApp or phone to confirm. Then just sit back and enjoy Palawan!" },
               ].map((item, i) => (
