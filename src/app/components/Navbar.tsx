@@ -35,18 +35,6 @@ export function Navbar() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-6">
-            <Link
-              to="/rides"
-              className="text-white/80 hover:text-white transition-colors text-sm font-medium"
-            >
-              Private Rides
-            </Link>
-            <Link
-              to="/tours"
-              className="text-white/80 hover:text-white transition-colors text-sm font-medium"
-            >
-              City Tours
-            </Link>
             {scrollLinks.map((item) => (
               <button
                 key={item.id}
@@ -78,20 +66,6 @@ export function Navbar() {
       {isOpen && (
         <div className="md:hidden bg-primary border-t border-white/10">
           <div className="px-4 py-3 space-y-1">
-            <Link
-              to="/rides"
-              onClick={() => setIsOpen(false)}
-              className="block px-3 py-2.5 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors text-sm"
-            >
-              Private Rides
-            </Link>
-            <Link
-              to="/tours"
-              onClick={() => setIsOpen(false)}
-              className="block px-3 py-2.5 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors text-sm"
-            >
-              City Tours
-            </Link>
             {scrollLinks.map((item) => (
               <button
                 key={item.id}
