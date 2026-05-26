@@ -286,8 +286,8 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
               </div>
 
               {/* Tour Date & Time */}
-              <div className={`grid gap-4 ${(tourType === 'Private Ride' || tourType === 'Transfer') ? 'grid-cols-2' : 'grid-cols-1'}`}>
-                <div className="min-w-0">
+              <div className="grid gap-3 grid-cols-1">
+                <div>
                   <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
                     <Calendar size={14} className="inline mr-1.5" />{tourType === 'Private Ride' ? 'Travel Date' : tourType === 'Transfer' ? 'Pick-up Date' : 'Tour Date'} *
                   </label>
@@ -296,7 +296,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                     className="w-full min-w-0 px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm" />
                 </div>
                 {tourType === 'Private Ride' ? (
-                  <div className="min-w-0">
+                  <div>
                     <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
                       <Clock size={14} className="inline mr-1.5" />Preferred Time *
                     </label>
@@ -304,7 +304,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                       className="w-full min-w-0 px-3 py-2.5 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground text-sm" />
                   </div>
                 ) : tourType === 'Transfer' ? (
-                  <div className="min-w-0">
+                  <div>
                     <label className="block text-xs sm:text-sm font-medium text-card-foreground mb-1.5">
                       <Clock size={14} className="inline mr-1.5" />Pick-up Time *
                     </label>
