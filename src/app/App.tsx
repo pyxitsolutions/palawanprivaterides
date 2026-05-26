@@ -136,7 +136,7 @@ export default function App() {
       name: 'Underground River Day Tour',
       price: '2500',
       type: 'Tour Package',
-      duration: 'Travel Duration (2 hrs)',
+      duration: 'Tour Duration (7 – 8 hrs)',
       pax: 'Up to 8 pax',
       description: 'Visit the UNESCO World Heritage Underground River in Sabang. Includes private van transport. Permits must be arranged in advance.',
       whatsIncluded: [
@@ -159,29 +159,48 @@ export default function App() {
     {
       images: [tourFirefly],
       name: 'Iwahig Firefly Watching',
-      price: '1799',
+      price: '1800',
       type: 'Tour Package',
       duration: 'Evening (3–4 hrs)',
       pax: 'Up to 8 pax',
       description: 'Witness thousands of fireflies lighting up the Iwahig River at night. Includes round-trip transfers, welcome drinks, buffet dinner, guided boat tour, life jackets & safety gear. ₱150 environmental fee applies.',
+      whatsIncluded: [
+        'Air-conditioned Van',
+        'Licensed Tour Guide',
+        'Buffet Dinner',
+        'Permits & Entrance Fees',
+      ],
     },
     {
       images: [tourTala],
-      name: 'Tala Beach Day Trip',
+      name: 'PPC Beach Day Trip',
       price: '2500',
       type: 'Tour Package',
-      duration: 'Full Day',
+      duration: 'Tour Duration (4–5 hrs)',
       pax: 'Up to 8 pax',
-      description: 'Escape to Tala Beach — a pristine hidden shore perfect for couples, families & small groups. Includes private transport, free fuel, and a professional driver for the full day.',
+      description: 'Escape to one of Puerto Princesa\'s hidden shores — choose between Tala Beach, Nagtabon Beach, or Pakpak Lauin. Perfect for couples, families & small groups. Includes private transport, free fuel, and a professional driver. Additional charges may vary.',
+      pricing: [
+        { vehicle: 'Sedan/Hatchback', price: '2500', capacity: 4 },
+        { vehicle: 'SUV', price: '3000', capacity: 6 },
+        { vehicle: 'Van', price: '5000', capacity: 13 },
+      ],
     },
     {
       images: [tourHonda],
       name: 'Honda Bay Island Tour',
       price: '1800',
       type: 'Tour Package',
-      duration: '(6–8 hrs)',
+      duration: 'Tour Duration (6–8 hrs)',
       pax: 'Up to 8 pax',
-      description: 'Island-hop Cowrie Island, Starfish Island, Luli Island & Pambato Reef. Includes roundtrip van transfer, island hopping boat, entrance fees, licensed tour guide, lunch, and life vest. ₱150 environmental fee applies.',
+      description: 'Island-hop Cowrie Island, Luli Island & Pambato Reef. Includes roundtrip van transfer, island hopping boat, entrance fees, licensed tour guide, lunch, and life vest. ₱150 environmental fee applies.',
+      whatsIncluded: [
+        'Private vehicle & professional driver',
+        'Island Hopping Boat',
+        'Licensed Tour Guide',
+        'Buffet Lunch',
+        'Entrance Fees',
+        'Life Vest',
+      ],
     },
   ];
 
@@ -201,7 +220,7 @@ export default function App() {
   const typeFilters = [
     { label: 'All', value: 'all' },
     { label: 'Private Ride', value: 'Private Ride' },
-    { label: 'Tour Package', value: 'Tour Package' },
+    { label: 'Puerto Princesa City Tour Packages', value: 'Tour Package' },
     { label: 'Transfer', value: 'Transfer' },
   ];
 

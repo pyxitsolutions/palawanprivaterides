@@ -9,6 +9,7 @@ import { CarDetailsModal } from './CarDetailsModal';
 interface PricingTier {
   vehicle: string;
   price: string;
+  capacity?: number;
 }
 
 interface TourCardProps {

@@ -4,6 +4,7 @@ import { X, Clock, MapPin, ChevronLeft, ChevronRight } from 'lucide-react';
 interface PricingTier {
   vehicle: string;
   price: string;
+  capacity?: number;
 }
 
 interface TourDetailsModalProps {
