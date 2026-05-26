@@ -198,7 +198,7 @@ export default function App() {
               <div className="absolute bottom-0 left-0 right-0 p-8">
                 <p className="text-[#e8a020] text-xs font-bold uppercase tracking-widest mb-2">Intercity Transport</p>
                 <h3 className="text-3xl font-black text-white mb-2">Private Rides</h3>
-                <p className="text-white/70 text-sm mb-5">El Nido · Port Barton · San Vicente · Sabang & more</p>
+                <p className="text-white/70 text-sm mb-5">El Nido · Port Barton · San Vicente · Airport Transfer & more</p>
                 <span className="inline-flex items-center gap-2 bg-white text-primary px-5 py-2.5 rounded-full text-sm font-bold group-hover:bg-[#e8a020] group-hover:text-white transition-colors">
                   View Rides <ArrowRight size={14} />
                 </span>
@@ -219,7 +219,7 @@ export default function App() {
               <div className="absolute bottom-0 left-0 right-0 p-8">
                 <p className="text-[#e8a020] text-xs font-bold uppercase tracking-widest mb-2">Puerto Princesa</p>
                 <h3 className="text-3xl font-black text-white mb-2">City Tours & Transfers</h3>
-                <p className="text-white/70 text-sm mb-5">Underground River · Honda Bay · Firefly · Airport Transfer</p>
+                <p className="text-white/70 text-sm mb-5">Underground River · Honda Bay · Firefly · Beach Day Trip</p>
                 <span className="inline-flex items-center gap-2 bg-white text-primary px-5 py-2.5 rounded-full text-sm font-bold group-hover:bg-[#e8a020] group-hover:text-white transition-colors">
                   View Tours <ArrowRight size={14} />
                 </span>

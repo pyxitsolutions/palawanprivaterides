@@ -6,8 +6,7 @@ import { cityTours } from '../data/tours';
 
 const filters = [
   { label: 'All', value: 'all' },
-  { label: 'Puerto Princesa City Tour Packages', value: 'Tour Package' },
-  { label: 'Transfer', value: 'Transfer' },
+  { label: 'Tour Packages', value: 'Tour Package' },
 ];
 
 export default function ToursPage() {

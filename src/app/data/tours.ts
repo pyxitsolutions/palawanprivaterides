@@ -181,5 +181,5 @@ export const tours: Tour[] = [
   },
 ];
 
-export const privateRides = tours.filter((t) => t.type === 'Private Ride');
-export const cityTours = tours.filter((t) => t.type === 'Tour Package' || t.type === 'Transfer');
+export const privateRides = tours.filter((t) => t.type === 'Private Ride' || t.type === 'Transfer');
+export const cityTours = tours.filter((t) => t.type === 'Tour Package');
