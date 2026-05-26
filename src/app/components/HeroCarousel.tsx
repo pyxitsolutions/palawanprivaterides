@@ -31,17 +31,11 @@ export function HeroCarousel() {
 
           {/* Subtitle */}
           <p className="text-lg md:text-xl text-white/80 mb-8 max-w-xl leading-relaxed">
-            Comfortable, private, and reliable rides from Puerto Princesa to El Nido, Coron & beyond. One trusted local team.
+            Comfortable, private, and reliable rides from Puerto Princesa to El Nido & beyond. One trusted local team.
           </p>
 
           {/* CTA Buttons */}
           <div className="flex flex-wrap gap-3">
-            <button
-              onClick={() => document.getElementById('tours')?.scrollIntoView({ behavior: 'smooth' })}
-              className="bg-primary text-white px-8 py-3.5 rounded-full font-semibold hover:opacity-90 transition-opacity"
-            >
-              Book Now →
-            </button>
             <button
               onClick={() => document.getElementById('tours')?.scrollIntoView({ behavior: 'smooth' })}
               className="border-2 border-white/50 text-white px-8 py-3.5 rounded-full font-semibold hover:bg-white/10 transition-all"
