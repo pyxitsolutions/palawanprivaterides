@@ -37,8 +37,16 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
   );
 }
 
+const spinStyle = `@keyframes _spin { to { transform: rotate(360deg); } } @keyframes _fadeIn { from { opacity:0; } to { opacity:1; } }`;
+
 export default function App() {
   const navigate = useNavigate();
+  const [navigating, setNavigating] = useState(false);
+
+  const handleNavigate = (href: string) => {
+    setNavigating(true);
+    setTimeout(() => { setNavigating(false); navigate(href); }, 400);
+  };
 
   const destinations = [
     { name: 'El Nido', image: dest1, desc: 'Limestone cliffs & lagoons' },
@@ -50,6 +58,12 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white">
+      <style>{spinStyle}</style>
+      {navigating && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 backdrop-blur-sm" style={{ animation: '_fadeIn 0.2s ease forwards' }}>
+          <div className="w-12 h-12 rounded-full border-4 border-white/20 border-t-[#e8a020]" style={{ animation: '_spin 0.8s linear infinite' }} />
+        </div>
+      )}
       <Navbar />
 
       {/* Hero */}
@@ -119,7 +133,7 @@ export default function App() {
               <div
                 key={i}
                 className="group p-7 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg transition-all duration-300 cursor-pointer"
-                onClick={() => navigate(s.href)}
+                onClick={() => handleNavigate(s.href)}
               >
                 <div className="text-primary mb-4 group-hover:scale-110 transition-transform inline-block">{s.icon}</div>
                 <h3 className="text-lg font-bold text-gray-900 mb-2">{s.title}</h3>
