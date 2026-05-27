@@ -259,13 +259,15 @@ export function Navbar() {
       {showBookModal && <BookNowModal onClose={() => setShowBookModal(false)} />}
 
       {/* Mobile floating Book Now button */}
-      <button
-        onClick={() => setShowBookModal(true)}
-        onMouseDown={(e) => e.preventDefault()}
-        className="md:hidden fixed bottom-20 right-6 z-40 w-11 h-11 rounded-full bg-[#e8a020] text-white shadow-lg flex items-center justify-center hover:bg-[#d49020] transition-all hover:scale-110"
-      >
-        <CalendarCheck size={20} />
-      </button>
+      {location.pathname === '/' && (
+        <button
+          onClick={() => setShowBookModal(true)}
+          onMouseDown={(e) => e.preventDefault()}
+          className="md:hidden fixed bottom-20 right-6 z-40 w-11 h-11 rounded-full bg-[#e8a020] text-white shadow-lg flex items-center justify-center hover:bg-[#d49020] transition-all hover:scale-110"
+        >
+          <CalendarCheck size={20} />
+        </button>
+      )}
     </>
   );
 }
