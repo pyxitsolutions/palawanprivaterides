@@ -8,14 +8,14 @@ export function Testimonials() {
 
   const testimonials = [
     {
-      image: review1,
+      image: review2,
       name: 'Nicole Montojo',
       review: 'We had a smooth ride back to Puerto Princesa, he drove us carefully so we felt safe and comfortable. Reasonable yung rate ng private transfer and new rin yung car ni sir so malamig yung AC. Will definitely recommend.',
       rating: 5,
       tourBooked: 'Private Transfer to Puerto Princesa',
     },
     {
-      image: review2,
+      image: review1,
       name: 'Shirley Ho & Christian',
       review: 'Highly recommend Palawan Private Rides! John was very helpful and organised our transfer to and from Port Barton. The cars were clean, new and comfortable. Our drivers Renz and Ryan were great. Salamat!',
       rating: 5,
