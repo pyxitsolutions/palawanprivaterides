@@ -190,16 +190,16 @@ export default function App() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
               <p className="text-sm font-bold text-[#e8a020] uppercase tracking-widest mb-4">Why Choose Us</p>
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-8">
-                Comfort isn't a luxury here.{' '}
-                <span className="text-primary">It's the standard.</span>
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-4">
+                Experience Palawan the comfortable, stress-free way —
               </h2>
+              <p className="text-gray-500 text-lg mb-8">with private rides you can rely on.</p>
               <div className="space-y-5">
                 {[
-                  { title: 'Truly Private', desc: 'Your group, your schedule. No shared rides, no strangers, no detours.' },
-                  { title: 'Spacious Vehicles', desc: 'Air-conditioned vans and SUVs for all group sizes, up to 8 passengers.' },
-                  { title: 'Local Expert Drivers', desc: 'Our drivers know Palawan inside and out — every shortcut, every gem.' },
-                  { title: 'Transparent Pricing', desc: 'Per booking, no surprise fees, ever. What you see is what you pay.' },
+                  { title: 'Truly Private Transfers', desc: 'Travel with only your group. No shared vans, random passengers, or unnecessary stopovers.' },
+                  { title: 'Comfortable & Spacious Vehicles', desc: 'Clean, air-conditioned vans and SUVs perfect for couples, families, and groups of up to 13 passengers.' },
+                  { title: 'Trusted Local Drivers', desc: 'Friendly local drivers who know Palawan\'s roads, best routes, and hidden gems.' },
+                  { title: 'Transparent Pricing', desc: 'Simple, fixed rates per booking with no hidden charges. What you book is what you pay.' },
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-4">
                     <div className="flex-shrink-0 mt-0.5">

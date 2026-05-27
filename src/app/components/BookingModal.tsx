@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import emailjs from '@emailjs/browser';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 import { X, Calendar, Clock, MapPin, Users, MessageSquare, Car, Check } from 'lucide-react';
 import { PolicyModal, type PolicyType } from './PolicyModal';
 
@@ -30,6 +32,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
   const [formData, setFormData] = useState({
     fullName: '',
     phone: '',
+    nationality: '',
     tourDate: '',
     tourTime: '',
     tourPeriod: '',
@@ -108,6 +111,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
         {
           from_name: formData.fullName,
           phone: formData.phone,
+          nationality: formData.nationality || 'N/A',
           tour_name: tourName,
           vehicle_type: formData.vehicleType || 'N/A',
           tour_price: selectedPrice,
@@ -127,7 +131,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
       const vehicleInfo = formData.vehicleType ? ` (${formData.vehicleType})` : '';
       const beachInfo = formData.beachSelection ? `\nBeach: ${formData.beachSelection}` : '';
       const waMessage = encodeURIComponent(
-        `🏝️ New Booking!\nRoute: ${tourName}${vehicleInfo}\nPrice: ₱${parseInt(selectedPrice).toLocaleString()}\nName: ${formData.fullName}\nPhone: ${formData.phone}\nDate: ${formData.tourDate} at ${formData.tourTime || formData.tourPeriod}\nPax: ${formData.pax}${beachInfo}\nPickup: ${formData.pickupLocation}\nDrop-off: ${formData.dropoffLocation}\nNotes: ${formData.message || 'None'}`
+        `🏝️ New Booking!\nRoute: ${tourName}${vehicleInfo}\nPrice: ₱${parseInt(selectedPrice).toLocaleString()}\nName: ${formData.fullName}\nPhone: ${formData.phone}\nNationality: ${formData.nationality || 'N/A'}\nDate: ${formData.tourDate} at ${formData.tourTime || formData.tourPeriod}\nPax: ${formData.pax}${beachInfo}\nPickup: ${formData.pickupLocation}\nDrop-off: ${formData.dropoffLocation}\nNotes: ${formData.message || 'None'}`
       );
       fetch(`https://api.callmebot.com/whatsapp.php?phone=639217792016&text=${waMessage}&apikey=1091963`).catch(() => {});
 
@@ -135,7 +139,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
       setTimeout(() => {
         setSubmitted(false);
         onClose();
-        setFormData({ fullName: '', phone: '', tourDate: '', tourTime: '', tourPeriod: '', pax: '', pickupLocation: '', dropoffLocation: '', vehicleType: '', beachSelection: '', message: '' });
+        setFormData({ fullName: '', phone: '', nationality: '', tourDate: '', tourTime: '', tourPeriod: '', pax: '', pickupLocation: '', dropoffLocation: '', vehicleType: '', beachSelection: '', message: '' });
         setAgreedToTerms(false);
       }, 3000);
     } catch {
@@ -251,8 +255,140 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                 </div>
                 <div>
                   <label className={labelClass}>Phone Number *</label>
-                  <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required className={inputClass} placeholder="ex. 09123456789" />
+                  <PhoneInput
+                    country="ph"
+                    value={formData.phone}
+                    onChange={(val) => setFormData({ ...formData, phone: val })}
+                    inputProps={{ name: 'phone', required: true, placeholder: 'ex. 09123456789' }}
+                    containerStyle={{ width: '100%' }}
+                    inputStyle={{
+                      width: '100%',
+                      paddingTop: '0.625rem',
+                      paddingBottom: '0.625rem',
+                      paddingLeft: '3.5rem',
+                      paddingRight: '0.75rem',
+                      backgroundColor: '#f9fafb',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '0.75rem',
+                      fontSize: '0.875rem',
+                      color: '#111827',
+                      height: 'auto',
+                      lineHeight: 'normal',
+                    }}
+                    buttonStyle={{
+                      backgroundColor: '#f9fafb',
+                      border: '1px solid #e5e7eb',
+                      borderRight: 'none',
+                      borderRadius: '0.75rem 0 0 0.75rem',
+                    }}
+                    dropdownStyle={{ borderRadius: '0.75rem', marginTop: '4px' }}
+                  />
                 </div>
+              </div>
+
+              {/* Nationality */}
+              <div>
+                <label className={labelClass}>Nationality *</label>
+                <select name="nationality" value={formData.nationality} onChange={handleChange} required className={inputClass}>
+                  <option value="">Select your nationality</option>
+                  <option value="Filipino">Filipino</option>
+                  <option disabled>──────────</option>
+                  <option value="American">American</option>
+                  <option value="Australian">Australian</option>
+                  <option value="British">British</option>
+                  <option value="Canadian">Canadian</option>
+                  <option value="Chinese">Chinese</option>
+                  <option value="French">French</option>
+                  <option value="German">German</option>
+                  <option value="Indian">Indian</option>
+                  <option value="Indonesian">Indonesian</option>
+                  <option value="Israeli">Israeli</option>
+                  <option value="Italian">Italian</option>
+                  <option value="Japanese">Japanese</option>
+                  <option value="Korean">Korean</option>
+                  <option value="Malaysian">Malaysian</option>
+                  <option value="New Zealander">New Zealander</option>
+                  <option value="Russian">Russian</option>
+                  <option value="Singaporean">Singaporean</option>
+                  <option value="Spanish">Spanish</option>
+                  <option value="Swiss">Swiss</option>
+                  <option value="Taiwanese">Taiwanese</option>
+                  <option value="Thai">Thai</option>
+                  <option value="Vietnamese">Vietnamese</option>
+                  <option disabled>──────────</option>
+                  <option value="Afghan">Afghan</option>
+                  <option value="Albanian">Albanian</option>
+                  <option value="Algerian">Algerian</option>
+                  <option value="Argentinian">Argentinian</option>
+                  <option value="Armenian">Armenian</option>
+                  <option value="Austrian">Austrian</option>
+                  <option value="Azerbaijani">Azerbaijani</option>
+                  <option value="Bahraini">Bahraini</option>
+                  <option value="Bangladeshi">Bangladeshi</option>
+                  <option value="Belgian">Belgian</option>
+                  <option value="Bolivian">Bolivian</option>
+                  <option value="Bosnian">Bosnian</option>
+                  <option value="Brazilian">Brazilian</option>
+                  <option value="Bulgarian">Bulgarian</option>
+                  <option value="Cambodian">Cambodian</option>
+                  <option value="Chilean">Chilean</option>
+                  <option value="Colombian">Colombian</option>
+                  <option value="Croatian">Croatian</option>
+                  <option value="Czech">Czech</option>
+                  <option value="Danish">Danish</option>
+                  <option value="Dutch">Dutch</option>
+                  <option value="Egyptian">Egyptian</option>
+                  <option value="Emirati">Emirati</option>
+                  <option value="Estonian">Estonian</option>
+                  <option value="Ethiopian">Ethiopian</option>
+                  <option value="Finnish">Finnish</option>
+                  <option value="Georgian">Georgian</option>
+                  <option value="Greek">Greek</option>
+                  <option value="Guatemalan">Guatemalan</option>
+                  <option value="Honduran">Honduran</option>
+                  <option value="Hungarian">Hungarian</option>
+                  <option value="Iranian">Iranian</option>
+                  <option value="Iraqi">Iraqi</option>
+                  <option value="Irish">Irish</option>
+                  <option value="Jordanian">Jordanian</option>
+                  <option value="Kazakhstani">Kazakhstani</option>
+                  <option value="Kenyan">Kenyan</option>
+                  <option value="Kuwaiti">Kuwaiti</option>
+                  <option value="Laotian">Laotian</option>
+                  <option value="Latvian">Latvian</option>
+                  <option value="Lebanese">Lebanese</option>
+                  <option value="Lithuanian">Lithuanian</option>
+                  <option value="Macedonian">Macedonian</option>
+                  <option value="Mexican">Mexican</option>
+                  <option value="Mongolian">Mongolian</option>
+                  <option value="Moroccan">Moroccan</option>
+                  <option value="Myanmarese">Myanmarese</option>
+                  <option value="Nepalese">Nepalese</option>
+                  <option value="Nigerian">Nigerian</option>
+                  <option value="Norwegian">Norwegian</option>
+                  <option value="Omani">Omani</option>
+                  <option value="Pakistani">Pakistani</option>
+                  <option value="Panamanian">Panamanian</option>
+                  <option value="Peruvian">Peruvian</option>
+                  <option value="Polish">Polish</option>
+                  <option value="Portuguese">Portuguese</option>
+                  <option value="Qatari">Qatari</option>
+                  <option value="Romanian">Romanian</option>
+                  <option value="Saudi">Saudi</option>
+                  <option value="Serbian">Serbian</option>
+                  <option value="Slovak">Slovak</option>
+                  <option value="Slovenian">Slovenian</option>
+                  <option value="South African">South African</option>
+                  <option value="Sri Lankan">Sri Lankan</option>
+                  <option value="Swedish">Swedish</option>
+                  <option value="Tunisian">Tunisian</option>
+                  <option value="Turkish">Turkish</option>
+                  <option value="Ukrainian">Ukrainian</option>
+                  <option value="Uruguayan">Uruguayan</option>
+                  <option value="Uzbekistani">Uzbekistani</option>
+                  <option value="Venezuelan">Venezuelan</option>
+                  <option value="Other">Other</option>
+                </select>
               </div>
 
               {/* Date */}
