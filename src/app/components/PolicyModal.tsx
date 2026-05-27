@@ -1,3 +1,4 @@
+import { type ReactElement } from 'react';
 import { X } from 'lucide-react';
 
 export type PolicyType = 'booking' | 'cancellation' | 'privacy' | 'terms' | null;
@@ -7,7 +8,7 @@ interface PolicyModalProps {
   onClose: () => void;
 }
 
-const policies: Record<Exclude<PolicyType, null>, { title: string; content: JSX.Element }> = {
+const policies: Record<Exclude<PolicyType, null>, { title: string; content: ReactElement }> = {
   booking: {
     title: 'Booking Policy',
     content: (
