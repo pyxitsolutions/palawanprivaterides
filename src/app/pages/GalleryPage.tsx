@@ -58,13 +58,16 @@ export default function GalleryPage() {
             {images.map((img, i) => (
               <div
                 key={i}
-                className="overflow-hidden cursor-pointer group mb-1.5 break-inside-avoid"
+                className="overflow-hidden cursor-pointer group mb-1.5 break-inside-avoid bg-gray-200"
                 onClick={() => setLightbox(i)}
               >
                 <img
                   src={img}
                   alt={`Gallery ${i + 1}`}
-                  className="w-full object-cover group-hover:brightness-90 transition-all duration-300"
+                  loading="lazy"
+                  className="w-full object-cover group-hover:brightness-90 transition-all duration-300 opacity-0"
+                  onLoad={(e) => (e.currentTarget.style.opacity = '1')}
+                  style={{ transition: 'opacity 0.4s ease' }}
                 />
               </div>
             ))}
