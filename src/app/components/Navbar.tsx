@@ -242,7 +242,7 @@ export function Navbar() {
       <button
         onClick={() => setShowBookModal(true)}
         onMouseDown={(e) => e.preventDefault()}
-        className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-[#e8a020] text-white px-7 py-3 rounded-full text-sm font-bold shadow-lg hover:bg-[#d49020] transition-colors flex items-center gap-2"
+        className="md:hidden fixed bottom-20 right-6 z-40 bg-[#e8a020] text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg hover:bg-[#d49020] transition-colors"
       >
         Book Now →
       </button>
