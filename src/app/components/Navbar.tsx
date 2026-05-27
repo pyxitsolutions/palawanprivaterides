@@ -237,6 +237,15 @@ export function Navbar() {
       </nav>
 
       {showBookModal && <BookNowModal onClose={() => setShowBookModal(false)} />}
+
+      {/* Mobile floating Book Now button */}
+      <button
+        onClick={() => setShowBookModal(true)}
+        onMouseDown={(e) => e.preventDefault()}
+        className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-[#e8a020] text-white px-7 py-3 rounded-full text-sm font-bold shadow-lg hover:bg-[#d49020] transition-colors flex items-center gap-2"
+      >
+        Book Now →
+      </button>
     </>
   );
 }
