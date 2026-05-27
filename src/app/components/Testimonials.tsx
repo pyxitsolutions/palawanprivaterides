@@ -41,7 +41,7 @@ export function Testimonials() {
           {testimonials.map((t, i) => (
             <div
               key={i}
-              className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300 flex flex-col cursor-pointer group"
+              className="bg-white overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300 flex flex-col cursor-pointer group"
               onClick={() => setLightbox(t.image)}
             >
               {/* Photo */}

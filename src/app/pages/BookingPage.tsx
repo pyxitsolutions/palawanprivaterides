@@ -131,7 +131,7 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, initialDirection,
 
   const paxCount = parseInt(formData.pax) || 0;
   const basePrice = parseInt(selectedPrice) || 0;
-  const hasEnvFee = tourType === 'Tour Package' && !tourName.includes('City Tour') && !tourName.includes('PPC Beach');
+  const hasEnvFee = tourType === 'Tour Package' && !tourName.includes('City Tour') && !tourName.includes('PPC Beach') && !tourName.includes('El Nido Island Tour');
   const envFee = hasEnvFee ? 150 : 0;
 
   const isMultiVehicle = !!pricing && paxCount > MAX_VAN_CAPACITY;
@@ -561,10 +561,16 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, initialDirection,
                     <input type="text" name="dropoffLocation" value={formData.dropoffLocation} onChange={handleChange} className={inputClass} placeholder="ex. El Nido Town" />
                   </div>
 
-                  {tourName.includes('El Nido') && (
+                  {tourName.includes('El Nido') && !tourName.includes('El Nido Island Tour') && (
                     <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2.5 flex items-start gap-2">
                       <span className="flex-shrink-0">⚠️</span>
                       <span>Drop-off within El Nido town is included. Resorts outside town may incur <strong>₱500–₱1,500</strong> extra.</span>
+                    </p>
+                  )}
+                  {tourName.includes('El Nido Island Tour') && (
+                    <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2.5 flex items-start gap-2">
+                      <span className="flex-shrink-0">⚠️</span>
+                      <span>Additional fees are paid on site to the guide: ₱400 environmental fee per person{tourName.includes('Tour A') ? ' + ₱200 Big Lagoon entrance fee' : tourName.includes('Tour C') ? ' + ₱200 Matinloc Shrine entrance fee' : tourName.includes('Tour D') ? ' + ₱200 Small Lagoon entrance fee' : ''}.</span>
                     </p>
                   )}
 

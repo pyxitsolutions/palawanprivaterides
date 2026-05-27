@@ -48,7 +48,7 @@ export function CarCard({ images, name, price, type, duration, pax, description,
   };
 
   return (
-    <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-200 hover:shadow-lg transition-shadow duration-300 flex flex-col">
+    <div className="bg-white overflow-hidden shadow-sm border border-gray-200 hover:shadow-lg transition-shadow duration-300 flex flex-col">
 
       {/* Image */}
       <div
@@ -60,6 +60,7 @@ export function CarCard({ images, name, price, type, duration, pax, description,
           alt={name}
           className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
         />
+        <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-white to-transparent" />
         <div className="absolute top-3 left-3">
           <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${typeColors[type] ?? 'bg-gray-100 text-gray-700'}`}>
             {type}

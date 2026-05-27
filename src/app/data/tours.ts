@@ -9,6 +9,10 @@ import tourCity from '../../tour/tour-city.png';
 import tourRiver from '../../tour/tour-river.png';
 import tourTala from '../../tour/tour-tala.png';
 import tourHonda from '../../tour/tour-honda.png';
+import tourElNidoA from '../../elnido/tour-a.png';
+import tourElNidoB from '../../elnido/tour-b.png';
+import tourElNidoC from '../../elnido/tour-c.png';
+import tourElNidoD from '../../elnido/tour-d.png';
 
 export interface PricingTier {
   vehicle: string;
@@ -177,6 +181,66 @@ export const tours: Tour[] = [
       'Buffet Lunch',
       'Entrance Fees',
       'Life Vest',
+    ],
+  },
+  {
+    images: [tourElNidoA],
+    name: 'El Nido Island Tour A',
+    price: '1550',
+    type: 'Tour Package',
+    duration: 'Full Day Tour',
+    pax: 'Per person',
+    description: 'Most popular route — Big Lagoon, Secret Lagoon, Shimizu Island & Seven Commandos Beach. Price is per person. Additional fees paid on site: ₱400 environmental fee + ₱200 Big Lagoon entrance fee.',
+    whatsIncluded: [
+      'Licensed Tour Guide',
+      'Island Hopping Boat',
+      'Life Vest',
+      'Buffet Lunch',
+    ],
+  },
+  {
+    images: [tourElNidoB],
+    name: 'El Nido Island Tour B',
+    price: '1650',
+    type: 'Tour Package',
+    duration: 'Full Day Tour',
+    pax: 'Per person',
+    description: 'Caves & hidden beaches — Snake Island, Cudugnon Cave, Cathedral Cave & Entalula Beach. Price is per person. Additional fees paid on site: ₱400 environmental fee.',
+    whatsIncluded: [
+      'Licensed Tour Guide',
+      'Island Hopping Boat',
+      'Life Vest',
+      'Buffet Lunch',
+    ],
+  },
+  {
+    images: [tourElNidoC],
+    name: 'El Nido Island Tour C',
+    price: '1750',
+    type: 'Tour Package',
+    duration: 'Full Day Tour',
+    pax: 'Per person',
+    description: 'Hidden beaches & snorkeling — Hidden Beach, Secret Beach, Matinloc Shrine & Helicopter Island. Price is per person. Additional fees paid on site: ₱400 environmental fee + ₱200 Matinloc Shrine entrance fee.',
+    whatsIncluded: [
+      'Licensed Tour Guide',
+      'Island Hopping Boat',
+      'Life Vest',
+      'Buffet Lunch',
+    ],
+  },
+  {
+    images: [tourElNidoD],
+    name: 'El Nido Island Tour D',
+    price: '1550',
+    type: 'Tour Package',
+    duration: 'Full Day Tour',
+    pax: 'Per person',
+    description: 'Quiet lagoons & relaxing spots — Small Lagoon, Cadlao Lagoon, Pasandigan Beach & Paradise Beach. Price is per person. Additional fees paid on site: ₱400 environmental fee + ₱200 Small Lagoon entrance fee.',
+    whatsIncluded: [
+      'Licensed Tour Guide',
+      'Island Hopping Boat',
+      'Life Vest',
+      'Buffet Lunch',
     ],
   },
 ];

@@ -9,8 +9,9 @@ import heroImg from '../../tour/tour-honda.png';
 
 const filters = [
   { label: 'All', value: 'all' },
-  { label: 'Day Tours', value: 'day' },
-  { label: 'Evening Tours', value: 'evening' },
+  { label: 'Puerto Princesa', value: 'pps' },
+  { label: 'El Nido', value: 'elnido' },
+  { label: 'Evening', value: 'evening' },
 ];
 
 const highlights = [
@@ -26,7 +27,8 @@ export default function ToursPage() {
   const filtered = cityTours.filter((t) => {
     if (typeFilter === 'all') return true;
     if (typeFilter === 'evening') return t.duration?.toLowerCase().includes('evening');
-    if (typeFilter === 'day') return !t.duration?.toLowerCase().includes('evening');
+    if (typeFilter === 'elnido') return t.name.includes('El Nido Island Tour');
+    if (typeFilter === 'pps') return !t.name.includes('El Nido Island Tour');
     return true;
   });
 
@@ -45,14 +47,14 @@ export default function ToursPage() {
 
         <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-14 pt-32">
           <p className="text-[#e8a020] text-sm font-bold uppercase tracking-widest mb-3">
-            Puerto Princesa, Palawan
+            Puerto Princesa & El Nido, Palawan
           </p>
           <h1 className="text-5xl md:text-6xl font-black text-white leading-tight mb-4">
             Tour<br />
             <span className="text-[#e8a020]">Packages</span>
           </h1>
           <p className="text-white/70 text-lg max-w-xl mb-8">
-            Guided day tours around Puerto Princesa — local knowledge, private service, all-in packages.
+            Private guided tours in Puerto Princesa and exclusive island hopping in El Nido — local knowledge, private service, all-in packages.
           </p>
 
           {/* Highlight pills */}
@@ -91,7 +93,7 @@ export default function ToursPage() {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {filtered.map((tour, index) => (
               <CarCard key={index} {...tour} />
             ))}
