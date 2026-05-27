@@ -69,26 +69,12 @@ export function CarCard({ images, name, price, type, duration, pax, description,
 
       {/* Content */}
       <div className="p-4 flex flex-col flex-1">
-        {directionOptions.length > 0 ? (
-          <div
-            className="flex items-center gap-2 mb-1 cursor-pointer"
-            onClick={() => setIsDetailsOpen(true)}
-          >
-            {directionOptions.map((opt, i) => (
-              <span key={opt} className="flex items-center gap-2">
-                {i > 0 && <span className="text-gray-300 text-sm">↔</span>}
-                <span className="font-bold text-gray-900 text-base leading-snug hover:text-primary transition-colors">{opt}</span>
-              </span>
-            ))}
-          </div>
-        ) : (
-          <h3
-            className="font-bold text-gray-900 text-base leading-snug mb-1 cursor-pointer hover:text-primary transition-colors line-clamp-2"
-            onClick={() => setIsDetailsOpen(true)}
-          >
-            {name}
-          </h3>
-        )}
+        <h3
+          className="font-bold text-gray-900 text-base leading-snug mb-1 cursor-pointer hover:text-primary transition-colors line-clamp-2"
+          onClick={() => setIsDetailsOpen(true)}
+        >
+          {name}
+        </h3>
 
         <div className="flex items-center gap-1 text-gray-500 text-xs mb-3">
           <MapPin size={11} className="flex-shrink-0" />
@@ -96,10 +82,14 @@ export function CarCard({ images, name, price, type, duration, pax, description,
         </div>
 
         {duration && (
-          <div className="flex items-center gap-1.5 text-gray-400 text-xs mb-3">
+          <div className="flex items-center gap-1.5 text-gray-400 text-xs mb-2">
             <Clock size={11} className="flex-shrink-0" />
             <span>{duration}</span>
           </div>
+        )}
+
+        {directionOptions.length > 0 && (
+          <p className="text-[11px] text-gray-400 mb-3">{directionOptions.join(', ')}</p>
         )}
 
         <div className="flex-1" />
