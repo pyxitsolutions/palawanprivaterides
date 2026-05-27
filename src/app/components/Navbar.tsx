@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, ArrowRight } from 'lucide-react';
+import { Menu, X, ArrowRight, CalendarCheck } from 'lucide-react';
 import logo from '../../logo/logo.png';
 import ridesHero from '../../rides/rides-1.png';
 import toursHero from '../../tour/tour-city.png';
@@ -242,9 +242,9 @@ export function Navbar() {
       <button
         onClick={() => setShowBookModal(true)}
         onMouseDown={(e) => e.preventDefault()}
-        className="md:hidden fixed bottom-20 right-6 z-40 bg-[#e8a020] text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg hover:bg-[#d49020] transition-colors"
+        className="md:hidden fixed bottom-20 right-6 z-40 w-11 h-11 rounded-full bg-[#e8a020] text-white shadow-lg flex items-center justify-center hover:bg-[#d49020] transition-all hover:scale-110"
       >
-        Book Now →
+        <CalendarCheck size={20} />
       </button>
     </>
   );
