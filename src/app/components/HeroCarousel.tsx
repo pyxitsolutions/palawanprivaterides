@@ -3,7 +3,7 @@ import hero1 from '../../hero/hero-1.jpg';
 
 export function HeroCarousel() {
   return (
-    <div className="relative w-full min-h-screen bg-gray-900 flex flex-col">
+    <div className="relative w-full min-h-screen bg-white flex flex-col">
       {/* Background Image */}
       <img
         src={hero1}
@@ -11,7 +11,9 @@ export function HeroCarousel() {
         className="absolute inset-0 w-full h-full object-cover"
         loading="eager"
       />
-      <div className="absolute inset-0 bg-black/55" />
+
+      {/* Dark blur overlay */}
+      <div className="absolute inset-0 bg-black/45 backdrop-blur-[2px]" />
 
       {/* Hero Content */}
       <div className="relative z-10 flex-1 flex flex-col justify-center px-4 sm:px-8 lg:px-20 pt-24 pb-16">

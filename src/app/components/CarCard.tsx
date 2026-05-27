@@ -31,6 +31,12 @@ export function CarCard({ images, name, price, type, duration, pax, description,
   const navigate = useNavigate();
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
+  const routeParts = name.includes(' → ') ? name.split(' → ') : [];
+  const directionOptions = routeParts.length === 2
+    ? [`${routeParts[0]} → ${routeParts[1]}`, `${routeParts[1]} → ${routeParts[0]}`]
+    : [];
+  const [selectedDirection, setSelectedDirection] = useState(directionOptions[0] ?? '');
+
   const tourData = { images, name, price, type, duration, pax, description, pricing, whatsIncluded };
   const startingPrice = pricing
     ? Math.min(...pricing.map((p) => parseInt(p.price)))
@@ -38,7 +44,7 @@ export function CarCard({ images, name, price, type, duration, pax, description,
   const perLabel = (type === 'Tour Package' || type === 'Transfer') ? 'per person' : 'per booking';
 
   const handleBook = () => {
-    navigate('/book', { state: { tourName: name, tourPrice: price, tourType: type, pricing } });
+    navigate('/book', { state: { tourName: name, tourPrice: price, tourType: type, pricing, direction: selectedDirection || undefined } });
   };
 
   return (
@@ -63,12 +69,26 @@ export function CarCard({ images, name, price, type, duration, pax, description,
 
       {/* Content */}
       <div className="p-4 flex flex-col flex-1">
-        <h3
-          className="font-bold text-gray-900 text-base leading-snug mb-1 cursor-pointer hover:text-primary transition-colors line-clamp-2"
-          onClick={() => setIsDetailsOpen(true)}
-        >
-          {name}
-        </h3>
+        {directionOptions.length > 0 ? (
+          <div
+            className="flex items-center gap-2 mb-1 cursor-pointer"
+            onClick={() => setIsDetailsOpen(true)}
+          >
+            {directionOptions.map((opt, i) => (
+              <span key={opt} className="flex items-center gap-2">
+                {i > 0 && <span className="text-gray-300 text-sm">↔</span>}
+                <span className="font-bold text-gray-900 text-base leading-snug hover:text-primary transition-colors">{opt}</span>
+              </span>
+            ))}
+          </div>
+        ) : (
+          <h3
+            className="font-bold text-gray-900 text-base leading-snug mb-1 cursor-pointer hover:text-primary transition-colors line-clamp-2"
+            onClick={() => setIsDetailsOpen(true)}
+          >
+            {name}
+          </h3>
+        )}
 
         <div className="flex items-center gap-1 text-gray-500 text-xs mb-3">
           <MapPin size={11} className="flex-shrink-0" />

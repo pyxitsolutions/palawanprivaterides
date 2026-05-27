@@ -198,6 +198,12 @@ export function Navbar() {
                   {item.name}
                 </button>
               ))}
+              <Link
+                to="/gallery"
+                className="text-white/80 hover:text-white transition-colors text-sm font-medium"
+              >
+                Gallery
+              </Link>
               <button
                 onClick={() => setShowBookModal(true)}
                 onMouseDown={(e) => e.preventDefault()}
@@ -230,6 +236,13 @@ export function Navbar() {
                   {item.name}
                 </button>
               ))}
+              <Link
+                to="/gallery"
+                onClick={() => setIsOpen(false)}
+                className="block px-3 py-2.5 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors text-sm"
+              >
+                Gallery
+              </Link>
               <div className="pt-2">
                 <button
                   onClick={() => { setIsOpen(false); setShowBookModal(true); }}

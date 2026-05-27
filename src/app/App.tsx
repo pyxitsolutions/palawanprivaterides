@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { HeroCarousel } from './components/HeroCarousel';
 import { ScrollToTopButton } from './components/ScrollToTopButton';
-import { Testimonials } from './components/Testimonials';
+// import { Testimonials } from './components/Testimonials';
 import { SiteFooter } from './components/SiteFooter';
 import {
   Car, Shield, Clock, Award, Phone, Mail, Facebook, MapPin,
@@ -72,7 +72,7 @@ export default function App() {
       </section>
 
       {/* Trust Badges */}
-      <section className="py-6 bg-white border-b border-gray-100">
+      <section className="py-6 bg-transparent border-b border-gray-100 relative z-10 mt-6">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
@@ -261,9 +261,9 @@ export default function App() {
       </section>
 
       {/* Testimonials */}
-      <div id="reviews">
+      {/* <div id="reviews">
         <Testimonials />
-      </div>
+      </div> */}
 
       {/* CTA Banner */}
       <section className="py-24 relative bg-primary">

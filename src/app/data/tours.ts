@@ -38,9 +38,9 @@ export const tours: Tour[] = [
     pax: 'Up to 8 pax',
     description: 'Private door-to-door transfer from Puerto Princesa to El Nido. Enjoy a comfortable and exclusive ride with your group and a trusted local driver — no shared vans, no crowded trips. Optional stopovers along the way are available for meals, sightseeing, or quick breaks upon request.',
     pricing: [
-      { vehicle: 'Sedan/Hatchback', price: '7150' },
-      { vehicle: 'SUV', price: '7800' },
-      { vehicle: 'Van', price: '8650' },
+      { vehicle: 'Sedan/Hatchback', price: '7100' },
+      { vehicle: 'SUV', price: '7600' },
+      { vehicle: 'Van', price: '8100' },
     ],
   },
   {
@@ -52,9 +52,9 @@ export const tours: Tour[] = [
     pax: 'Up to 8 pax',
     description: 'Private transfer from Puerto Princesa to Port Barton. Comfortable, air-conditioned ride straight to this hidden gem of Palawan.',
     pricing: [
-      { vehicle: 'Sedan/Hatchback', price: '5650' },
-      { vehicle: 'SUV', price: '6300' },
-      { vehicle: 'Van', price: '7150' },
+      { vehicle: 'Sedan/Hatchback', price: '5600' },
+      { vehicle: 'SUV', price: '6100' },
+      { vehicle: 'Van', price: '6600' },
     ],
   },
   {
@@ -66,9 +66,9 @@ export const tours: Tour[] = [
     pax: 'Up to 8 pax',
     description: 'Private transfer to San Vicente, home of the famous Long Beach — one of the longest white sand beaches in the Philippines.',
     pricing: [
-      { vehicle: 'Sedan/Hatchback', price: '6150' },
-      { vehicle: 'SUV', price: '6800' },
-      { vehicle: 'Van', price: '7650' },
+      { vehicle: 'Sedan/Hatchback', price: '6100' },
+      { vehicle: 'SUV', price: '6600' },
+      { vehicle: 'Van', price: '7100' },
     ],
   },
   {
@@ -80,9 +80,9 @@ export const tours: Tour[] = [
     pax: 'Up to 8 pax',
     description: 'Private transfer from Puerto Princesa to Astotia Palawan. Affordable and comfortable door-to-door service.',
     pricing: [
-      { vehicle: 'Sedan/Hatchback', price: '3150' },
-      { vehicle: 'SUV', price: '3800' },
-      { vehicle: 'Van', price: '4650' },
+      { vehicle: 'Sedan/Hatchback', price: '3100' },
+      { vehicle: 'SUV', price: '3600' },
+      { vehicle: 'Van', price: '4100' },
     ],
   },
   {
@@ -94,9 +94,9 @@ export const tours: Tour[] = [
     pax: 'Up to 8 pax',
     description: 'Private transfer to Sabang — gateway to the UNESCO Underground River. Perfect for day trips or overnight stays.',
     pricing: [
-      { vehicle: 'Sedan/Hatchback', price: '3650' },
-      { vehicle: 'SUV', price: '4300' },
-      { vehicle: 'Van', price: '5150' },
+      { vehicle: 'Sedan/Hatchback', price: '3600' },
+      { vehicle: 'SUV', price: '4100' },
+      { vehicle: 'Van', price: '4600' },
     ],
   },
   {
@@ -158,8 +158,8 @@ export const tours: Tour[] = [
     description: "Escape to one of Puerto Princesa's hidden shores — choose between Tala Beach, Nagtabon Beach, or Pakpak Lauin. Perfect for couples, families & small groups. Includes private transport, free fuel, and a professional driver. Additional charges may vary.",
     pricing: [
       { vehicle: 'Sedan/Hatchback', price: '2700', capacity: 4 },
-      { vehicle: 'SUV', price: '3300', capacity: 6 },
-      { vehicle: 'Van', price: '5650', capacity: 13 },
+      { vehicle: 'SUV', price: '3200', capacity: 6 },
+      { vehicle: 'Van', price: '5200', capacity: 13 },
     ],
   },
   {
