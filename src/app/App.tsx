@@ -315,9 +315,9 @@ export default function App() {
               { q: 'Can I customize my itinerary?', a: "Absolutely! We offer custom private rides to any destination in Palawan. Just message us on WhatsApp or Messenger and we'll plan the trip together." },
               { q: 'How many passengers can join per booking?', a: 'Our vehicles can accommodate up to 13 passengers. For larger groups, please contact us directly and we will arrange accordingly.' },
               { q: 'Do you offer airport or hotel pick-up?', a: 'Yes! All our bookings include hotel or accommodation pick-up in Puerto Princesa. Just provide your hotel name or address when booking.' },
-              { q: 'What if I need to cancel or reschedule?', a: 'We understand that plans change. Please contact us as soon as possible via WhatsApp and we will do our best to accommodate your request.' },
-              { q: 'How do I confirm my booking?', a: 'After submitting the booking form, we will contact you via WhatsApp or phone within a few hours to confirm your reservation and discuss details.' },
-              { q: 'Is a downpayment required to confirm my booking?', a: 'Yes, a downpayment is required to secure and confirm your booking. Once we get in touch via WhatsApp or phone, we will provide the downpayment details. Your reservation will only be confirmed upon receipt of the downpayment.' },
+              { q: 'What if I need to cancel or reschedule?', a: 'We understand that plans change. Please contact us as soon as possible via WhatsApp or email and we will do our best to accommodate your request.' },
+              { q: 'How do I confirm my booking?', a: 'After submitting the booking form, we will contact you via WhatsApp, phone or email within a few hours to confirm your reservation and discuss details.' },
+              { q: 'Is a downpayment required to confirm my booking?', a: 'Yes, a downpayment is required to secure and confirm your booking. Once we get in touch via WhatsApp, phone or email, we will provide the downpayment details. Your reservation will only be confirmed upon receipt of the downpayment.' },
             ].map((item, i) => (
               <FAQItem key={i} question={item.q} answer={item.a} />
             ))}
