@@ -50,7 +50,7 @@ export function CarDetailsModal({ isOpen, onClose, tour, onBookNow }: TourDetail
     : parseInt(tour.price);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/70 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/70 backdrop-blur-sm" onClick={(e) => e.stopPropagation()}>
       <div className="bg-white shadow-2xl max-w-2xl w-full max-h-[95vh] overflow-y-auto">
 
         {/* Hero Image */}
@@ -84,7 +84,6 @@ export function CarDetailsModal({ isOpen, onClose, tour, onBookNow }: TourDetail
             </>
           )}
 
-          <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-white to-transparent" />
           {/* Type badge */}
           <div className="absolute top-3 left-3">
             <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${typeColors[tour.type] ?? 'bg-gray-100 text-gray-700'}`}>

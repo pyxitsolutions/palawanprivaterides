@@ -1,8 +1,8 @@
-import rides1 from '../../rides/rides-1.png';
-import rides2 from '../../rides/rides-2.png';
-import rides3 from '../../rides/rides-3.png';
-import rides4 from '../../rides/rides-4.png';
-import rides5 from '../../rides/rides-5.png';
+import rides1 from '../../private-rides/welcome-puerto.jpg';
+import rides2 from '../../private-rides/welcome-port.png';
+import rides3 from '../../private-rides/welcome-sanvic.jpg';
+import rides4 from '../../private-rides/welcome-astoria.jpg';
+import rides5 from '../../private-rides/welcome-fourpoints.jpg';
 import transfers1 from '../../transfers/transfers-1.png';
 import tourFirefly from '../../tour/tour-firefly.png';
 import tourCity from '../../tour/tour-city.png';
@@ -30,6 +30,7 @@ export interface Tour {
   description: string;
   pricing?: PricingTier[];
   whatsIncluded?: string[];
+  credit?: string;
 }
 
 export const tours: Tour[] = [
@@ -41,6 +42,7 @@ export const tours: Tour[] = [
     duration: 'Travel Duration (5-6 hrs)',
     pax: 'Up to 8 pax',
     description: 'Private door-to-door transfer from Puerto Princesa to El Nido. Enjoy a comfortable and exclusive ride with your group and a trusted local driver — no shared vans, no crowded trips. Optional stopovers along the way are available for meals, sightseeing, or quick breaks upon request.',
+    credit: 'fabionodariphoto.com',
     pricing: [
       { vehicle: 'Sedan/Hatchback', price: '7100' },
       { vehicle: 'SUV', price: '7600' },
@@ -55,6 +57,7 @@ export const tours: Tour[] = [
     duration: 'Travel Duration (2-3 hrs)',
     pax: 'Up to 8 pax',
     description: 'Private transfer from Puerto Princesa to Port Barton. Comfortable, air-conditioned ride straight to this hidden gem of Palawan.',
+    credit: 'fabionodariphoto.com',
     pricing: [
       { vehicle: 'Sedan/Hatchback', price: '5600' },
       { vehicle: 'SUV', price: '6100' },
@@ -69,6 +72,7 @@ export const tours: Tour[] = [
     duration: 'Travel Duration (3-4 hrs)',
     pax: 'Up to 8 pax',
     description: 'Private transfer to San Vicente, home of the famous Long Beach — one of the longest white sand beaches in the Philippines.',
+    credit: 'fabionodariphoto.com',
     pricing: [
       { vehicle: 'Sedan/Hatchback', price: '6100' },
       { vehicle: 'SUV', price: '6600' },

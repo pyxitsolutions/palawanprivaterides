@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Clock } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import { CarDetailsModal } from './CarDetailsModal';
 
 interface PricingTier {
@@ -21,13 +21,7 @@ interface TourCardProps {
   whatsIncluded?: string[];
 }
 
-const typeColors: Record<string, string> = {
-  'Private Ride': 'bg-[#e8a020] text-white',
-  'Tour Package': 'bg-[#e8a020] text-white',
-  'Transfer': 'bg-[#e8a020] text-white',
-};
-
-export function CarCard({ images, name, price, type, duration, pax, description, pricing, whatsIncluded }: TourCardProps) {
+export function CarCard({ images, name, price, type, duration, pax, description, pricing, whatsIncluded, credit }: TourCardProps & { credit?: string }) {
   const navigate = useNavigate();
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
@@ -35,7 +29,7 @@ export function CarCard({ images, name, price, type, duration, pax, description,
   const directionOptions = routeParts.length === 2
     ? [`${routeParts[0]} → ${routeParts[1]}`, `${routeParts[1]} → ${routeParts[0]}`]
     : [];
-  const [selectedDirection, setSelectedDirection] = useState(directionOptions[0] ?? '');
+  const [selectedDirection] = useState(directionOptions[0] ?? '');
 
   const tourData = { images, name, price, type, duration, pax, description, pricing, whatsIncluded };
   const startingPrice = pricing
@@ -48,64 +42,59 @@ export function CarCard({ images, name, price, type, duration, pax, description,
   };
 
   return (
-    <div className="bg-white overflow-hidden shadow-sm border border-gray-200 hover:shadow-lg transition-shadow duration-300 flex flex-col">
+    <div
+      className="relative overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 cursor-pointer group aspect-[4/3]"
+      onClick={() => setIsDetailsOpen(true)}
+    >
+      {/* Full bleed image */}
+      <img
+        src={images[0]}
+        alt={name}
+        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      />
 
-      {/* Image */}
-      <div
-        className="relative h-52 overflow-hidden cursor-pointer flex-shrink-0"
-        onClick={() => setIsDetailsOpen(true)}
-      >
-        <img
-          src={images[0]}
-          alt={name}
-          className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-        />
-        <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-white to-transparent" />
-        <div className="absolute top-3 left-3">
-          <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${typeColors[type] ?? 'bg-gray-100 text-gray-700'}`}>
-            {type}
-          </span>
-        </div>
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
+
+      {/* Type badge */}
+      <div className="absolute top-3 left-3">
+        <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#e8a020] text-white">
+          {type}
+        </span>
       </div>
 
-      {/* Content */}
-      <div className="p-4 flex flex-col flex-1">
-        <h3
-          className="font-bold text-gray-900 text-base leading-snug mb-1 cursor-pointer hover:text-primary transition-colors line-clamp-2"
-          onClick={() => setIsDetailsOpen(true)}
-        >
-          {name}
-        </h3>
+      {/* Tap hint */}
+      <div className="absolute top-3 right-3 bg-black/40 backdrop-blur-sm text-white text-[10px] font-semibold px-2.5 py-1 rounded-full">
+        Tap for details
+      </div>
 
-        <div className="flex items-center gap-1 text-gray-500 text-xs mb-3">
-          <MapPin size={11} className="flex-shrink-0" />
-          <span>Palawan, Philippines</span>
+      {/* Photo credit */}
+      {credit && (
+        <div className="absolute bottom-0 right-0 text-white/40 text-[9px] px-2 py-1">
+          © {credit}
         </div>
+      )}
+
+      {/* Bottom content */}
+      <div className="absolute inset-x-0 bottom-0 p-4">
+        <h3 className="font-black text-white text-lg leading-snug mb-1">{name}</h3>
 
         {duration && (
-          <div className="flex items-center gap-1.5 text-gray-400 text-xs mb-2">
-            <Clock size={11} className="flex-shrink-0" />
+          <div className="flex items-center gap-1.5 text-white/70 text-xs mb-3">
+            <Clock size={11} />
             <span>{duration}</span>
           </div>
         )}
 
-        {directionOptions.length > 0 && (
-          <p className="text-[11px] text-gray-400 mb-3">{directionOptions.join(', ')}</p>
-        )}
-
-        <div className="flex-1" />
-
-        <div className="flex items-end justify-between pt-3 border-t border-gray-100 mt-2">
+        <div className="flex items-end justify-between">
           <div>
-            <p className="text-[10px] text-gray-400 mb-0.5">Starting from</p>
-            <p className="text-xl font-black text-gray-900">
-              ₱{startingPrice.toLocaleString()}
-            </p>
-            <p className="text-[10px] text-gray-400">{perLabel}</p>
+            <p className="text-white/60 text-[10px] mb-0.5">Starting from</p>
+            <p className="text-white font-black text-xl">₱{startingPrice.toLocaleString()}</p>
+            <p className="text-white/60 text-[10px]">{perLabel}</p>
           </div>
           <button
-            onClick={handleBook}
-            className="bg-primary text-white text-sm font-bold px-5 py-2.5 rounded-xl hover:opacity-90 transition-opacity"
+            onClick={(e) => { e.stopPropagation(); handleBook(); }}
+            className="bg-[#e8a020] text-white text-sm font-bold px-5 py-2.5 hover:bg-[#d49020] transition-colors"
           >
             Book Now
           </button>
