@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-import { X, Calendar, Clock, MapPin, Users, MessageSquare, Car, Check, ChevronRight, ChevronLeft } from 'lucide-react';
-import { PolicyModal, type PolicyType } from './PolicyModal';
+import { Navbar } from '../components/Navbar';
+import { SiteFooter } from '../components/SiteFooter';
+import { PolicyModal, type PolicyType } from '../components/PolicyModal';
+import { X, Calendar, Clock, MapPin, Users, MessageSquare, Car, Check, ChevronRight, ChevronLeft, ArrowLeft } from 'lucide-react';
 
 const EMAILJS_SERVICE_ID = 'service_w5vk124';
 const EMAILJS_TEMPLATE_RIDES = 'template_pnxzs9s';
@@ -16,16 +19,7 @@ interface PricingTier {
   capacity?: number;
 }
 
-interface BookingModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  tourName: string;
-  tourPrice: string;
-  tourType?: string;
-  pricing?: PricingTier[];
-}
-
-const inputClass = 'w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white text-sm text-gray-900 transition-colors';
+const inputClass = 'w-full px-3 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white text-sm text-gray-900 transition-colors';
 const labelClass = 'block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5';
 
 const defaultCapacity: Record<string, number> = {
@@ -55,9 +49,50 @@ const NATIONALITIES = [
 ];
 
 const MAX_VAN_CAPACITY = 13;
+const stepLabels = ['Contact', 'Schedule', 'Passengers', 'Trip Details', 'Review'];
 
-export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, pricing }: BookingModalProps) {
+export default function BookingPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const state = location.state as { tourName: string; tourPrice: string; tourType: string; pricing?: PricingTier[] } | null;
+
+  useEffect(() => {
+    if (!state?.tourName) navigate('/', { replace: true });
+    window.scrollTo(0, 0);
+  }, []);
+
+  if (!state?.tourName) return null;
+
+  const { tourName, tourPrice, tourType, pricing } = state;
+
+  return (
+    <BookingForm
+      tourName={tourName}
+      tourPrice={tourPrice}
+      tourType={tourType}
+      pricing={pricing}
+      onBack={() => navigate(-1)}
+    />
+  );
+}
+
+function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
+  tourName: string;
+  tourPrice: string;
+  tourType: string;
+  pricing?: PricingTier[];
+  onBack: () => void;
+}) {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
+  const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [error, setError] = useState('');
+  const [honeypot, setHoneypot] = useState('');
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [openPolicy, setOpenPolicy] = useState<PolicyType>(null);
+
   const [formData, setFormData] = useState({
     fullName: '',
     phone: '',
@@ -73,21 +108,6 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
     message: '',
   });
 
-  const [submitted, setSubmitted] = useState(false);
-  const [sending, setSending] = useState(false);
-  const [error, setError] = useState('');
-  const [honeypot, setHoneypot] = useState('');
-  const [agreedToTerms, setAgreedToTerms] = useState(false);
-  const [openPolicy, setOpenPolicy] = useState<PolicyType>(null);
-
-  useEffect(() => {
-    if (!isOpen) {
-      setStep(1);
-      setSubmitted(false);
-      setError('');
-    }
-  }, [isOpen]);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const updated = { ...formData, [e.target.name]: e.target.value };
     if (e.target.name === 'pax' && pricing) {
@@ -102,7 +122,6 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
     setFormData(updated);
   };
 
-  // Derived pricing
   const selectedPrice = pricing && formData.vehicleType
     ? pricing.find((p) => p.vehicle === formData.vehicleType)?.price ?? tourPrice
     : tourPrice;
@@ -112,7 +131,6 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
   const hasEnvFee = tourType === 'Tour Package' && !tourName.includes('City Tour') && !tourName.includes('PPC Beach');
   const envFee = hasEnvFee ? 150 : 0;
 
-  // Multi-vehicle
   const isMultiVehicle = !!pricing && paxCount > MAX_VAN_CAPACITY;
   const vehiclesNeeded = isMultiVehicle ? Math.ceil(paxCount / MAX_VAN_CAPACITY) : 1;
   const vanPrice = pricing ? parseInt(pricing.find((p) => p.vehicle === 'Van')?.price ?? tourPrice) : 0;
@@ -142,7 +160,6 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
   };
   const vehicleTip = pricing ? getVehicleTip() : null;
 
-  // Step validation
   const step1Valid = formData.fullName.trim() !== '' && formData.nationality !== '' && formData.phone.length >= 8;
   const step2Valid = formData.tourDate !== '' && (formData.tourTime !== '' || formData.tourPeriod !== '');
   const step3Valid = formData.pax !== '' && (!pricing || isMultiVehicle || formData.vehicleType !== '');
@@ -153,6 +170,11 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setShowConfirm(true);
+  };
+
+  const submitBooking = async () => {
+    setShowConfirm(false);
     if (honeypot) return;
     if (!agreedToTerms) { setError('Please agree to the Terms & Conditions.'); return; }
 
@@ -199,13 +221,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
       fetch(`https://api.callmebot.com/whatsapp.php?phone=639217792016&text=${waMessage}&apikey=1091963`).catch(() => {});
 
       setSubmitted(true);
-      setTimeout(() => {
-        setSubmitted(false);
-        onClose();
-        setStep(1);
-        setFormData({ fullName: '', phone: '', nationality: '', tourDate: '', tourTime: '', tourPeriod: '', pax: '', pickupLocation: '', dropoffLocation: '', vehicleType: '', beachSelection: '', message: '' });
-        setAgreedToTerms(false);
-      }, 3000);
+      window.scrollTo(0, 0);
     } catch {
       setError('Failed to send booking. Please contact us directly.');
     } finally {
@@ -213,64 +229,76 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
     }
   };
 
-  if (!isOpen) return null;
-
-  const stepLabels = ['Contact', 'Schedule', 'Passengers', 'Trip Details', 'Review'];
+  const typeLabel = tourType === 'Private Ride' ? 'Private Ride' : tourType === 'Transfer' ? 'Airport Transfer' : 'Tour Package';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[96vh] sm:max-h-[90vh] overflow-y-auto">
+    <div className="min-h-screen bg-white">
+      <Navbar />
 
-        {/* Header */}
-        <div className="sticky top-0 z-10 bg-white border-b border-gray-100 rounded-t-2xl px-5 py-4 flex justify-between items-start">
-          <div>
-            <span className="inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full mb-2 bg-[#e8a020] text-white">
-              {tourType === 'Private Ride' ? 'Private Ride' : tourType === 'Transfer' ? 'Airport Transfer' : 'Tour Package'}
-            </span>
-            <h2 className="text-gray-900 font-black text-xl leading-tight">
-              {tourType === 'Private Ride' ? 'Book This Ride' : tourType === 'Transfer' ? 'Book a Transfer' : 'Book This Tour'}
-            </h2>
-            <p className="text-gray-400 text-xs mt-0.5">{tourName}</p>
-          </div>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors flex-shrink-0 mt-0.5">
-            <X size={16} className="text-gray-600" />
+      {/* Top bar */}
+      <div className="pt-20 pb-0 bg-white border-b border-gray-100">
+        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-4">
+          <button onClick={onBack} className="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors flex-shrink-0">
+            <ArrowLeft size={18} className="text-gray-600" />
           </button>
+          <div className="flex-1 min-w-0">
+            <span className="inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full mb-1 bg-[#e8a020] text-white">
+              {typeLabel}
+            </span>
+            <p className="font-black text-gray-900 text-base leading-tight truncate">{tourName}</p>
+          </div>
         </div>
+        {/* Progress bar */}
+        <div className="h-1 bg-gray-100">
+          <div
+            className="h-full bg-primary transition-all duration-500 ease-out"
+            style={{ width: `${(step / stepLabels.length) * 100}%` }}
+          />
+        </div>
+      </div>
 
-        <div className="p-4 sm:p-5">
-          {!submitted ? (
-            <>
-              {/* Step indicator */}
-              <div className="flex items-center justify-center mb-6">
+      <div className="max-w-2xl mx-auto px-4 py-8">
+        {!submitted ? (
+          <div>
+
+            {/* Step indicator */}
+            <div className="pb-6 mb-6 border-b border-gray-100">
+              <div className="flex items-center justify-between">
                 {stepLabels.map((label, i) => {
                   const num = i + 1;
                   const isActive = step === num;
                   const isDone = step > num;
                   return (
-                    <div key={num} className="flex items-center">
+                    <div key={num} className="flex items-center flex-1">
                       <div className="flex flex-col items-center">
-                        <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
-                          isDone ? 'bg-primary text-white' : isActive ? 'bg-primary text-white ring-4 ring-primary/20' : 'bg-gray-100 text-gray-400'
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                          isDone ? 'bg-primary text-white' : isActive ? 'bg-primary text-white' : 'bg-gray-100 text-gray-400'
                         }`}>
-                          {isDone ? <Check size={13} /> : num}
+                          {isDone ? <Check size={14} /> : num}
                         </div>
-                        <span className={`text-[10px] mt-1 font-medium ${isActive ? 'text-primary' : isDone ? 'text-primary/60' : 'text-gray-400'}`}>
+                        <span className={`text-[10px] mt-1 font-semibold hidden sm:block ${isActive ? 'text-primary' : isDone ? 'text-primary/60' : 'text-gray-400'}`}>
                           {label}
                         </span>
                       </div>
                       {i < stepLabels.length - 1 && (
-                        <div className={`w-10 h-0.5 mb-4 mx-1 transition-all ${step > num ? 'bg-primary' : 'bg-gray-200'}`} />
+                        <div className={`flex-1 h-0.5 mx-2 mb-4 transition-all ${step > num ? 'bg-primary' : 'bg-gray-200'}`} />
                       )}
                     </div>
                   );
                 })}
               </div>
+            </div>
 
+            <div className="h-[480px] overflow-y-auto pr-2">
               <input type="text" value={honeypot} onChange={(e) => setHoneypot(e.target.value)} style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
 
               {/* Step 1: Contact */}
               {step === 1 && (
-                <div className="space-y-4">
+                <div className="space-y-7">
+                  <div>
+                    <h3 className="text-lg font-black text-gray-900 mb-1">Your Contact Info</h3>
+                    <p className="text-xs text-gray-400">We'll use this to confirm your booking.</p>
+                  </div>
                   <div>
                     <label className={labelClass}>{tourType === 'Tour Package' ? 'Lead Guest Name' : 'Full Name'} *</label>
                     <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} className={inputClass} placeholder="ex. Juan Dela Cruz" />
@@ -298,8 +326,8 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                       containerStyle={{ width: '100%' }}
                       inputStyle={{
                         width: '100%',
-                        paddingTop: '0.625rem',
-                        paddingBottom: '0.625rem',
+                        paddingTop: '0.75rem',
+                        paddingBottom: '0.75rem',
                         paddingLeft: '3.5rem',
                         paddingRight: '0.75rem',
                         backgroundColor: '#f9fafb',
@@ -323,16 +351,20 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                     type="button"
                     onClick={() => setStep(2)}
                     disabled={!step1Valid}
-                    className="w-full py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full py-3 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
-                    Next <ChevronRight size={16} />
+                    Next — Schedule <ChevronRight size={16} />
                   </button>
                 </div>
               )}
 
               {/* Step 2: Schedule */}
               {step === 2 && (
-                <div className="space-y-4">
+                <div className="space-y-7">
+                  <div>
+                    <h3 className="text-lg font-black text-gray-900 mb-1">When are you going?</h3>
+                    <p className="text-xs text-gray-400">Pick your preferred date and time.</p>
+                  </div>
                   <div>
                     <label className={labelClass}>
                       <Calendar size={12} className="inline mr-1" />
@@ -363,10 +395,10 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                           {periods.map((period) => (
                             <button key={period} type="button"
                               onClick={() => setFormData({ ...formData, tourPeriod: period })}
-                              className={`py-2.5 border-2 rounded-xl text-sm font-semibold transition-all ${
+                              className={`py-3 border-2 rounded-xl text-sm font-semibold transition-all ${
                                 formData.tourPeriod === period
                                   ? 'border-primary bg-primary text-white'
-                                  : 'border-gray-200 bg-gray-50 text-gray-600 hover:border-primary/40'
+                                  : 'border-gray-200 bg-white text-gray-600 hover:border-primary/40'
                               }`}
                             >
                               {period}
@@ -381,11 +413,11 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
 
                   <div className="flex gap-3">
                     <button type="button" onClick={() => setStep(1)}
-                      className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+                      className="flex-1 py-3 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
                       <ChevronLeft size={16} /> Back
                     </button>
                     <button type="button" onClick={() => setStep(3)} disabled={!step2Valid}
-                      className="flex-1 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                      className="flex-1 py-3 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                       Next <ChevronRight size={16} />
                     </button>
                   </div>
@@ -394,14 +426,18 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
 
               {/* Step 3: Passengers & Vehicle */}
               {step === 3 && (
-                <div className="space-y-4">
+                <div className="space-y-7">
+                  <div>
+                    <h3 className="text-lg font-black text-gray-900 mb-1">Passengers & Vehicle</h3>
+                    <p className="text-xs text-gray-400">How many are coming? We'll suggest the right vehicle.</p>
+                  </div>
                   <div>
                     <label className={labelClass}><Users size={12} className="inline mr-1" />Number of Passengers *</label>
                     <input type="number" name="pax" value={formData.pax} onChange={handleChange} min={1}
                       placeholder="ex. 3" className={inputClass} />
                     {isMultiVehicle && (
-                      <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800">
-                        <p className="font-bold mb-0.5">⚠️ Fleet booking required</p>
+                      <div className="mt-3 p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800">
+                        <p className="font-bold mb-1">⚠️ Fleet booking required</p>
                         <p>Your group of <strong>{paxCount}</strong> requires <strong>{vehiclesNeeded} vans</strong> (max 13 pax each). Estimated total: <strong>₱{(vehiclesNeeded * vanPrice).toLocaleString()}</strong>. We'll confirm the fleet arrangement via WhatsApp.</p>
                       </div>
                     )}
@@ -410,21 +446,21 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                   {pricing && pricing.length > 0 && !isMultiVehicle && (
                     <div>
                       <label className={labelClass}><Car size={12} className="inline mr-1" />Vehicle Type *</label>
-                      <div className="grid grid-cols-3 gap-2">
+                      <div className="grid grid-cols-3 gap-3">
                         {pricing.map((p) => (
                           <button
                             key={p.vehicle}
                             type="button"
                             onClick={() => setFormData({ ...formData, vehicleType: p.vehicle })}
-                            className={`p-2.5 border-2 rounded-xl text-center transition-all ${
+                            className={`p-3 border-2 rounded-xl text-center transition-all ${
                               formData.vehicleType === p.vehicle
                                 ? 'border-primary bg-primary/5'
-                                : 'border-gray-200 hover:border-primary/40 bg-gray-50'
+                                : 'border-gray-200 hover:border-primary/40 bg-white'
                             }`}
                           >
-                            <div className="text-[10px] text-gray-500 mb-0.5">{p.vehicle}</div>
-                            <div className="text-primary font-black text-sm">₱{parseInt(p.price).toLocaleString()}</div>
-                            <div className="text-[10px] text-gray-400 mt-0.5">Max {p.capacity ?? defaultCapacity[p.vehicle]} pax</div>
+                            <div className="text-[11px] text-gray-500 mb-1">{p.vehicle}</div>
+                            <div className="text-primary font-black text-base">₱{parseInt(p.price).toLocaleString()}</div>
+                            <div className="text-[11px] text-gray-400 mt-1">Max {p.capacity ?? defaultCapacity[p.vehicle]} pax</div>
                           </button>
                         ))}
                       </div>
@@ -435,11 +471,11 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
 
                   <div className="flex gap-3">
                     <button type="button" onClick={() => setStep(2)}
-                      className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+                      className="flex-1 py-3 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
                       <ChevronLeft size={16} /> Back
                     </button>
                     <button type="button" onClick={() => setStep(4)} disabled={!step3Valid}
-                      className="flex-1 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                      className="flex-1 py-3 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                       Next <ChevronRight size={16} />
                     </button>
                   </div>
@@ -448,7 +484,12 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
 
               {/* Step 4: Trip Details */}
               {step === 4 && (
-                <div className="space-y-4">
+                <div className="space-y-7">
+                  <div>
+                    <h3 className="text-lg font-black text-gray-900 mb-1">Trip Details</h3>
+                    <p className="text-xs text-gray-400">Where should we pick you up and drop you off?</p>
+                  </div>
+
                   {tourName.includes('PPC Beach') && (
                     <div>
                       <label className={labelClass}>🏖️ Select Beach *</label>
@@ -458,10 +499,10 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                             key={beach}
                             type="button"
                             onClick={() => setFormData({ ...formData, beachSelection: beach })}
-                            className={`py-2 px-1 border-2 rounded-xl text-xs font-semibold text-center transition-all ${
+                            className={`py-2.5 px-1 border-2 rounded-xl text-xs font-semibold text-center transition-all ${
                               formData.beachSelection === beach
                                 ? 'border-primary bg-primary/5 text-primary'
-                                : 'border-gray-200 hover:border-primary/40 text-gray-500 bg-gray-50'
+                                : 'border-gray-200 hover:border-primary/40 text-gray-500 bg-white'
                             }`}
                           >
                             {beach}
@@ -471,15 +512,13 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                     </div>
                   )}
 
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className={labelClass}><MapPin size={12} className="inline mr-1" />Pick-up *</label>
-                      <input type="text" name="pickupLocation" value={formData.pickupLocation} onChange={handleChange} className={inputClass} placeholder="ex. Sunlight Hotel" />
-                    </div>
-                    <div>
-                      <label className={labelClass}><MapPin size={12} className="inline mr-1" />Drop-off *</label>
-                      <input type="text" name="dropoffLocation" value={formData.dropoffLocation} onChange={handleChange} className={inputClass} placeholder="ex. El Nido Town" />
-                    </div>
+                  <div>
+                    <label className={labelClass}><MapPin size={12} className="inline mr-1" />Pick-up Location *</label>
+                    <input type="text" name="pickupLocation" value={formData.pickupLocation} onChange={handleChange} className={inputClass} placeholder="ex. Sunlight Hotel" />
+                  </div>
+                  <div>
+                    <label className={labelClass}><MapPin size={12} className="inline mr-1" />Drop-off Location *</label>
+                    <input type="text" name="dropoffLocation" value={formData.dropoffLocation} onChange={handleChange} className={inputClass} placeholder="ex. El Nido Town" />
                   </div>
 
                   {tourName.includes('El Nido') && (
@@ -491,17 +530,17 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
 
                   <div>
                     <label className={labelClass}><MessageSquare size={12} className="inline mr-1" />Special Requests (Optional)</label>
-                    <textarea name="message" value={formData.message} onChange={handleChange} rows={2}
+                    <textarea name="message" value={formData.message} onChange={handleChange} rows={3}
                       className={`${inputClass} resize-none`} placeholder="ex. Need child seat, early pick-up, extra stop..." />
                   </div>
 
                   <div className="flex gap-3">
                     <button type="button" onClick={() => setStep(3)}
-                      className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+                      className="flex-1 py-3 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
                       <ChevronLeft size={16} /> Back
                     </button>
                     <button type="button" onClick={() => setStep(5)} disabled={!step4Valid}
-                      className="flex-1 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                      className="flex-1 py-3 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                       Review <ChevronRight size={16} />
                     </button>
                   </div>
@@ -510,9 +549,14 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
 
               {/* Step 5: Review & Book */}
               {step === 5 && (
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-7">
+                  <div>
+                    <h3 className="text-lg font-black text-gray-900 mb-1">Review your booking</h3>
+                    <p className="text-xs text-gray-400">Double-check the details before submitting.</p>
+                  </div>
+
                   {/* Summary */}
-                  <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4 space-y-2 text-sm">
+                  <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4 space-y-2.5 text-sm">
                     <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">Booking Summary</p>
                     {([
                       { label: 'Name', value: formData.fullName },
@@ -536,39 +580,39 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
 
                   {/* Pricing */}
                   {showTotal && (
-                    <div className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 space-y-1.5">
+                    <div className="bg-white border border-gray-200 rounded-xl px-4 py-4 space-y-2">
                       {isMultiVehicle && (
-                        <div className="flex justify-between text-xs text-gray-500">
+                        <div className="flex justify-between text-sm text-gray-500">
                           <span>₱{vanPrice.toLocaleString()} × {vehiclesNeeded} vans</span>
                           <span>₱{subtotal.toLocaleString()}</span>
                         </div>
                       )}
                       {!isMultiVehicle && !pricing && (tourType === 'Tour Package' || tourType === 'Transfer') && (
-                        <div className="flex justify-between text-xs text-gray-500">
+                        <div className="flex justify-between text-sm text-gray-500">
                           <span>₱{basePrice.toLocaleString()} × {paxCount} pax</span>
                           <span>₱{subtotal.toLocaleString()}</span>
                         </div>
                       )}
                       {hasEnvFee && (
-                        <div className="flex justify-between text-xs text-gray-500">
+                        <div className="flex justify-between text-sm text-gray-500">
                           <span>Environmental fee × {paxCount} pax</span>
                           <span>₱{envTotal.toLocaleString()}</span>
                         </div>
                       )}
-                      <div className="flex justify-between items-center border-t border-gray-200 pt-2 mt-1">
-                        <span className="text-sm font-semibold text-gray-700">
+                      <div className="flex justify-between items-center border-t border-gray-100 pt-3 mt-1">
+                        <span className="font-semibold text-gray-700">
                           {isMultiVehicle ? 'Fleet Estimate' : (tourType === 'Tour Package' && !pricing) || tourType === 'Transfer' ? 'Estimated Total' : 'Total (flat rate)'}
                         </span>
-                        <span className="text-xl font-black text-primary">₱{grandTotal.toLocaleString()}</span>
+                        <span className="text-2xl font-black text-primary">₱{grandTotal.toLocaleString()}</span>
                       </div>
                       {tourType === 'Transfer' && (
-                        <p className="text-[10px] text-amber-600">⚠️ Minimum ₱550. Final rate may vary by drop-off location.</p>
+                        <p className="text-[11px] text-amber-600">⚠️ Minimum ₱550. Final rate may vary by drop-off location.</p>
                       )}
                     </div>
                   )}
 
                   {/* T&C */}
-                  <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-xl border border-gray-200">
+                  <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl border border-gray-200">
                     <input type="checkbox" id="agreeTerms" checked={agreedToTerms}
                       onChange={(e) => setAgreedToTerms(e.target.checked)}
                       className="mt-0.5 w-4 h-4 accent-primary flex-shrink-0 cursor-pointer" />
@@ -580,60 +624,80 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                     </label>
                   </div>
 
-                  {error && <p className="text-xs text-red-500 text-center bg-red-50 rounded-lg py-2">{error}</p>}
+                  {error && <p className="text-sm text-red-500 text-center bg-red-50 rounded-xl py-3">{error}</p>}
 
-                  <div className="flex gap-3">
-                    <button type="button" onClick={() => setStep(4)}
-                      className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
-                      <ChevronLeft size={16} /> Back
-                    </button>
-                    <button type="submit" disabled={sending || !agreedToTerms}
-                      className="flex-1 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-                      {sending ? 'Sending...' : <><Check size={15} />Submit Booking</>}
-                    </button>
-                  </div>
-                  <p className="text-[10px] text-gray-400 text-center">We'll contact you via WhatsApp, phone or email to confirm.</p>
+                  {showConfirm ? (
+                    <div className="bg-primary/5 border border-primary/20 rounded-2xl p-4 space-y-3">
+                      <p className="text-sm font-bold text-gray-800 text-center">Submit this booking?</p>
+                      <p className="text-xs text-gray-500 text-center">We'll send your request and follow up via WhatsApp, phone or email.</p>
+                      <div className="flex gap-3">
+                        <button type="button" onClick={() => setShowConfirm(false)}
+                          className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-white transition-colors">
+                          Cancel
+                        </button>
+                        <button type="button" onClick={submitBooking} disabled={sending}
+                          className="flex-1 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2">
+                          {sending ? 'Sending...' : <><Check size={14} /> Yes, Submit</>}
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex gap-3">
+                      <button type="button" onClick={() => setStep(4)}
+                        className="flex-1 py-3 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+                        <ChevronLeft size={16} /> Back
+                      </button>
+                      <button type="submit" disabled={sending || !agreedToTerms}
+                        className="flex-1 py-3 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                        <Check size={15} /> Submit Booking
+                      </button>
+                    </div>
+                  )}
+                  <p className="text-[11px] text-gray-400 text-center">We'll contact you via WhatsApp, phone or email to confirm.</p>
                 </form>
               )}
-            </>
-          ) : (
-            <div className="text-center py-8 px-4">
-              <div className="relative inline-flex items-center justify-center mb-6">
-                <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center">
-                  <div className="w-14 h-14 rounded-full bg-green-500 flex items-center justify-center shadow-lg">
-                    <Check size={28} className="text-white" strokeWidth={3} />
-                  </div>
-                </div>
-              </div>
-              <h3 className="text-2xl font-black text-gray-900 mb-1">Request Sent!</h3>
-              <p className="text-gray-400 text-sm mb-6">Your booking request for <span className="font-semibold text-gray-600">{tourName}</span> has been received.</p>
-              <div className="bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 text-left space-y-3 mb-6">
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-[#25D366]/10 flex items-center justify-center flex-shrink-0">
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.552 4.103 1.518 5.829L.057 23.5l5.83-1.527A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.368l-.359-.213-3.72.975.993-3.635-.234-.373A9.818 9.818 0 1112 21.818z"/></svg>
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-gray-700">We'll reach out via WhatsApp</p>
-                    <p className="text-xs text-gray-400 mt-0.5">Expect a confirmation message shortly.</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Check size={14} className="text-primary" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-gray-700">Downpayment required to confirm</p>
-                    <p className="text-xs text-gray-400 mt-0.5">Your booking is held once downpayment is settled.</p>
-                  </div>
-                </div>
-              </div>
-              <button onClick={onClose} className="w-full py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity">
-                Done
-              </button>
             </div>
-          )}
-        </div>
+          </div>
+        ) : (
+          /* Success */
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
+            <div className="inline-flex items-center justify-center mb-6">
+              <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center">
+                <div className="w-14 h-14 rounded-full bg-green-500 flex items-center justify-center shadow-lg">
+                  <Check size={28} className="text-white" strokeWidth={3} />
+                </div>
+              </div>
+            </div>
+            <h3 className="text-2xl font-black text-gray-900 mb-1">Request Sent!</h3>
+            <p className="text-gray-400 text-sm mb-6">Your booking request for <span className="font-semibold text-gray-600">{tourName}</span> has been received.</p>
+            <div className="bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 text-left space-y-3 mb-6">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-[#25D366]/10 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.552 4.103 1.518 5.829L.057 23.5l5.83-1.527A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.368l-.359-.213-3.72.975.993-3.635-.234-.373A9.818 9.818 0 1112 21.818z"/></svg>
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-gray-700">We'll reach out via WhatsApp</p>
+                  <p className="text-xs text-gray-400 mt-0.5">Expect a confirmation message shortly.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <Check size={14} className="text-primary" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-gray-700">Downpayment required to confirm</p>
+                  <p className="text-xs text-gray-400 mt-0.5">Your booking is held once downpayment is settled.</p>
+                </div>
+              </div>
+            </div>
+            <button onClick={() => navigate('/')} className="w-full py-3 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity">
+              Back to Home
+            </button>
+          </div>
+        )}
       </div>
+
+      <SiteFooter />
       <PolicyModal policy={openPolicy} onClose={() => setOpenPolicy(null)} />
     </div>
   );
