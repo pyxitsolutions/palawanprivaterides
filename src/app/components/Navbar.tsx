@@ -65,6 +65,7 @@ function BookNowModal({ onClose }: { onClose: () => void }) {
         className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
         style={{ animation: exiting ? 'backdropOut 0.3s ease forwards' : 'backdropIn 0.25s ease' }}
         onClick={!exiting ? onClose : undefined}
+        onMouseDown={(e) => e.preventDefault()}
       >
         {/* Modal */}
         <div
@@ -192,6 +193,7 @@ export function Navbar() {
               ))}
               <button
                 onClick={() => setShowBookModal(true)}
+                onMouseDown={(e) => e.preventDefault()}
                 className="bg-[#e8a020] text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-[#d49020] transition-colors"
               >
                 Book Now →
