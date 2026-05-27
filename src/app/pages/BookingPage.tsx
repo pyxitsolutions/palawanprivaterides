@@ -6,7 +6,7 @@ import 'react-phone-input-2/lib/style.css';
 import { Navbar } from '../components/Navbar';
 import { SiteFooter } from '../components/SiteFooter';
 import { PolicyModal, type PolicyType } from '../components/PolicyModal';
-import { X, Calendar, Clock, MapPin, Users, MessageSquare, Car, Check, ChevronRight, ChevronLeft, ArrowLeft } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, MessageSquare, Car, Check, ChevronRight, ChevronLeft, ArrowLeft } from 'lucide-react';
 
 const EMAILJS_SERVICE_ID = 'service_w5vk124';
 const EMAILJS_TEMPLATE_RIDES = 'template_pnxzs9s';
@@ -103,7 +103,7 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, initialDirection,
     tourTime: '',
     tourPeriod: '',
     pax: '',
-    direction: '',
+    direction: initialDirection ?? '',
     pickupLocation: '',
     dropoffLocation: '',
     vehicleType: '',
@@ -227,10 +227,12 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, initialDirection,
       const beachInfo = formData.beachSelection ? `\nBeach: ${formData.beachSelection}` : '';
       const directionInfo = formData.direction ? `\nDirection: ${formData.direction}` : '';
       const routeLabel = formData.direction ? formData.direction : tourName;
-      const waMessage = encodeURIComponent(
-        `🏝️ New Booking!\nRoute: ${routeLabel}${vehicleInfo}\nPrice: ₱${grandTotal.toLocaleString()}\nName: ${formData.fullName}\nPhone: ${formData.phone}\nNationality: ${formData.nationality || 'N/A'}\nDate: ${formData.tourDate} at ${formData.tourTime || formData.tourPeriod}\nPax: ${formData.pax}${isMultiVehicle ? ` (${vehiclesNeeded} vans needed)` : ''}${directionInfo}${beachInfo}\nPickup: ${formData.pickupLocation}\nDrop-off: ${formData.dropoffLocation}\nNotes: ${formData.message || 'None'}`
-      );
-      fetch(`https://api.callmebot.com/whatsapp.php?phone=639217792016&text=${waMessage}&apikey=1091963`).catch(() => {});
+      const rawMessage = `🏝️ New Booking!\nRoute: ${routeLabel}${vehicleInfo}\nPrice: ₱${grandTotal.toLocaleString()}\nName: ${formData.fullName}\nPhone: ${formData.phone}\nNationality: ${formData.nationality || 'N/A'}\nDate: ${formData.tourDate} at ${formData.tourTime || formData.tourPeriod}\nPax: ${formData.pax}${isMultiVehicle ? ` (${vehiclesNeeded} vans needed)` : ''}${directionInfo}${beachInfo}\nPickup: ${formData.pickupLocation}\nDrop-off: ${formData.dropoffLocation}\nNotes: ${formData.message || 'None'}`;
+      fetch('/api/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: rawMessage }),
+      }).catch(() => {});
 
       setSubmitted(true);
       window.scrollTo(0, 0);
