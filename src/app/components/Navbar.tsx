@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, ArrowRight, CalendarCheck } from 'lucide-react';
 import logo from '../../logo/logo.png';
@@ -34,6 +34,11 @@ const transitionStyles = `
 function BookNowModal({ onClose }: { onClose: () => void }) {
   const navigate = useNavigate();
   const [exiting, setExiting] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    containerRef.current?.focus({ preventScroll: true });
+  }, []);
 
   const handleNavigate = (href: string) => {
     setExiting(true);
@@ -62,7 +67,9 @@ function BookNowModal({ onClose }: { onClose: () => void }) {
 
       {/* Backdrop */}
       <div
-        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+        ref={containerRef}
+        tabIndex={-1}
+        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm outline-none"
         style={{ animation: exiting ? 'backdropOut 0.3s ease forwards' : 'backdropIn 0.25s ease' }}
         onClick={!exiting ? onClose : undefined}
         onMouseDown={(e) => e.preventDefault()}
