@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { HeroCarousel } from './components/HeroCarousel';
 import { ScrollToTopButton } from './components/ScrollToTopButton';
-// import { Testimonials } from './components/Testimonials';
+import { Testimonials } from './components/Testimonials';
 import { SiteFooter } from './components/SiteFooter';
 import {
   Car, Shield, Clock, Award, Phone, Mail, Facebook, MapPin,
@@ -261,9 +261,9 @@ export default function App() {
       </section>
 
       {/* Testimonials */}
-      {/* <div id="reviews">
+      <div id="reviews">
         <Testimonials />
-      </div> */}
+      </div>
 
       {/* CTA Banner */}
       <section className="py-24 relative bg-primary">

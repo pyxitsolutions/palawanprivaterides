@@ -1,41 +1,25 @@
 import { useState } from 'react';
 import { Star, X } from 'lucide-react';
-import reviews1 from '../../reviews/reviews-1.jpg';
-import reviews4 from '../../reviews/reviews-4.jpg';
-import reviews5 from '../../reviews/reviews-5.jpg';
-import reviews6 from '../../reviews/reviews-6.jpg';
+import review1 from '../../reviews/review-1.png';
+import review2 from '../../reviews/review-2.png';
 
 export function Testimonials() {
   const [lightbox, setLightbox] = useState<string | null>(null);
 
   const testimonials = [
     {
-      image: reviews1,
-      name: 'Maria Santos',
-      review: 'Amazing private ride to El Nido! The van was super comfortable and our driver was very friendly and knowledgeable. Highly recommend!',
+      image: review1,
+      name: 'Nicole Montojo',
+      review: 'We had a smooth ride back to Puerto Princesa, he drove us carefully so we felt safe and comfortable. Reasonable yung rate ng private transfer and new rin yung car ni sir so malamig yung AC. Will definitely recommend.',
       rating: 5,
-      tourBooked: 'Puerto to El Nido Private Van',
+      tourBooked: 'Private Transfer to Puerto Princesa',
     },
     {
-      image: reviews4,
-      name: 'Juan Reyes',
-      review: 'Booked the Underground River tour and it was absolutely worth it. Everything was arranged for us — stress-free and enjoyable!',
+      image: review2,
+      name: 'Shirley Ho & Christian',
+      review: 'Highly recommend Palawan Private Rides! John was very helpful and organised our transfer to and from Port Barton. The cars were clean, new and comfortable. Our drivers Renz and Ryan were great. Salamat!',
       rating: 5,
-      tourBooked: 'Underground River Day Tour',
-    },
-    {
-      image: reviews5,
-      name: 'Anna Cruz',
-      review: 'Great service and fair pricing! The city tour covered all the best spots in Puerto Princesa. Will definitely book again.',
-      rating: 5,
-      tourBooked: 'Puerto Princesa City Tour',
-    },
-    {
-      image: reviews6,
-      name: 'Pedro Gomez',
-      review: 'Airport pick-up was on time and the vehicle was clean and comfortable. Simple, reliable, and professional. Thank you!',
-      rating: 5,
-      tourBooked: 'Airport Transfer',
+      tourBooked: 'Private Transfer to Port Barton',
     },
   ];
 
@@ -53,7 +37,7 @@ export function Testimonials() {
         </div>
 
         {/* Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
           {testimonials.map((t, i) => (
             <div
               key={i}
