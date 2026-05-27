@@ -158,8 +158,15 @@ function BookNowModal({ onClose }: { onClose: () => void }) {
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [showBookModal, setShowBookModal] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const scrollToSection = (id: string) => {
     setIsOpen(false);
@@ -178,7 +185,11 @@ export function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-primary/60 backdrop-blur-md">
+      <nav className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md transition-all duration-300 ${
+        scrolled
+          ? 'bg-primary/95 shadow-lg shadow-black/20'
+          : 'bg-primary/40'
+      }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
@@ -193,21 +204,23 @@ export function Navbar() {
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className="text-white/80 hover:text-white transition-colors text-sm font-medium"
+                  className="relative text-white/80 hover:text-white transition-colors text-sm font-medium group"
                 >
                   {item.name}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#e8a020] group-hover:w-full transition-all duration-300 rounded-full" />
                 </button>
               ))}
               <Link
                 to="/gallery"
-                className="text-white/80 hover:text-white transition-colors text-sm font-medium"
+                className="relative text-white/80 hover:text-white transition-colors text-sm font-medium group"
               >
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#e8a020] group-hover:w-full transition-all duration-300 rounded-full" />
                 Gallery
               </Link>
               <button
                 onClick={() => setShowBookModal(true)}
                 onMouseDown={(e) => e.preventDefault()}
-                className="bg-[#e8a020] text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-[#d49020] transition-colors"
+                className="bg-[#e8a020] text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-[#d49020] hover:scale-105 active:scale-95 transition-all duration-200 shadow-md shadow-black/20"
               >
                 Book Now →
               </button>

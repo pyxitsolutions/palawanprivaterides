@@ -3,15 +3,30 @@ import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { SiteFooter } from '../components/SiteFooter';
 
-import reviews1 from '../../reviews/reviews-1.jpg';
-import reviews2 from '../../reviews/reviews-2.jpg';
-import reviews3 from '../../reviews/reviews-3.jpg';
-import reviews4 from '../../reviews/reviews-4.jpg';
-import reviews5 from '../../reviews/reviews-5.jpg';
-import reviews6 from '../../reviews/reviews-6.jpg';
-import reviews7 from '../../reviews/reviews-7.jpg';
+import p1 from '../../gallery/p1.jpg';
+import p2 from '../../gallery/p2.jpg';
+import p3 from '../../gallery/p3.jpg';
+import p4 from '../../gallery/p4.jpg';
+import p5 from '../../gallery/p5.jpg';
+import p6 from '../../gallery/p6.jpg';
+import p7 from '../../gallery/p7.jpg';
+import p8 from '../../gallery/p8.jpg';
+import p9 from '../../gallery/p9.jpg';
+import p10 from '../../gallery/p10.jpg';
+import p11 from '../../gallery/p11.jpg';
+import p12 from '../../gallery/p12.jpg';
+import p13 from '../../gallery/p13.jpg';
+import p14 from '../../gallery/p14.jpg';
+import p15 from '../../gallery/p15.jpg';
+import p16 from '../../gallery/p16.jpg';
+import p17 from '../../gallery/p17.jpg';
+import p18 from '../../gallery/p18.jpg';
+import p19 from '../../gallery/p19.jpg';
+import p20 from '../../gallery/p20.jpeg';
+import p21 from '../../gallery/p21.jpeg';
+import p22 from '../../gallery/p22.jpeg';
 
-const images = [reviews1, reviews2, reviews3, reviews4, reviews5, reviews6, reviews7];
+const images = [p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p21,p22];
 
 export default function GalleryPage() {
   const [lightbox, setLightbox] = useState<number | null>(null);
@@ -25,19 +40,6 @@ export default function GalleryPage() {
     setLightbox((i) => (i !== null ? (i + 1) % images.length : null));
   };
 
-  const Cell = ({ index, className }: { index: number; className?: string }) => (
-    <div
-      className={`overflow-hidden rounded-xl cursor-pointer group ${className ?? ''}`}
-      onClick={() => setLightbox(index)}
-    >
-      <img
-        src={images[index]}
-        alt={`Gallery ${index + 1}`}
-        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-      />
-    </div>
-  );
-
   return (
     <>
       <Navbar />
@@ -50,31 +52,30 @@ export default function GalleryPage() {
           <p className="text-gray-500 text-lg">Moments from our guests exploring Palawan.</p>
         </div>
 
-        {/* Grid */}
+        {/* Masonry columns */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-
-          {/* Row 1: tall left + 2x2 right */}
-          <div className="grid grid-cols-3 gap-2" style={{ gridTemplateRows: '280px 280px' }}>
-            <Cell index={0} className="row-span-2" />
-            <Cell index={1} />
-            <Cell index={2} />
-            <Cell index={3} />
-            <Cell index={4} />
+          <div style={{ columns: '3', columnGap: '6px' }}>
+            {images.map((img, i) => (
+              <div
+                key={i}
+                className="overflow-hidden cursor-pointer group mb-1.5 break-inside-avoid"
+                onClick={() => setLightbox(i)}
+              >
+                <img
+                  src={img}
+                  alt={`Gallery ${i + 1}`}
+                  className="w-full object-cover group-hover:brightness-90 transition-all duration-300"
+                />
+              </div>
+            ))}
           </div>
-
-          {/* Row 2: remaining images */}
-          <div className="grid grid-cols-3 gap-2 mt-2" style={{ gridTemplateRows: '280px' }}>
-            <Cell index={5} className="col-span-2" />
-            <Cell index={6} />
-          </div>
-
         </div>
       </main>
 
       {/* Lightbox */}
       {lightbox !== null && (
         <div
-          className="fixed inset-0 z-[200] bg-black/90 flex items-center justify-center p-4"
+          className="fixed inset-0 z-[200] bg-black/95 flex items-center justify-center p-4"
           onClick={() => setLightbox(null)}
         >
           <button

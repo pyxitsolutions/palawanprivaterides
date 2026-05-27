@@ -49,11 +49,11 @@ export default function App() {
   };
 
   const destinations = [
-    { name: 'El Nido', image: dest1, desc: 'Limestone cliffs & lagoons' },
+    { name: 'El Nido', image: dest1, desc: 'Lagoons, limestone cliffs & island hopping' },
     { name: 'Sabang', image: dest3, desc: 'Underground River & mangroves' },
-    { name: 'Port Barton', image: dest4, desc: 'Secluded beaches & reefs' },
-    { name: 'San Vicente', image: dest5, desc: 'Long Beach & sunsets' },
-    { name: 'Puerto Princesa', image: dest2, desc: 'City tours & transfers' },
+    { name: 'Port Barton', image: dest4, desc: 'Quiet beaches & coral reefs' },
+    { name: 'San Vicente', image: dest5, desc: 'Long Beach & golden sunsets' },
+    { name: 'Puerto Princesa', image: dest2, desc: 'City tours & airport transfers' },
   ];
 
   return (
@@ -96,10 +96,10 @@ export default function App() {
           <div className="max-w-2xl mb-14">
             <p className="text-sm font-bold text-[#e8a020] uppercase tracking-widest mb-3">What We Offer</p>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-4">
-              Premium services,<br />locally crafted.
+              Private Transportation<br />& Tours in Palawan
             </h2>
             <p className="text-lg text-gray-500">
-              One trusted local team for every leg of your Palawan trip — private rides, tours, and full multi-day journeys.
+              Whether you're heading to El Nido for island hopping or need a comfortable airport pickup, we handle every part of your Palawan journey — privately, professionally, and on your schedule.
             </p>
           </div>
 
@@ -108,25 +108,25 @@ export default function App() {
               {
                 icon: <Car size={28} />,
                 title: 'Private Transfers',
-                desc: 'Door-to-door rides from Puerto Princesa to El Nido, Port Barton, San Vicente, Sabang & beyond. No shared vans, no detours.',
+                desc: 'Door-to-door private van transfers from Puerto Princesa to El Nido, Port Barton, San Vicente & beyond. No shared vans, no unplanned detours.',
                 href: '/rides',
               },
               {
                 icon: <MapPin size={28} />,
                 title: 'Island Tours',
-                desc: "Guided day tours to Palawan's top destinations — Underground River, City Tour, Nacpan & more.",
+                desc: "Explore Palawan's most iconic destinations with a private guided tour — Underground River, Honda Bay, Firefly Watching & more.",
                 href: '/tours',
               },
               {
                 icon: <Clock size={28} />,
                 title: 'Multi-Day Packages',
-                desc: 'Planning a longer stay? We can arrange multi-day private rides and tour packages for your entire trip.',
+                desc: "Planning a multi-stop Palawan itinerary? We'll handle your transport from start to finish so you can focus on the adventure.",
                 href: '/rides',
               },
               {
                 icon: <Shield size={28} />,
                 title: 'Airport Transfers',
-                desc: 'Reliable pick-up and drop-off at Puerto Princesa Airport. Always on time, no hidden fees.',
+                desc: 'Arrive and leave without the stress. Our drivers meet you on time at Puerto Princesa Airport — no hidden charges, ever.',
                 href: '/rides',
               },
             ].map((s, i) => (
@@ -153,10 +153,10 @@ export default function App() {
           <div className="text-center mb-14">
             <p className="text-sm font-bold text-[#e8a020] uppercase tracking-widest mb-3">Where We Go</p>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Discover Palawan, your way.
+              Where Are You Headed in Palawan?
             </h2>
             <p className="text-lg text-gray-500 max-w-xl mx-auto">
-              From limestone lagoons to mystical caves and quiet shores — we connect every dot, privately.
+              From El Nido's lagoons to Port Barton's quiet shores — we get you there privately, comfortably, and on your terms.
             </p>
           </div>
 
@@ -191,15 +191,15 @@ export default function App() {
             <div>
               <p className="text-sm font-bold text-[#e8a020] uppercase tracking-widest mb-4">Why Choose Us</p>
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-4">
-                Experience Palawan the comfortable, stress-free way —
+                The Comfortable Way to Explore Palawan
               </h2>
-              <p className="text-gray-500 text-lg mb-8">with private rides you can rely on.</p>
+              <p className="text-gray-500 text-lg mb-8">We're a local Palawan transportation provider trusted by hundreds of travelers each year. From first-time tourists to repeat visitors, our guests choose us for one reason — peace of mind from the moment they land.</p>
               <div className="space-y-5">
                 {[
-                  { title: 'Truly Private Transfers', desc: 'Travel with only your group. No shared vans, random passengers, or unnecessary stopovers.' },
-                  { title: 'Comfortable & Spacious Vehicles', desc: 'Clean, air-conditioned vans and SUVs perfect for couples, families, and groups of up to 13 passengers.' },
-                  { title: 'Trusted Local Drivers', desc: 'Friendly local drivers who know Palawan\'s roads, best routes, and hidden gems.' },
-                  { title: 'Transparent Pricing', desc: 'Simple, fixed rates per booking with no hidden charges. What you book is what you pay.' },
+                  { title: 'Truly Private Rides', desc: 'Travel with only your group. No strangers, no unplanned stops, no shared van headaches.' },
+                  { title: 'Clean & Comfortable Vehicles', desc: 'Air-conditioned sedans, SUVs, and vans for couples, families, and groups of up to 13 passengers.' },
+                  { title: 'Local Drivers Who Know Palawan', desc: "Our drivers know the roads, the shortcuts, and the best spots along the way." },
+                  { title: 'Transparent, Fixed Pricing', desc: 'No hidden charges. The rate you see is the rate you pay — every time.' },
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-4">
                     <div className="flex-shrink-0 mt-0.5">
@@ -276,11 +276,11 @@ export default function App() {
             Your Palawan Adventure Awaits
           </span>
           <h2 className="text-4xl md:text-6xl font-black text-white mb-6 leading-tight">
-            Ready to travel<br />
-            <span className="text-[#e8a020]">like locals do?</span>
+            Ready to Explore<br />
+            <span className="text-[#e8a020]">Palawan Your Way?</span>
           </h2>
           <p className="text-white/70 text-lg md:text-xl mb-10 max-w-xl mx-auto leading-relaxed">
-            Private rides. Real experiences. No tourist traps. Message us on WhatsApp and get your tailored quote within minutes.
+            Skip the shared vans and crowded tours. Book a private transfer or guided tour today — and experience Palawan at your own pace, with your own group.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <a
@@ -289,7 +289,7 @@ export default function App() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-[#e8a020] text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-[#d49020] transition-colors shadow-lg shadow-black/20"
             >
-              Plan My Trip →
+              Book Your Private Ride Now →
             </a>
             <a
               href={`tel:+639217792016`}
@@ -311,13 +311,13 @@ export default function App() {
           </div>
           <div className="space-y-4">
             {[
-              { q: "What's included in the tour price?", a: "All bookings include a private vehicle and professional driver. For tour packages, a local guide may also be included. Entrance fees, boat rides, or permits (e.g. Underground River) are not included unless specified." },
-              { q: 'Can I customize my itinerary?', a: "Absolutely! We offer custom private rides to any destination in Palawan. Just message us on WhatsApp or Messenger and we'll plan the trip together." },
-              { q: 'How many passengers can join per booking?', a: 'Our vehicles can accommodate up to 13 passengers. For larger groups, please contact us directly and we will arrange accordingly.' },
-              { q: 'Do you offer airport or hotel pick-up?', a: 'Yes! All our bookings include hotel or accommodation pick-up in Puerto Princesa. Just provide your hotel name or address when booking.' },
-              { q: 'What if I need to cancel or reschedule?', a: 'We understand that plans change. Please contact us as soon as possible via WhatsApp or email and we will do our best to accommodate your request.' },
-              { q: 'How do I confirm my booking?', a: 'After submitting the booking form, we will contact you via WhatsApp, phone or email within a few hours to confirm your reservation and discuss details.' },
-              { q: 'Is a downpayment required to confirm my booking?', a: 'Yes, a downpayment is required to secure and confirm your booking. Once we get in touch via WhatsApp, phone or email, we will provide the downpayment details. Your reservation will only be confirmed upon receipt of the downpayment.' },
+              { q: 'How much does a private van transfer from Puerto Princesa to El Nido cost?', a: 'Our private van transfers to El Nido start at ₱8,100 depending on vehicle type. Unlike shared vans, you get the entire vehicle for your group — no strangers, no unnecessary detours.' },
+              { q: 'How long is the drive from Puerto Princesa to El Nido?', a: 'The drive typically takes 5 to 6 hours depending on road conditions. We recommend an early morning departure to arrive before sunset and make the most of your first day.' },
+              { q: 'Do you offer airport pickup in Puerto Princesa?', a: 'Yes. We provide on-time airport transfers from Puerto Princesa Airport to any hotel in the city or surrounding areas. Just share your flight details when booking and we will be there.' },
+              { q: 'Can I book a private tour for my group in Palawan?', a: 'Absolutely. We offer private day tours including the Underground River, Honda Bay Island Hopping, Iwahig Firefly Watching, and Puerto Princesa City Tour — all fully private for your group.' },
+              { q: 'What vehicles do you use for transfers?', a: 'We use clean, air-conditioned Sedans, SUVs, and Vans depending on your group size. Vans accommodate up to 13 passengers comfortably.' },
+              { q: 'Can I make a stop during the drive to El Nido?', a: 'Yes, stopovers for meals, sightseeing, or photos are available upon request at no extra charge. Just let us know when booking.' },
+              { q: 'Is a downpayment required to confirm my booking?', a: 'Yes, a downpayment is required to secure your booking. Once we confirm via WhatsApp, phone, or email, we will send you the payment details. Your reservation is only confirmed upon receipt.' },
             ].map((item, i) => (
               <FAQItem key={i} question={item.q} answer={item.a} />
             ))}

@@ -8,12 +8,12 @@ export function HeroCarousel() {
       <img
         src={hero1}
         alt="Palawan"
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 w-full h-full object-cover object-[70%_center]"
         loading="eager"
       />
 
       {/* Dark blur overlay */}
-      <div className="absolute inset-0 bg-black/45 backdrop-blur-[2px]" />
+      <div className="absolute inset-0 bg-black/65 backdrop-blur-[2px]" />
 
       {/* Hero Content */}
       <div className="relative z-10 flex-1 flex flex-col justify-center items-center text-center px-4 sm:px-8 lg:px-20 pt-24 pb-16">
@@ -25,15 +25,15 @@ export function HeroCarousel() {
           </div>
 
           {/* Heading */}
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6" style={{ fontFamily: "inherit" }}>
-            Private Transfers<br />
-            &amp; Tours Across<br />
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-6">
+            Your Private Ride<br />
+            Across<br />
             <span className="text-[#e8a020]">Palawan.</span>
           </h1>
 
           {/* Subtitle */}
-          <p className="text-lg md:text-xl text-white/80 mb-8 max-w-xl leading-relaxed" style={{ fontFamily: "'Lato', sans-serif" }}>
-            Explore Palawan the easy way with reliable private transportation and affordable tour packages. Safe rides, friendly local drivers, and stress-free adventures await.
+          <p className="text-lg md:text-xl text-white/80 mb-8 max-w-2xl leading-relaxed">
+            Door-to-door private van transfers and guided tours from Puerto Princesa to El Nido, Port Barton, San Vicente & beyond. No shared vans. Just you, your group, and the open road.
           </p>
 
           {/* CTA Buttons */}
@@ -45,7 +45,7 @@ export function HeroCarousel() {
               className="border-2 border-white/50 text-white px-8 py-3.5 rounded-full font-semibold hover:bg-white/10 transition-all flex items-center gap-2"
             >
               <MessageCircle size={18} />
-              Chat on WhatsApp
+              Book Your Private Transfer
             </a>
           </div>
         </div>
