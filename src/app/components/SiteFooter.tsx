@@ -64,8 +64,6 @@ export function SiteFooter() {
               <ul className="space-y-2 text-sm text-white/60">
                 <li>+63 921-779-2016</li>
                 <li>palawanprivaterides@gmail.com</li>
-                <li>National Highway, San Pedro</li>
-                <li>Puerto Princesa, Palawan</li>
               </ul>
             </div>
 

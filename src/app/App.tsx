@@ -243,7 +243,7 @@ export default function App() {
               {[
                 { step: '1', emoji: '🏝️', title: 'Choose Your Service', desc: 'Browse our private rides, tour packages, or airport transfers. Pick the one that fits your trip and budget.' },
                 { step: '2', emoji: '📋', title: 'Submit Booking', desc: 'Fill out the form with your date, time, pick-up location, and number of passengers.' },
-                { step: '3', emoji: '✅', title: 'We Confirm & You Ride', desc: "We'll contact you via WhatsApp or phone to confirm. Then just sit back and enjoy Palawan!" },
+                { step: '3', emoji: '✅', title: 'We Confirm & You Ride', desc: "We'll contact you via WhatsApp, phone or email to confirm. Then just sit back and enjoy Palawan!" },
               ].map((item, i) => (
                 <div key={i} className="flex flex-col items-center text-center">
                   {/* Number circle */}

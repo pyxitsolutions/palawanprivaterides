@@ -151,7 +151,7 @@ const policies: Record<Exclude<PolicyType, null>, { title: string; content: JSX.
           <p>For any privacy-related questions or concerns, please reach out to us at:<br />
           Email: palawanprivaterides@gmail.com<br />
           WhatsApp: +63 921-779-2016<br />
-          Address: National Highway, San Pedro, Puerto Princesa, Palawan</p>
+          </p>
         </section>
       </div>
     ),
@@ -223,7 +223,7 @@ const policies: Record<Exclude<PolicyType, null>, { title: string; content: JSX.
           <p>For any questions regarding these terms, please contact us:<br />
           Email: palawanprivaterides@gmail.com<br />
           WhatsApp: +63 921-779-2016<br />
-          Address: National Highway, San Pedro, Puerto Princesa, Palawan, Philippines</p>
+          </p>
         </section>
       </div>
     ),
