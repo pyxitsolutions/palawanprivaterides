@@ -52,7 +52,7 @@ export const blogPosts: BlogPost[] = [
       { type: 'p', text: 'Private van transfers from Puerto Princesa to El Nido start at ₱7,100 for a Sedan/Hatchback, ₱7,600 for an SUV, and ₱8,100 for a Van (up to 13 passengers). The rate covers the entire vehicle — not per person — making it excellent value for families and groups.' },
       { type: 'h2', text: 'Tips for a Comfortable Journey' },
       { type: 'ul', items: ['Bring snacks and water for the 5-6 hour ride', 'Wear comfortable clothing', 'Charge your devices the night before — power banks are handy', 'Inform your driver of any motion sickness so they can adjust speed on mountain roads', 'Book your transfer at least 1 day in advance, especially during peak season (December to May)'] },
-      { type: 'cta', ctaLabel: 'Book Your Private Van to El Nido', ctaHref: '/book' },
+      { type: 'cta', ctaLabel: 'Book Your Private Van to El Nido', ctaHref: '/services/pps-el-nido' },
     ],
   },
   {
@@ -82,7 +82,7 @@ export const blogPosts: BlogPost[] = [
       { type: 'tip', text: '💡 Port Barton has limited ATMs — bring enough cash before leaving Puerto Princesa. Most accommodations and restaurants accept cash only.' },
       { type: 'h2', text: 'What to Pack' },
       { type: 'ul', items: ['Sufficient cash (ATMs are limited)', 'Reef-safe sunscreen', 'Insect repellent', 'Light clothing and swimwear', 'Snorkeling gear (or rent locally)', 'Power bank — electricity can be intermittent'] },
-      { type: 'cta', ctaLabel: 'Book Your Transfer to Port Barton', ctaHref: '/book' },
+      { type: 'cta', ctaLabel: 'Book Your Transfer to Port Barton', ctaHref: '/services/pps-port-barton' },
     ],
   },
   {
@@ -122,7 +122,7 @@ export const blogPosts: BlogPost[] = [
       { type: 'h2', text: 'Our Recommendation' },
       { type: 'p', text: 'The sweet spot for visiting El Nido is November to March. The weather is perfect, island hopping tours run daily, and while it\'s popular, it\'s not as overwhelmingly crowded as April during Holy Week. If you\'re traveling from abroad, January and February offer the most reliable weather.' },
       { type: 'tip', text: '💡 Book your private van transfer from Puerto Princesa to El Nido in advance during peak season (December to April). Vehicles fill up quickly, especially during holidays.' },
-      { type: 'cta', ctaLabel: 'Book Your Puerto Princesa to El Nido Transfer', ctaHref: '/book' },
+      { type: 'cta', ctaLabel: 'Book Your Puerto Princesa to El Nido Transfer', ctaHref: '/services/pps-el-nido' },
     ],
   },
   {
@@ -162,7 +162,7 @@ export const blogPosts: BlogPost[] = [
         'Have 2+ days → Do Tour A + Tour C for the best combination',
       ] },
       { type: 'tip', text: '💡 Book your tours at least a day in advance. Tours are limited in capacity and sell out quickly during peak season.' },
-      { type: 'cta', ctaLabel: 'Book El Nido Island Tours', ctaHref: '/tours' },
+      { type: 'cta', ctaLabel: 'Book El Nido Island Tours', ctaHref: '/services/el-nido-island-tour-a' },
     ],
   },
   {
@@ -192,7 +192,7 @@ export const blogPosts: BlogPost[] = [
       { type: 'h2', text: 'How to Get Around Puerto Princesa' },
       { type: 'p', text: 'The easiest and most comfortable way to explore Puerto Princesa\'s attractions is with a private vehicle and driver. Palawan Private Rides offers private guided tours for all the major attractions, with hotel pickup and drop-off included.' },
       { type: 'tip', text: '💡 If you have 2-3 days in Puerto Princesa, do the Underground River on Day 1 (it\'s a full day), Honda Bay Island Hopping on Day 2, and the Firefly Watching in the evening of Day 2.' },
-      { type: 'cta', ctaLabel: 'Browse Puerto Princesa Tour Packages', ctaHref: '/tours' },
+      { type: 'cta', ctaLabel: 'Browse Puerto Princesa Tour Packages', ctaHref: '/services/underground-river-day-tour' },
     ],
   },
 ];
