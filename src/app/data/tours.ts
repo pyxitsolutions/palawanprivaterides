@@ -22,6 +22,9 @@ import tourRiverUr2 from '../../ur-tour/ur-2.png';
 import tourRiverUr3 from '../../ur-tour/ur-3.png';
 import tourTala from '../../tour/tour-tala.png';
 import tourHonda from '../../tour/tour-honda.png';
+import tourHonda1 from '../../honda-bay/courie-1.png';
+import tourHonda2 from '../../honda-bay/courie-2.png';
+import tourHonda3 from '../../honda-bay/courie-3.png';
 import tourElNidoA from '../../elnido/tour-a.png';
 import tourElNidoB from '../../elnido/tour-b.png';
 import tourElNidoC from '../../elnido/tour-c.png';
@@ -185,7 +188,7 @@ export const tours: Tour[] = [
     ],
   },
   {
-    images: [tourHonda],
+    images: [tourHonda, tourHonda1, tourHonda2, tourHonda3],
     name: 'Honda Bay Island Tour',
     price: '1850',
     type: 'Tour Package',
