@@ -82,6 +82,8 @@ export function CarDetailsModal({ isOpen, onClose, tour, onBookNow }: TourDetail
                 <img
                   src={tour.images[0]}
                   alt={tour.name}
+                  loading="eager"
+                  decoding="async"
                   className="w-full h-full object-cover hover:brightness-90 transition-all duration-300"
                 />
               </div>
@@ -95,6 +97,8 @@ export function CarDetailsModal({ isOpen, onClose, tour, onBookNow }: TourDetail
                   <img
                     src={tour.images[1]}
                     alt={tour.name}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover hover:brightness-90 transition-all duration-300"
                   />
                 </div>
@@ -105,6 +109,8 @@ export function CarDetailsModal({ isOpen, onClose, tour, onBookNow }: TourDetail
                   <img
                     src={tour.images[2]}
                     alt={tour.name}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover hover:brightness-90 transition-all duration-300"
                   />
                   {tour.images.length > 3 && (
@@ -120,6 +126,8 @@ export function CarDetailsModal({ isOpen, onClose, tour, onBookNow }: TourDetail
               <img
                 src={tour.images[singleIndex]}
                 alt={tour.name}
+                loading="eager"
+                decoding="async"
                 className="w-full h-full object-cover cursor-pointer"
                 onClick={() => setLightboxIndex(singleIndex)}
               />
@@ -265,6 +273,7 @@ export function CarDetailsModal({ isOpen, onClose, tour, onBookNow }: TourDetail
           <img
             src={tour.images[lightboxIndex]}
             alt={tour.name}
+            decoding="async"
             className="max-w-full max-h-[85vh] object-contain shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           />
