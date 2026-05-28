@@ -36,14 +36,13 @@ export function HeroCarousel() {
 
           {/* Heading */}
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-6">
-            Your Private Ride<br />
-            Across<br />
-            <span className="text-[#e8a020]">Palawan.</span>
+            Private Van Transfers<br />
+            in <span className="text-[#e8a020]">Palawan.</span>
           </h1>
 
           {/* Subtitle */}
           <p className="text-lg md:text-xl text-white/80 mb-8 max-w-2xl leading-relaxed">
-            Door-to-door private van transfers and guided tours from Puerto Princesa to El Nido, Port Barton, San Vicente & beyond. No shared vans. Just you, your group, and the open road.
+            Private van transfers from Puerto Princesa to El Nido, Port Barton & San Vicente. Book your private van transfer in Palawan today — no shared vans, just your group.
           </p>
 
           {/* CTA Buttons */}
@@ -72,6 +71,19 @@ export function HeroCarousel() {
               {loading === 'airport' ? <Loader2 size={18} className="animate-spin" /> : <Plane size={18} />}
               Airport Transfer
             </button>
+          </div>
+
+          {/* Trust indicators */}
+          <div className="mt-8 flex flex-wrap justify-center gap-x-5 gap-y-2">
+            {[
+              '⭐ 4.9 Rating',
+              '✔ Local Drivers',
+              '✔ Air-Conditioned',
+              '✔ Private Only',
+              '✔ Airport Pickup',
+            ].map((item) => (
+              <span key={item} className="text-white/75 text-xs font-semibold tracking-wide">{item}</span>
+            ))}
           </div>
         </div>
       </div>

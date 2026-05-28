@@ -90,6 +90,41 @@ export default function App() {
         </div>
       </section>
 
+      {/* Quick Pricing */}
+      <section className="py-14 bg-gray-50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <p className="text-sm font-bold text-[#e8a020] uppercase tracking-widest mb-2">Transparent Pricing</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Popular Routes — Starting Rates</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {[
+              { route: 'Puerto Princesa → El Nido', duration: '5–6 hrs', price: '₱7,100', note: 'per booking' },
+              { route: 'Puerto Princesa → Port Barton', duration: '2–3 hrs', price: '₱5,600', note: 'per booking' },
+              { route: 'Airport / Hotel Transfer', duration: 'Puerto Princesa', price: '₱550', note: 'per booking' },
+            ].map((item) => (
+              <div key={item.route} className="bg-white rounded-2xl border border-gray-200 px-6 py-5 flex flex-col gap-1 hover:shadow-md transition-shadow">
+                <p className="font-bold text-gray-900 text-sm">{item.route}</p>
+                <p className="text-xs text-gray-400">{item.duration}</p>
+                <div className="mt-3 flex items-end justify-between">
+                  <div>
+                    <p className="text-xs text-gray-400">Starting from</p>
+                    <p className="text-2xl font-black text-primary">{item.price}</p>
+                    <p className="text-xs text-gray-400">{item.note}</p>
+                  </div>
+                  <button
+                    onClick={() => handleNavigate('/rides')}
+                    className="text-xs font-bold text-[#e8a020] hover:underline flex items-center gap-1"
+                  >
+                    Book <ArrowRight size={12} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Premium Services */}
       <section id="services" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
