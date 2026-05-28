@@ -51,11 +51,11 @@ export default function App() {
   };
 
   const destinations = [
-    { name: 'El Nido', image: dest1, desc: 'Lagoons, limestone cliffs & island hopping', href: '/rides' },
-    { name: 'Sabang', image: dest3, desc: 'Underground River & mangroves', href: '/rides' },
-    { name: 'Port Barton', image: dest4, desc: 'Quiet beaches & coral reefs', href: '/rides' },
-    { name: 'San Vicente', image: dest5, desc: 'Long Beach & golden sunsets', href: '/rides' },
-    { name: 'Puerto Princesa', image: dest2, desc: 'City tours & airport transfers', href: '/tours' },
+    { name: 'El Nido', image: dest1, desc: 'Lagoons, limestone cliffs & island hopping', href: '/destinations/el-nido' },
+    { name: 'Sabang', image: dest3, desc: 'Underground River & mangroves', href: '/destinations/sabang' },
+    { name: 'Port Barton', image: dest4, desc: 'Quiet beaches & coral reefs', href: '/destinations/port-barton' },
+    { name: 'San Vicente', image: dest5, desc: 'Long Beach & golden sunsets', href: '/destinations/san-vicente' },
+    { name: 'Puerto Princesa', image: dest2, desc: 'City tours & airport transfers', href: '/destinations/puerto-princesa' },
   ];
 
   return (
