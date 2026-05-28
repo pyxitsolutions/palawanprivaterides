@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+Disallow: /book
+
+Sitemap: https://www.palawanprivaterides.com/sitemap.xml
