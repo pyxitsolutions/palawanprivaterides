@@ -47,11 +47,29 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (currency === 'PHP') return;
+    const CACHE_KEY = 'fx_rates_php';
+    const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { rates: cachedRates, ts } = JSON.parse(cached);
+        if (Date.now() - ts < CACHE_TTL && cachedRates[currency]) {
+          setRates(cachedRates);
+          return;
+        }
+      }
+    } catch { /* ignore corrupt cache */ }
     fetch('https://api.frankfurter.app/latest?from=PHP')
       .then((r) => r.json())
-      .then((data) => { if (data.rates) setRates(data.rates); })
+      .then((data) => {
+        if (data.rates) {
+          setRates(data.rates);
+          localStorage.setItem(CACHE_KEY, JSON.stringify({ rates: data.rates, ts: Date.now() }));
+        }
+      })
       .catch(() => {});
-  }, []);
+  }, [currency]);
 
   const setCurrency = (c: CurrencyCode) => {
     localStorage.setItem('currency', c);

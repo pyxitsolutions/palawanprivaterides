@@ -53,6 +53,8 @@ export function CarCard({ images, name, price, type, duration, pax, description,
       <img
         src={images[0]}
         alt={name}
+        loading="lazy"
+        decoding="async"
         className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
       />
 
