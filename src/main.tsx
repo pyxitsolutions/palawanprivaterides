@@ -8,6 +8,8 @@ import BookingPage from './app/pages/BookingPage.tsx';
 import GalleryPage from './app/pages/GalleryPage.tsx';
 import ServicePage from './app/pages/ServicePage.tsx';
 import DestinationPage from './app/pages/DestinationPage.tsx';
+import BlogListPage from './app/pages/BlogListPage.tsx';
+import BlogPostPage from './app/pages/BlogPostPage.tsx';
 import { CurrencyProvider } from './app/context/CurrencyContext.tsx';
 import { Analytics } from '@vercel/analytics/react';
 import './styles/index.css';
@@ -30,6 +32,8 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/gallery" element={<GalleryPage />} />
         <Route path="/services/:slug" element={<ServicePage />} />
         <Route path="/destinations/:slug" element={<DestinationPage />} />
+        <Route path="/blog" element={<BlogListPage />} />
+        <Route path="/blog/:slug" element={<BlogPostPage />} />
       </Routes>
     </BrowserRouter>
     <Analytics />
