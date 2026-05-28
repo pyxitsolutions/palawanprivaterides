@@ -14,7 +14,12 @@ import tourCityCroco2 from '../../tours-ppc/croco-fam-2.png';
 import tourCityCroco3 from '../../tours-ppc/croco-fam-3.png';
 import tourCityCroco4 from '../../tours-ppc/croco-fam-4.png';
 import tourCityCroco5 from '../../tours-ppc/croco-fam-5.png';
-import tourRiver from '../../tour/tour-river.png';
+import tourRiver from '../../ur-tour/tour-river.png';
+import tourRiverUgong from '../../ur-tour/ugong-rock.png';
+import tourRiverKarst from '../../ur-tour/karst-mountain.png';
+import tourRiverUr1 from '../../ur-tour/ur-1.png';
+import tourRiverUr2 from '../../ur-tour/ur-2.png';
+import tourRiverUr3 from '../../ur-tour/ur-3.png';
 import tourTala from '../../tour/tour-tala.png';
 import tourHonda from '../../tour/tour-honda.png';
 import tourElNidoA from '../../elnido/tour-a.png';
@@ -126,7 +131,7 @@ export const tours: Tour[] = [
     credit: 'KeiseeintheCity',
   },
   {
-    images: [tourRiver],
+    images: [tourRiver, tourRiverUgong, tourRiverKarst, tourRiverUr1, tourRiverUr2, tourRiverUr3],
     name: 'Underground River Day Tour',
     price: '2550',
     type: 'Tour Package',
