@@ -1,7 +1,17 @@
-import { MessageCircle } from 'lucide-react';
+import { Car, Plane, Map, Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import hero1 from '../../hero/hero-1.jpg';
 
 export function HeroCarousel() {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState<string | null>(null);
+
+  const handleNav = (key: string, path: string) => {
+    setLoading(key);
+    setTimeout(() => navigate(path), 600);
+  };
+
   return (
     <div className="relative w-full min-h-screen bg-white flex flex-col">
       {/* Background Image */}
@@ -38,15 +48,30 @@ export function HeroCarousel() {
 
           {/* CTA Buttons */}
           <div className="flex flex-wrap gap-3 justify-center">
-            <a
-              href="https://api.whatsapp.com/send?phone=639166846547&text=Hi!%20I%20want%20to%20book%20a%20tour%20in%20Palawan."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="border-2 border-white/50 text-white px-8 py-3.5 rounded-full font-semibold hover:bg-white/10 transition-all flex items-center gap-2"
+            <button
+              onClick={() => handleNav('rides', '/rides')}
+              disabled={!!loading}
+              className="bg-[#e8a020] text-white px-7 py-3.5 rounded-full font-bold hover:bg-[#d49020] transition-all flex items-center gap-2 disabled:opacity-80"
             >
-              <MessageCircle size={18} />
-              Book Your Private Transfer
-            </a>
+              {loading === 'rides' ? <Loader2 size={18} className="animate-spin" /> : <Car size={18} />}
+              Private Transfers
+            </button>
+            <button
+              onClick={() => handleNav('tours', '/tours')}
+              disabled={!!loading}
+              className="bg-primary text-white px-7 py-3.5 rounded-full font-bold hover:opacity-90 transition-all flex items-center gap-2 disabled:opacity-80"
+            >
+              {loading === 'tours' ? <Loader2 size={18} className="animate-spin" /> : <Map size={18} />}
+              Tour Packages
+            </button>
+            <button
+              onClick={() => handleNav('airport', '/rides')}
+              disabled={!!loading}
+              className="bg-white/15 border border-white/30 backdrop-blur-sm text-white px-7 py-3.5 rounded-full font-semibold hover:bg-white/25 transition-all flex items-center gap-2 disabled:opacity-80"
+            >
+              {loading === 'airport' ? <Loader2 size={18} className="animate-spin" /> : <Plane size={18} />}
+              Airport Transfer
+            </button>
           </div>
         </div>
       </div>
