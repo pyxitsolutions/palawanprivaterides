@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, ArrowRight, CalendarCheck } from 'lucide-react';
+import { Menu, X, ArrowRight, CalendarCheck, ChevronDown } from 'lucide-react';
+import { CURRENCIES, useCurrency, type CurrencyCode } from '../context/CurrencyContext';
 import logo from '../../logo/logo.png';
 import ridesHero from '../../rides/rides-1.png';
 import toursHero from '../../tour/tour-city.png';
@@ -155,12 +156,65 @@ function BookNowModal({ onClose }: { onClose: () => void }) {
   );
 }
 
+function CurrencySelector() {
+  const { currency, setCurrency } = useCurrency();
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const current = CURRENCIES.find((c) => c.code === currency)!;
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const select = (code: CurrencyCode) => {
+    setCurrency(code);
+    setOpen(false);
+  };
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="flex items-center gap-1.5 text-white/80 hover:text-white text-sm font-medium transition-colors px-2 py-1 rounded-lg hover:bg-white/10"
+      >
+        <span>{current.flag}</span>
+        <span>{current.label}</span>
+        <ChevronDown size={12} className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+      </button>
+
+      {open && (
+        <div className="absolute right-0 top-full mt-2 w-36 bg-[#1a3a2a] border border-white/10 rounded-xl shadow-xl overflow-hidden z-50">
+          {CURRENCIES.map((c) => (
+            <button
+              key={c.code}
+              onClick={() => select(c.code)}
+              className={`w-full flex items-center gap-2.5 px-3 py-2 text-sm transition-colors ${
+                c.code === currency
+                  ? 'bg-[#e8a020] text-white font-semibold'
+                  : 'text-white/80 hover:bg-white/10 hover:text-white'
+              }`}
+            >
+              <span>{c.flag}</span>
+              <span>{c.label}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [showBookModal, setShowBookModal] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { currency, setCurrency } = useCurrency();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -217,6 +271,7 @@ export function Navbar() {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#e8a020] group-hover:w-full transition-all duration-300 rounded-full" />
                 Gallery
               </Link>
+              <CurrencySelector />
               <button
                 onClick={() => setShowBookModal(true)}
                 onMouseDown={(e) => e.preventDefault()}
@@ -256,6 +311,25 @@ export function Navbar() {
               >
                 Gallery
               </Link>
+              <div className="px-3 py-2">
+                <p className="text-white/50 text-xs mb-1.5 uppercase tracking-widest font-semibold">Currency</p>
+                <div className="flex flex-wrap gap-2">
+                  {CURRENCIES.map((c) => (
+                    <button
+                      key={c.code}
+                      onClick={() => { setCurrency(c.code); setIsOpen(false); }}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${
+                        c.code === currency
+                          ? 'bg-[#e8a020] text-white'
+                          : 'bg-white/10 text-white/80 hover:bg-white/20'
+                      }`}
+                    >
+                      <span>{c.flag}</span>
+                      <span>{c.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
               <div className="pt-2">
                 <button
                   onClick={() => { setIsOpen(false); setShowBookModal(true); }}

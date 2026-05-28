@@ -6,6 +6,7 @@ import 'react-phone-input-2/lib/style.css';
 import { Navbar } from '../components/Navbar';
 import { SiteFooter } from '../components/SiteFooter';
 import { PolicyModal, type PolicyType } from '../components/PolicyModal';
+import { useCurrency } from '../context/CurrencyContext';
 import { Calendar, Clock, MapPin, Users, MessageSquare, Car, Check, ChevronRight, ChevronLeft, ArrowLeft } from 'lucide-react';
 
 const EMAILJS_SERVICE_ID = 'service_w5vk124';
@@ -86,6 +87,7 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, initialDirection,
   onBack: () => void;
 }) {
   const navigate = useNavigate();
+  const { convertPrice } = useCurrency();
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
@@ -458,7 +460,7 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, initialDirection,
                     {isMultiVehicle && (
                       <div className="mt-3 p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800">
                         <p className="font-bold mb-1">⚠️ Fleet booking required</p>
-                        <p>Your group of <strong>{paxCount}</strong> requires <strong>{vehiclesNeeded} vans</strong> (max 13 pax each). Estimated total: <strong>₱{(vehiclesNeeded * vanPrice).toLocaleString()}</strong>. We'll confirm the fleet arrangement via WhatsApp.</p>
+                        <p>Your group of <strong>{paxCount}</strong> requires <strong>{vehiclesNeeded} vans</strong> (max 13 pax each). Estimated total: <strong>{convertPrice(vehiclesNeeded * vanPrice)}</strong>. We'll confirm the fleet arrangement via WhatsApp.</p>
                       </div>
                     )}
                   </div>
@@ -479,7 +481,7 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, initialDirection,
                             }`}
                           >
                             <div className="text-[11px] text-gray-500 mb-1">{p.vehicle}</div>
-                            <div className="text-primary font-black text-base">₱{parseInt(p.price).toLocaleString()}</div>
+                            <div className="text-primary font-black text-base">{convertPrice(parseInt(p.price))}</div>
                             <div className="text-[11px] text-gray-400 mt-1">Max {p.capacity ?? defaultCapacity[p.vehicle]} pax</div>
                           </button>
                         ))}
@@ -632,28 +634,29 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, initialDirection,
                     <div className="bg-white border border-gray-200 rounded-xl px-4 py-4 space-y-2">
                       {isMultiVehicle && (
                         <div className="flex justify-between text-sm text-gray-500">
-                          <span>₱{vanPrice.toLocaleString()} × {vehiclesNeeded} vans</span>
-                          <span>₱{subtotal.toLocaleString()}</span>
+                          <span>{convertPrice(vanPrice)} × {vehiclesNeeded} vans</span>
+                          <span>{convertPrice(subtotal)}</span>
                         </div>
                       )}
                       {!isMultiVehicle && !pricing && (tourType === 'Tour Package' || tourType === 'Transfer') && (
                         <div className="flex justify-between text-sm text-gray-500">
-                          <span>₱{basePrice.toLocaleString()} × {paxCount} pax</span>
-                          <span>₱{subtotal.toLocaleString()}</span>
+                          <span>{convertPrice(basePrice)} × {paxCount} pax</span>
+                          <span>{convertPrice(subtotal)}</span>
                         </div>
                       )}
                       {hasEnvFee && (
                         <div className="flex justify-between text-sm text-gray-500">
                           <span>Environmental fee × {paxCount} pax</span>
-                          <span>₱{envTotal.toLocaleString()}</span>
+                          <span>{convertPrice(envTotal)}</span>
                         </div>
                       )}
                       <div className="flex justify-between items-center border-t border-gray-100 pt-3 mt-1">
                         <span className="font-semibold text-gray-700">
                           {isMultiVehicle ? 'Fleet Estimate' : (tourType === 'Tour Package' && !pricing) || tourType === 'Transfer' ? 'Estimated Total' : 'Total (flat rate)'}
                         </span>
-                        <span className="text-2xl font-black text-primary">₱{grandTotal.toLocaleString()}</span>
+                        <span className="text-2xl font-black text-primary">{convertPrice(grandTotal)}</span>
                       </div>
+                      <p className="text-[11px] text-gray-400">Final payment is in Philippine Peso (PHP).</p>
                       {tourType === 'Transfer' && (
                         <p className="text-[11px] text-amber-600">⚠️ Minimum ₱550. Final rate may vary by drop-off location.</p>
                       )}

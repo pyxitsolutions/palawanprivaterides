@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Clock } from 'lucide-react';
 import { CarDetailsModal } from './CarDetailsModal';
+import { useCurrency } from '../context/CurrencyContext';
 
 interface PricingTier {
   vehicle: string;
@@ -23,6 +24,7 @@ interface TourCardProps {
 
 export function CarCard({ images, name, price, type, duration, pax, description, pricing, whatsIncluded, credit }: TourCardProps & { credit?: string }) {
   const navigate = useNavigate();
+  const { convertPrice } = useCurrency();
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   const routeParts = name.includes(' → ') ? name.split(' → ') : [];
@@ -36,6 +38,7 @@ export function CarCard({ images, name, price, type, duration, pax, description,
     ? Math.min(...pricing.map((p) => parseInt(p.price)))
     : parseInt(price);
   const perLabel = (type === 'Tour Package' || type === 'Transfer') ? 'per person' : 'per booking';
+  const displayPrice = convertPrice(startingPrice);
 
   const handleBook = () => {
     navigate('/book', { state: { tourName: name, tourPrice: price, tourType: type, pricing, direction: selectedDirection || undefined } });
@@ -89,7 +92,7 @@ export function CarCard({ images, name, price, type, duration, pax, description,
         <div className="flex items-end justify-between">
           <div>
             <p className="text-white/60 text-[10px] mb-0.5">Starting from</p>
-            <p className="text-white font-black text-xl">₱{startingPrice.toLocaleString()}</p>
+            <p className="text-white font-black text-xl">{displayPrice}</p>
             <p className="text-white/60 text-[10px]">{perLabel}</p>
           </div>
           <button
