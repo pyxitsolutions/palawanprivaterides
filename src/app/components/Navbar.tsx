@@ -362,7 +362,7 @@ export function Navbar() {
 
 
       {/* Floating chat buttons — WhatsApp + Messenger */}
-      <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2">
+      <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-0">
 
         {/* Messenger */}
         <a
@@ -387,6 +387,7 @@ export function Navbar() {
           target="_blank"
           rel="noopener noreferrer"
           className="group flex flex-col items-end gap-2"
+          style={{ marginTop: '-6px' }}
         >
           <div className="bg-white text-gray-800 text-xs font-semibold px-3 py-2 rounded-2xl rounded-br-sm shadow-lg opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-200 pointer-events-none whitespace-nowrap">
             Chat with us 👋
