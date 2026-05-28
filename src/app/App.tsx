@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useCurrency } from './context/CurrencyContext';
 import { Navbar } from './components/Navbar';
 import { HeroCarousel } from './components/HeroCarousel';
 import { ScrollToTopButton } from './components/ScrollToTopButton';
@@ -42,6 +43,7 @@ const spinStyle = `@keyframes _spin { to { transform: rotate(360deg); } } @keyfr
 export default function App() {
   const navigate = useNavigate();
   const [navigating, setNavigating] = useState(false);
+  const { convertPrice } = useCurrency();
 
   const handleNavigate = (href: string) => {
     setNavigating(true);
@@ -99,9 +101,9 @@ export default function App() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[
-              { route: 'Puerto Princesa → El Nido', duration: '5–6 hrs', price: '₱7,100', note: 'per booking' },
-              { route: 'Puerto Princesa → Port Barton', duration: '2–3 hrs', price: '₱5,600', note: 'per booking' },
-              { route: 'Airport / Hotel Transfer', duration: 'Puerto Princesa', price: '₱550', note: 'per booking' },
+              { route: 'Puerto Princesa → El Nido', duration: '5–6 hrs', price: 7100, note: 'per booking' },
+              { route: 'Puerto Princesa → Port Barton', duration: '2–3 hrs', price: 5600, note: 'per booking' },
+              { route: 'Airport / Hotel Transfer', duration: 'Puerto Princesa', price: 550, note: 'per booking' },
             ].map((item) => (
               <div key={item.route} className="bg-white rounded-2xl border border-gray-200 px-6 py-5 flex flex-col gap-1 hover:shadow-md transition-shadow">
                 <p className="font-bold text-gray-900 text-sm">{item.route}</p>
@@ -109,7 +111,7 @@ export default function App() {
                 <div className="mt-3 flex items-end justify-between">
                   <div>
                     <p className="text-xs text-gray-400">Starting from</p>
-                    <p className="text-2xl font-black text-primary">{item.price}</p>
+                    <p className="text-2xl font-black text-primary">{convertPrice(item.price)}</p>
                     <p className="text-xs text-gray-400">{item.note}</p>
                   </div>
                   <button
