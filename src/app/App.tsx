@@ -9,13 +9,13 @@ import {
   Car, Shield, Clock, Award, Phone, Mail, Facebook, MapPin,
   MessageCircle, CheckCircle, ArrowRight,
 } from 'lucide-react';
-import aboutImg from '../about/about-1.png';
-import whereImg from '../where/where-image.png';
-import dest1 from '../dest/dest-1.png';
-import dest2 from '../dest/dest-2.png';
-import dest3 from '../dest/dest-3.png';
-import dest4 from '../dest/dest-4.png';
-import dest5 from '../dest/dest-5.png';
+import aboutImg from '../about/about-1.webp';
+import whereImg from '../where/where-image.webp';
+import dest1 from '../dest/dest-1.webp';
+import dest2 from '../dest/dest-2.webp';
+import dest3 from '../dest/dest-3.webp';
+import dest4 from '../dest/dest-4.webp';
+import dest5 from '../dest/dest-5.webp';
 
 function FAQItem({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = useState(false);

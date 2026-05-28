@@ -2,9 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, ArrowRight, CalendarCheck, ChevronDown } from 'lucide-react';
 import { CURRENCIES, useCurrency, type CurrencyCode } from '../context/CurrencyContext';
-import logo from '../../logo/logo.png';
-import ridesHero from '../../rides/rides-1.png';
-import toursHero from '../../tour/tour-city.png';
+import logo from '../../logo/logo.webp';
+import ridesHero from '../../rides/rides-1.webp';
+import toursHero from '../../tour/tour-city.webp';
 
 const transitionStyles = `
   @keyframes backdropIn {

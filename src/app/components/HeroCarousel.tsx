@@ -1,7 +1,7 @@
 import { Car, Plane, Map, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import hero1 from '../../hero/hero-1.jpg';
+import hero1 from '../../hero/hero-1.webp';
 
 export function HeroCarousel() {
   const navigate = useNavigate();

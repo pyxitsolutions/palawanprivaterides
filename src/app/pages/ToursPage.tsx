@@ -5,7 +5,7 @@ import { ScrollToTopButton } from '../components/ScrollToTopButton';
 import { CarCard } from '../components/CarCard';
 import { cityTours } from '../data/tours';
 import { Star, Users, MapPin, Coffee, MessageCircle } from 'lucide-react';
-import heroImg from '../../tour/tour-honda.png';
+import heroImg from '../../tour/tour-honda.webp';
 
 const filters = [
   { label: 'All', value: 'all' },

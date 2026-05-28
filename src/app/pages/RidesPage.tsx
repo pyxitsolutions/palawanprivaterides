@@ -5,7 +5,7 @@ import { ScrollToTopButton } from '../components/ScrollToTopButton';
 import { CarCard } from '../components/CarCard';
 import { privateRides } from '../data/tours';
 import { Shield, Users, MapPin, Clock, MessageCircle } from 'lucide-react';
-import heroImg from '../../rides/rides-1.png';
+import heroImg from '../../rides/rides-1.webp';
 
 const filters = [
   { label: 'All', value: 'all' },

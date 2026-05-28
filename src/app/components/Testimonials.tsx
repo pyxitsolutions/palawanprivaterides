@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Star, X } from 'lucide-react';
-import review1 from '../../reviews/review-1.png';
-import review2 from '../../reviews/review-2.png';
+import review1 from '../../reviews/review-1.webp';
+import review2 from '../../reviews/review-2.webp';
 
 export function Testimonials() {
   const [lightbox, setLightbox] = useState<string | null>(null);
