@@ -37,7 +37,8 @@
       "Bash(Measure-Command { pnpm run build)",
       "Bash(Out-Null })",
       "Bash(Select-Object -ExpandProperty TotalSeconds)",
-      "PowerShell(cd \"d:\\\\Rio\\\\Personal Project\\\\palawanprivaterides\"; $t = Measure-Command { pnpm run build 2>&1 | Out-Null }; Write-Host \"Build time: $\\($t.TotalSeconds\\)s\")"
+      "PowerShell(cd \"d:\\\\Rio\\\\Personal Project\\\\palawanprivaterides\"; $t = Measure-Command { pnpm run build 2>&1 | Out-Null }; Write-Host \"Build time: $\\($t.TotalSeconds\\)s\")",
+      "Bash(node generate-seo.js)"
     ]
   }
 }

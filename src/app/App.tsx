@@ -51,11 +51,11 @@ export default function App() {
   };
 
   const destinations = [
-    { name: 'El Nido', image: dest1, desc: 'Lagoons, limestone cliffs & island hopping' },
-    { name: 'Sabang', image: dest3, desc: 'Underground River & mangroves' },
-    { name: 'Port Barton', image: dest4, desc: 'Quiet beaches & coral reefs' },
-    { name: 'San Vicente', image: dest5, desc: 'Long Beach & golden sunsets' },
-    { name: 'Puerto Princesa', image: dest2, desc: 'City tours & airport transfers' },
+    { name: 'El Nido', image: dest1, desc: 'Lagoons, limestone cliffs & island hopping', href: '/rides' },
+    { name: 'Sabang', image: dest3, desc: 'Underground River & mangroves', href: '/rides' },
+    { name: 'Port Barton', image: dest4, desc: 'Quiet beaches & coral reefs', href: '/rides' },
+    { name: 'San Vicente', image: dest5, desc: 'Long Beach & golden sunsets', href: '/rides' },
+    { name: 'Puerto Princesa', image: dest2, desc: 'City tours & airport transfers', href: '/tours' },
   ];
 
   return (
@@ -202,11 +202,11 @@ export default function App() {
               <div
                 key={i}
                 className="group relative rounded-2xl overflow-hidden aspect-[3/4] cursor-pointer"
-                onClick={() => navigate('/rides')}
+                onClick={() => handleNavigate(dest.href)}
               >
                 <img
                   src={dest.image}
-                  alt={dest.name}
+                  alt={`${dest.name} Palawan - Private Van Transfer destination`}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
@@ -217,9 +217,17 @@ export default function App() {
               </div>
             ))}
           </div>
+
+          <div className="flex flex-wrap gap-3 justify-center mt-8">
+            <button onClick={() => handleNavigate('/rides')} className="bg-primary text-white px-6 py-2.5 rounded-full text-sm font-bold hover:opacity-90 transition-all flex items-center gap-2">
+              <Car size={15} /> View All Private Rides
+            </button>
+            <button onClick={() => handleNavigate('/tours')} className="border border-primary text-primary px-6 py-2.5 rounded-full text-sm font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-2">
+              <MapPin size={15} /> View Tour Packages
+            </button>
+          </div>
         </div>
       </section>
-
 
       {/* Why Us / Comfort Section */}
       <section className="py-24 bg-gray-50">
@@ -249,11 +257,19 @@ export default function App() {
                   </div>
                 ))}
               </div>
+              <div className="flex flex-wrap gap-3 mt-8">
+                <button onClick={() => handleNavigate('/rides')} className="bg-[#e8a020] text-white px-6 py-3 rounded-full text-sm font-bold hover:bg-[#d49020] transition-all flex items-center gap-2">
+                  <Car size={15} /> Book a Private Ride
+                </button>
+                <button onClick={() => handleNavigate('/tours')} className="border-2 border-primary text-primary px-6 py-3 rounded-full text-sm font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-2">
+                  <MapPin size={15} /> Browse Tour Packages
+                </button>
+              </div>
             </div>
             <div className="relative h-[500px] rounded-2xl overflow-hidden shadow-2xl">
               <img
                 src={aboutImg}
-                alt="Private ride in Palawan"
+                alt="Palawan Private Rides - Private van transfers and tours across Palawan Philippines"
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent" />
@@ -294,6 +310,15 @@ export default function App() {
               ))}
             </div>
           </div>
+
+          <div className="flex flex-wrap gap-3 justify-center mt-12">
+            <button onClick={() => handleNavigate('/rides')} className="bg-[#e8a020] text-white px-7 py-3.5 rounded-full font-bold hover:bg-[#d49020] transition-all flex items-center gap-2">
+              <Car size={16} /> Browse Private Rides
+            </button>
+            <button onClick={() => handleNavigate('/tours')} className="bg-primary text-white px-7 py-3.5 rounded-full font-bold hover:opacity-90 transition-all flex items-center gap-2">
+              <MapPin size={16} /> Browse Tour Packages
+            </button>
+          </div>
         </div>
       </section>
 
@@ -305,7 +330,7 @@ export default function App() {
       {/* CTA Banner */}
       <section className="py-24 relative bg-primary">
         <div className="absolute inset-0">
-          <img src={whereImg} alt="" className="w-full h-full object-cover" />
+          <img src={whereImg} alt="Palawan Philippines map - service areas for Palawan Private Rides" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-primary/80" />
         </div>
         <div className="relative max-w-4xl mx-auto px-4 text-center">

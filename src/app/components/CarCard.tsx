@@ -52,7 +52,7 @@ export function CarCard({ images, name, price, type, duration, pax, description,
       {/* Full bleed image */}
       <img
         src={images[0]}
-        alt={name}
+        alt={`${name} - ${type} in Palawan | Palawan Private Rides`}
         loading="lazy"
         decoding="async"
         className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"

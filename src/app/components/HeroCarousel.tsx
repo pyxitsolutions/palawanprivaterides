@@ -17,7 +17,7 @@ export function HeroCarousel() {
       {/* Background Image */}
       <img
         src={hero1}
-        alt="Palawan"
+        alt="Private van transfers in Palawan - Puerto Princesa to El Nido, Port Barton and San Vicente"
         className="absolute inset-0 w-full h-full object-cover object-[70%_center]"
         loading="eager"
       />

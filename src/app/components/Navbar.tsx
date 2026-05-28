@@ -108,7 +108,7 @@ function BookNowModal({ onClose }: { onClose: () => void }) {
             >
               <img
                 src={ridesHero}
-                alt="Private Rides"
+                alt="Private van transfers Palawan - Puerto Princesa to El Nido, Port Barton and San Vicente"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors duration-300" />
@@ -134,7 +134,7 @@ function BookNowModal({ onClose }: { onClose: () => void }) {
             >
               <img
                 src={toursHero}
-                alt="Tour Packages"
+                alt="Palawan tour packages - Underground River, Honda Bay, Firefly Watching and El Nido island tours"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors duration-300" />
