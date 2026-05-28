@@ -31,7 +31,7 @@ export function CarCard({ images, name, price, type, duration, pax, description,
     : [];
   const [selectedDirection] = useState(directionOptions[0] ?? '');
 
-  const tourData = { images, name, price, type, duration, pax, description, pricing, whatsIncluded };
+  const tourData = { images, name, price, type, duration, pax, description, pricing, whatsIncluded, credit };
   const startingPrice = pricing
     ? Math.min(...pricing.map((p) => parseInt(p.price)))
     : parseInt(price);

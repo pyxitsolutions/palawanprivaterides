@@ -5,7 +5,15 @@ import rides4 from '../../private-rides/welcome-astoria.jpg';
 import rides5 from '../../private-rides/welcome-fourpoints.jpg';
 import transfers1 from '../../transfers/transfers-1.png';
 import tourFirefly from '../../tour/tour-firefly.png';
-import tourCity from '../../tour/tour-city.png';
+import tourCity from '../../tours-ppc/plaza-cuartel.jpg';
+import tourCityBakers from '../../tours-ppc/bakers-hill.png';
+import tourCityBakers2 from '../../tours-ppc/bakers-hill-2.png';
+import tourCityBakers3 from '../../tours-ppc/bakers-hill-3.png';
+import tourCityCroco1 from '../../tours-ppc/croco-fam-1.png';
+import tourCityCroco2 from '../../tours-ppc/croco-fam-2.png';
+import tourCityCroco3 from '../../tours-ppc/croco-fam-3.png';
+import tourCityCroco4 from '../../tours-ppc/croco-fam-4.png';
+import tourCityCroco5 from '../../tours-ppc/croco-fam-5.png';
 import tourRiver from '../../tour/tour-river.png';
 import tourTala from '../../tour/tour-tala.png';
 import tourHonda from '../../tour/tour-honda.png';
@@ -108,13 +116,14 @@ export const tours: Tour[] = [
     ],
   },
   {
-    images: [tourCity],
+    images: [tourCity, tourCityBakers, tourCityBakers2, tourCityBakers3, tourCityCroco1, tourCityCroco2, tourCityCroco3, tourCityCroco4, tourCityCroco5],
     name: 'Puerto Princesa City Tour',
     price: '800',
     type: 'Tour Package',
     duration: 'Tour Duration (4-5 hrs)',
     pax: 'Up to 8 pax',
     description: "Explore Puerto Princesa's highlights — Crocodile Farm, Baker's Hill, Mitra Ranch & more. Great for first-time Palawan visitors.",
+    credit: 'KeiseeintheCity',
   },
   {
     images: [tourRiver],

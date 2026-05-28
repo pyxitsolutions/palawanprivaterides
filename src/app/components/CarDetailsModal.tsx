@@ -20,6 +20,7 @@ interface TourDetailsModalProps {
     description: string;
     pricing?: PricingTier[];
     whatsIncluded?: string[];
+    credit?: string;
   };
   onBookNow: () => void;
 }
@@ -38,58 +39,98 @@ const defaultIncluded = [
 ];
 
 export function CarDetailsModal({ isOpen, onClose, tour, onBookNow }: TourDetailsModalProps) {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   if (!isOpen) return null;
-
-  const nextImage = () => setCurrentImageIndex((prev) => (prev + 1) % tour.images.length);
-  const prevImage = () => setCurrentImageIndex((prev) => (prev - 1 + tour.images.length) % tour.images.length);
 
   const startingPrice = tour.pricing
     ? Math.min(...tour.pricing.map((p) => parseInt(p.price)))
     : parseInt(tour.price);
 
+  const showCollage = tour.images.length >= 3;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/70 backdrop-blur-sm" onClick={(e) => e.stopPropagation()}>
       <div className="bg-white shadow-2xl max-w-2xl w-full max-h-[95vh] overflow-y-auto">
 
-        {/* Hero Image */}
-        <div className="relative h-56 sm:h-72 overflow-hidden bg-gray-100 flex-shrink-0">
-          <img
-            src={tour.images[currentImageIndex]}
-            alt={tour.name}
-            className="w-full h-full object-cover"
-          />
+        {/* Image section */}
+        <div className="relative flex-shrink-0">
 
           {/* Close button */}
           <button
             onClick={onClose}
-            className="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm flex items-center justify-center transition-colors"
+            className="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm flex items-center justify-center transition-colors"
           >
             <X size={18} className="text-white" />
           </button>
 
-          {/* Image nav */}
-          {tour.images.length > 1 && (
-            <>
-              <button onClick={prevImage} className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center">
-                <ChevronLeft size={18} className="text-white" />
-              </button>
-              <button onClick={nextImage} className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center">
-                <ChevronRight size={18} className="text-white" />
-              </button>
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/50 text-white text-xs px-3 py-1 rounded-full">
-                {currentImageIndex + 1} / {tour.images.length}
-              </div>
-            </>
-          )}
-
           {/* Type badge */}
-          <div className="absolute top-3 left-3">
+          <div className="absolute top-3 left-3 z-10">
             <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${typeColors[tour.type] ?? 'bg-gray-100 text-gray-700'}`}>
               {tour.type}
             </span>
           </div>
+
+          {showCollage ? (
+            <div className="flex gap-0.5 h-72 sm:h-96">
+              {/* Left large image */}
+              <div
+                className="relative flex-[2] overflow-hidden cursor-pointer"
+                onClick={() => setLightboxIndex(0)}
+              >
+                <img
+                  src={tour.images[0]}
+                  alt={tour.name}
+                  className="w-full h-full object-cover hover:brightness-90 transition-all duration-300"
+                />
+              </div>
+
+              {/* Right 2 stacked images */}
+              <div className="flex flex-col gap-0.5 flex-1">
+                <div
+                  className="relative flex-1 overflow-hidden cursor-pointer"
+                  onClick={() => setLightboxIndex(1)}
+                >
+                  <img
+                    src={tour.images[1]}
+                    alt={tour.name}
+                    className="w-full h-full object-cover hover:brightness-90 transition-all duration-300"
+                  />
+                </div>
+                <div
+                  className="relative flex-1 overflow-hidden cursor-pointer"
+                  onClick={() => setLightboxIndex(2)}
+                >
+                  <img
+                    src={tour.images[2]}
+                    alt={tour.name}
+                    className="w-full h-full object-cover hover:brightness-90 transition-all duration-300"
+                  />
+                  {tour.images.length > 3 && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">+{tour.images.length - 3} more</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="relative h-72 sm:h-96 overflow-hidden bg-gray-100">
+              <img
+                src={tour.images[0]}
+                alt={tour.name}
+                className="w-full h-full object-cover cursor-pointer"
+                onClick={() => setLightboxIndex(0)}
+              />
+            </div>
+          )}
+
+          {/* Photo credit */}
+          {tour.credit && (
+            <div className="absolute bottom-1 right-1 text-white/40 text-[9px] px-2 py-0.5">
+              © {tour.credit}
+            </div>
+          )}
         </div>
 
         {/* Content */}
@@ -182,6 +223,40 @@ export function CarDetailsModal({ isOpen, onClose, tour, onBookNow }: TourDetail
           </div>
         </div>
       </div>
+
+      {/* Lightbox */}
+      {lightboxIndex !== null && (
+        <div
+          className="fixed inset-0 z-[200] bg-black/95 flex items-center justify-center p-4"
+          onClick={() => setLightboxIndex(null)}
+        >
+          <button
+            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+            onClick={() => setLightboxIndex(null)}
+          >
+            <X size={20} className="text-white" />
+          </button>
+          <button
+            className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+            onClick={(e) => { e.stopPropagation(); setLightboxIndex((i) => i !== null ? (i - 1 + tour.images.length) % tour.images.length : 0); }}
+          >
+            <ChevronLeft size={22} className="text-white" />
+          </button>
+          <img
+            src={tour.images[lightboxIndex]}
+            alt={tour.name}
+            className="max-w-full max-h-[85vh] object-contain shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+          <button
+            className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+            onClick={(e) => { e.stopPropagation(); setLightboxIndex((i) => i !== null ? (i + 1) % tour.images.length : 0); }}
+          >
+            <ChevronRight size={22} className="text-white" />
+          </button>
+          <p className="absolute bottom-5 text-white/50 text-sm">{lightboxIndex + 1} / {tour.images.length}</p>
+        </div>
+      )}
     </div>
   );
 }
