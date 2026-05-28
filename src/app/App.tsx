@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCurrency } from './context/CurrencyContext';
+import { tours } from './data/tours';
 import { Navbar } from './components/Navbar';
 import { HeroCarousel } from './components/HeroCarousel';
 import { ScrollToTopButton } from './components/ScrollToTopButton';
@@ -17,6 +18,96 @@ import dest2 from '../dest/dest-2.webp';
 import dest3 from '../dest/dest-3.webp';
 import dest4 from '../dest/dest-4.webp';
 import dest5 from '../dest/dest-5.webp';
+
+const RIDE_OPTIONS = tours.filter((t) => t.type === 'Private Ride' || t.type === 'Transfer');
+const DEFAULT_CAPACITY: Record<string, number> = { 'Sedan/Hatchback': 3, 'SUV': 6, 'Van': 13 };
+
+function InstantQuote({ onNavigate }: { onNavigate: (href: string) => void }) {
+  const { convertPrice } = useCurrency();
+  const [serviceIdx, setServiceIdx] = useState(0);
+  const [pax, setPax] = useState('');
+
+  const service = RIDE_OPTIONS[serviceIdx];
+
+  const quote = useMemo(() => {
+    const n = parseInt(pax);
+    if (!n || n < 1 || !service) return null;
+    if (service.pricing) {
+      const tier = service.pricing.find((p) => (DEFAULT_CAPACITY[p.vehicle] ?? 13) >= n)
+        ?? service.pricing[service.pricing.length - 1];
+      return { vehicle: tier.vehicle, price: parseInt(tier.price), capacity: DEFAULT_CAPACITY[tier.vehicle] ?? 13 };
+    }
+    return { vehicle: 'Van', price: parseInt(service.price), capacity: 8 };
+  }, [service, pax]);
+
+  return (
+    <section className="py-14 bg-white border-t border-gray-100">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-8">
+          <p className="text-sm font-bold text-[#e8a020] uppercase tracking-widest mb-2">No surprises</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Get an Instant Quote</h2>
+          <p className="text-gray-500 text-sm mt-2">Select your route and group size — see the price instantly.</p>
+        </div>
+
+        <div className="bg-gray-50 rounded-2xl p-6 sm:p-8 border border-gray-200">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            {/* Service selector */}
+            <div>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Service / Route</label>
+              <select
+                value={serviceIdx}
+                onChange={(e) => { setServiceIdx(Number(e.target.value)); setPax(''); }}
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm font-semibold text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                {RIDE_OPTIONS.map((t, i) => (
+                  <option key={t.name} value={i}>{t.name}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Passengers */}
+            <div>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Number of Passengers</label>
+              <input
+                type="number"
+                min={1}
+                max={30}
+                value={pax}
+                onChange={(e) => setPax(e.target.value)}
+                placeholder="e.g. 4"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm font-semibold text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+          </div>
+
+          {/* Result */}
+          {quote ? (
+            <div className="bg-white rounded-xl border border-gray-200 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <p className="text-xs text-gray-400 mb-1">Recommended vehicle</p>
+                <p className="font-black text-gray-900 text-lg">{quote.vehicle} <span className="text-xs font-normal text-gray-400">— max {quote.capacity} pax</span></p>
+                <div className="flex items-end gap-2 mt-1">
+                  <p className="text-3xl font-black text-primary">{convertPrice(quote.price)}</p>
+                  <p className="text-xs text-gray-400 mb-1">per booking</p>
+                </div>
+              </div>
+              <button
+                onClick={() => onNavigate('/book')}
+                className="bg-[#e8a020] text-white px-7 py-3.5 rounded-xl font-bold text-sm hover:bg-[#d49020] transition-colors flex-shrink-0"
+              >
+                Book Now →
+              </button>
+            </div>
+          ) : (
+            <div className="bg-white rounded-xl border border-dashed border-gray-200 p-5 text-center text-gray-400 text-sm">
+              Select a route and enter your group size to see the price.
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 function FAQItem({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = useState(false);
@@ -126,6 +217,9 @@ export default function App() {
           </div>
         </div>
       </section>
+
+      {/* Instant Quote Calculator */}
+      <InstantQuote onNavigate={handleNavigate} />
 
       {/* Premium Services */}
       <section id="services" className="py-24 bg-white">
