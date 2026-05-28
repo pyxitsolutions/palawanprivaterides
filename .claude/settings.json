@@ -28,7 +28,16 @@
       "Bash(npm install *)",
       "Bash(node -e \"const pkg = require\\('./node_modules/react-router-dom/package.json'\\); console.log\\(pkg.version\\)\")",
       "Bash(pnpm add *)",
-      "Bash(Test-Path \"d:\\\\Rio\\\\Personal Project\\\\palawanprivaterides\\\\vercel.json\")"
+      "Bash(Test-Path \"d:\\\\Rio\\\\Personal Project\\\\palawanprivaterides\\\\vercel.json\")",
+      "Bash(pnpm approve-builds *)",
+      "Bash(pnpm rebuild *)",
+      "Bash(del .pnpmfile.cjs)",
+      "Bash(pnpm --config.unsafe-perm=true rebuild sharp)",
+      "Bash(node -e \"require\\('sharp'\\)\")",
+      "Bash(Measure-Command { pnpm run build)",
+      "Bash(Out-Null })",
+      "Bash(Select-Object -ExpandProperty TotalSeconds)",
+      "PowerShell(cd \"d:\\\\Rio\\\\Personal Project\\\\palawanprivaterides\"; $t = Measure-Command { pnpm run build 2>&1 | Out-Null }; Write-Host \"Build time: $\\($t.TotalSeconds\\)s\")"
     ]
   }
 }
