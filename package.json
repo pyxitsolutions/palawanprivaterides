@@ -75,8 +75,10 @@
     "@types/react-dom": "^19.2.3",
     "@vercel/node": "^5.8.5",
     "@vitejs/plugin-react": "4.7.0",
+    "sharp": "^0.34.5",
     "tailwindcss": "4.1.12",
-    "vite": "6.3.5"
+    "vite": "6.3.5",
+    "vite-plugin-image-optimizer": "^2.0.3"
   },
   "peerDependencies": {
     "react": "18.3.1",
