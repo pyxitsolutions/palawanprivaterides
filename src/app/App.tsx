@@ -24,20 +24,28 @@ const DEFAULT_CAPACITY: Record<string, number> = { 'Sedan/Hatchback': 3, 'SUV': 
 
 function InstantQuote({ onNavigate }: { onNavigate: (href: string) => void }) {
   const { convertPrice } = useCurrency();
+  const navigate = useNavigate();
   const [serviceIdx, setServiceIdx] = useState(0);
   const [pax, setPax] = useState('');
+  const [booking, setBooking] = useState(false);
 
   const service = RIDE_OPTIONS[serviceIdx];
 
+  const MAX_VAN = 13;
   const quote = useMemo(() => {
     const n = parseInt(pax);
     if (!n || n < 1 || !service) return null;
     if (service.pricing) {
+      const vanPrice = parseInt(service.pricing.find((p) => p.vehicle === 'Van')?.price ?? service.price);
+      if (n > MAX_VAN) {
+        const vansNeeded = Math.ceil(n / MAX_VAN);
+        return { vehicle: `${vansNeeded}× Van`, price: vansNeeded * vanPrice, capacity: vansNeeded * MAX_VAN, isFleet: true };
+      }
       const tier = service.pricing.find((p) => (DEFAULT_CAPACITY[p.vehicle] ?? 13) >= n)
         ?? service.pricing[service.pricing.length - 1];
-      return { vehicle: tier.vehicle, price: parseInt(tier.price), capacity: DEFAULT_CAPACITY[tier.vehicle] ?? 13 };
+      return { vehicle: tier.vehicle, price: parseInt(tier.price), capacity: DEFAULT_CAPACITY[tier.vehicle] ?? 13, isFleet: false };
     }
-    return { vehicle: 'Van', price: parseInt(service.price), capacity: 8 };
+    return { vehicle: 'Van', price: parseInt(service.price), capacity: 8, isFleet: false };
   }, [service, pax]);
 
   return (
@@ -84,18 +92,27 @@ function InstantQuote({ onNavigate }: { onNavigate: (href: string) => void }) {
           {quote ? (
             <div className="bg-white rounded-xl border border-gray-200 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <p className="text-xs text-gray-400 mb-1">Recommended vehicle</p>
+                <p className="text-xs text-gray-400 mb-1">{quote.isFleet ? 'Fleet booking required' : 'Recommended vehicle'}</p>
                 <p className="font-black text-gray-900 text-lg">{quote.vehicle} <span className="text-xs font-normal text-gray-400">— max {quote.capacity} pax</span></p>
                 <div className="flex items-end gap-2 mt-1">
                   <p className="text-3xl font-black text-primary">{convertPrice(quote.price)}</p>
-                  <p className="text-xs text-gray-400 mb-1">per booking</p>
+                  <p className="text-xs text-gray-400 mb-1">{quote.isFleet ? 'estimated total' : 'per booking'}</p>
                 </div>
+                {quote.isFleet && (
+                  <p className="text-xs text-amber-600 mt-1">⚠️ Final fleet arrangement confirmed via WhatsApp.</p>
+                )}
               </div>
               <button
-                onClick={() => onNavigate('/book')}
-                className="bg-[#e8a020] text-white px-7 py-3.5 rounded-xl font-bold text-sm hover:bg-[#d49020] transition-colors flex-shrink-0"
+                disabled={booking}
+                onClick={() => {
+                  setBooking(true);
+                  setTimeout(() => navigate('/book', {
+                    state: { tourName: service.name, tourPrice: service.price, tourType: service.type, pricing: service.pricing }
+                  }), 600);
+                }}
+                className="bg-[#e8a020] text-white px-7 py-3.5 rounded-xl font-bold text-sm hover:bg-[#d49020] transition-colors flex-shrink-0 flex items-center gap-2 disabled:opacity-80"
               >
-                Book Now →
+                {booking ? <><svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"/><path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8v8z"/></svg> Loading...</> : 'Book Now →'}
               </button>
             </div>
           ) : (
@@ -192,28 +209,31 @@ export default function App() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[
-              { route: 'Puerto Princesa → El Nido', duration: '5–6 hrs', price: 7100, note: 'per booking' },
-              { route: 'Puerto Princesa → Port Barton', duration: '2–3 hrs', price: 5600, note: 'per booking' },
-              { route: 'Airport / Hotel Transfer', duration: 'Puerto Princesa', price: 550, note: 'per booking' },
-            ].map((item) => (
-              <div key={item.route} className="bg-white rounded-2xl border border-gray-200 px-6 py-5 flex flex-col gap-1 hover:shadow-md transition-shadow">
-                <p className="font-bold text-gray-900 text-sm">{item.route}</p>
-                <p className="text-xs text-gray-400">{item.duration}</p>
-                <div className="mt-3 flex items-end justify-between">
-                  <div>
-                    <p className="text-xs text-gray-400">Starting from</p>
-                    <p className="text-2xl font-black text-primary">{convertPrice(item.price)}</p>
-                    <p className="text-xs text-gray-400">{item.note}</p>
+              { route: 'Puerto Princesa → El Nido', tourName: 'PPS → El Nido', duration: '5–6 hrs', price: 7100, note: 'per booking' },
+              { route: 'Puerto Princesa → Port Barton', tourName: 'PPS → Port Barton', duration: '2–3 hrs', price: 5600, note: 'per booking' },
+              { route: 'Airport / Hotel Transfer', tourName: 'Airport / Hotel Transfer', duration: 'Puerto Princesa', price: 550, note: 'per booking' },
+            ].map((item) => {
+              const tour = tours.find((t) => t.name === item.tourName);
+              return (
+                <div key={item.route} className="bg-white rounded-2xl border border-gray-200 px-6 py-5 flex flex-col gap-1 hover:shadow-md transition-shadow">
+                  <p className="font-bold text-gray-900 text-sm">{item.route}</p>
+                  <p className="text-xs text-gray-400">{item.duration}</p>
+                  <div className="mt-3 flex items-end justify-between">
+                    <div>
+                      <p className="text-xs text-gray-400">Starting from</p>
+                      <p className="text-2xl font-black text-primary">{convertPrice(item.price)}</p>
+                      <p className="text-xs text-gray-400">{item.note}</p>
+                    </div>
+                    <button
+                      onClick={() => navigate('/book', { state: { tourName: tour?.name, tourPrice: tour?.price, tourType: tour?.type, pricing: tour?.pricing } })}
+                      className="text-xs font-bold text-[#e8a020] hover:underline flex items-center gap-1"
+                    >
+                      Book <ArrowRight size={12} />
+                    </button>
                   </div>
-                  <button
-                    onClick={() => handleNavigate('/rides')}
-                    className="text-xs font-bold text-[#e8a020] hover:underline flex items-center gap-1"
-                  >
-                    Book <ArrowRight size={12} />
-                  </button>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

@@ -362,7 +362,7 @@ export function Navbar() {
 
 
       {/* Floating chat buttons — WhatsApp + Messenger */}
-      <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3">
+      <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2">
 
         {/* Messenger */}
         <a
@@ -374,8 +374,8 @@ export function Navbar() {
           <div className="bg-white text-gray-800 text-xs font-semibold px-3 py-2 rounded-2xl rounded-br-sm shadow-lg opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-200 pointer-events-none whitespace-nowrap">
             Message on Messenger
           </div>
-          <div className="w-12 h-12 rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-all duration-200" style={{ background: 'linear-gradient(135deg, #0099FF, #A033FF, #FF5C87)' }}>
-            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="white">
+          <div className="w-14 h-14 rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-all duration-200" style={{ background: 'linear-gradient(135deg, #0099FF, #A033FF, #FF5C87)' }}>
+            <svg className="w-7 h-7" viewBox="0 0 24 24" fill="white">
               <path d="M12 0C5.373 0 0 5.16 0 11.527c0 3.644 1.793 6.9 4.608 9.023V24l4.27-2.38C9.954 21.86 10.963 22 12 22c6.627 0 12-4.84 12-10.473S18.627 0 12 0zm1.193 14.963l-3.056-3.26-5.963 3.26L10.733 8.4l3.13 3.26L19.752 8.4l-6.56 6.563z"/>
             </svg>
           </div>
