@@ -40,6 +40,7 @@ const defaultIncluded = [
 
 export function CarDetailsModal({ isOpen, onClose, tour, onBookNow }: TourDetailsModalProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [singleIndex, setSingleIndex] = useState(0);
 
   if (!isOpen) return null;
 
@@ -117,11 +118,30 @@ export function CarDetailsModal({ isOpen, onClose, tour, onBookNow }: TourDetail
           ) : (
             <div className="relative h-72 sm:h-96 overflow-hidden bg-gray-100">
               <img
-                src={tour.images[0]}
+                src={tour.images[singleIndex]}
                 alt={tour.name}
                 className="w-full h-full object-cover cursor-pointer"
-                onClick={() => setLightboxIndex(0)}
+                onClick={() => setLightboxIndex(singleIndex)}
               />
+              {tour.images.length > 1 && (
+                <>
+                  <button
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center"
+                    onClick={(e) => { e.stopPropagation(); setSingleIndex((i) => (i - 1 + tour.images.length) % tour.images.length); }}
+                  >
+                    <ChevronLeft size={18} className="text-white" />
+                  </button>
+                  <button
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center"
+                    onClick={(e) => { e.stopPropagation(); setSingleIndex((i) => (i + 1) % tour.images.length); }}
+                  >
+                    <ChevronRight size={18} className="text-white" />
+                  </button>
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/50 text-white text-xs px-3 py-1 rounded-full">
+                    {singleIndex + 1} / {tour.images.length}
+                  </div>
+                </>
+              )}
             </div>
           )}
 

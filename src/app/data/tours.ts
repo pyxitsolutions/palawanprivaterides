@@ -5,6 +5,7 @@ import rides4 from '../../private-rides/welcome-astoria.jpg';
 import rides5 from '../../private-rides/welcome-fourpoints.jpg';
 import transfers1 from '../../transfers/transfers-1.png';
 import tourFirefly from '../../tour/tour-firefly.png';
+import tourFirefly1 from '../../firefly-tour/firefly-1.png';
 import tourCity from '../../tours-ppc/plaza-cuartel.jpg';
 import tourCityBakers from '../../tours-ppc/bakers-hill.png';
 import tourCityBakers2 from '../../tours-ppc/bakers-hill-2.png';
@@ -159,7 +160,7 @@ export const tours: Tour[] = [
     description: 'Reliable, on-time pick-up from Puerto Princesa Airport to your hotel — or hotel to airport drop-off. No hidden charges.',
   },
   {
-    images: [tourFirefly],
+    images: [tourFirefly, tourFirefly1],
     name: 'Iwahig Firefly Watching',
     price: '1850',
     type: 'Tour Package',
