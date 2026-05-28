@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Clock } from 'lucide-react';
 import { CarDetailsModal } from './CarDetailsModal';
 import { useCurrency } from '../context/CurrencyContext';
+import { slugify } from '../pages/ServicePage';
 
 interface PricingTier {
   vehicle: string;
@@ -97,12 +98,20 @@ export function CarCard({ images, name, price, type, duration, pax, description,
             <p className="text-white font-black text-xl">{displayPrice}</p>
             <p className="text-white/60 text-[10px]">{perLabel}</p>
           </div>
-          <button
-            onClick={(e) => { e.stopPropagation(); handleBook(); }}
-            className="bg-[#e8a020] text-white text-sm font-bold px-5 py-2.5 hover:bg-[#d49020] transition-colors"
-          >
-            Book Now
-          </button>
+          <div className="flex flex-col gap-1.5 items-end">
+            <button
+              onClick={(e) => { e.stopPropagation(); handleBook(); }}
+              className="bg-[#e8a020] text-white text-sm font-bold px-5 py-2 hover:bg-[#d49020] transition-colors"
+            >
+              Book Now
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); navigate(`/services/${slugify(name)}`); }}
+              className="text-white/80 text-xs font-semibold hover:text-white underline underline-offset-2 transition-colors"
+            >
+              View details →
+            </button>
+          </div>
         </div>
       </div>
 

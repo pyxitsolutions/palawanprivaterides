@@ -6,6 +6,7 @@ import RidesPage from './app/pages/RidesPage.tsx';
 import ToursPage from './app/pages/ToursPage.tsx';
 import BookingPage from './app/pages/BookingPage.tsx';
 import GalleryPage from './app/pages/GalleryPage.tsx';
+import ServicePage from './app/pages/ServicePage.tsx';
 import { CurrencyProvider } from './app/context/CurrencyContext.tsx';
 import { Analytics } from '@vercel/analytics/react';
 import './styles/index.css';
@@ -26,6 +27,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/tours" element={<ToursPage />} />
         <Route path="/book" element={<BookingPage />} />
         <Route path="/gallery" element={<GalleryPage />} />
+        <Route path="/services/:slug" element={<ServicePage />} />
       </Routes>
     </BrowserRouter>
     <Analytics />
