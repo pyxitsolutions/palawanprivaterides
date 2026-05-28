@@ -25,6 +25,8 @@ export default defineConfig({
     react(),
     tailwindcss(),
     ViteImageOptimizer({
+      cache: true,
+      cacheLocation: 'node_modules/.cache/vite-image-optimizer',
       png: { quality: 75 },
       jpg: { quality: 80 },
       jpeg: { quality: 80 },
