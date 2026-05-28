@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { X, Clock, MapPin, Users, ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import { useCurrency } from '../context/CurrencyContext';
 
 interface PricingTier {
   vehicle: string;
@@ -41,6 +42,7 @@ const defaultIncluded = [
 export function CarDetailsModal({ isOpen, onClose, tour, onBookNow }: TourDetailsModalProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [singleIndex, setSingleIndex] = useState(0);
+  const { convertPrice } = useCurrency();
 
   if (!isOpen) return null;
 
@@ -169,7 +171,7 @@ export function CarDetailsModal({ isOpen, onClose, tour, onBookNow }: TourDetail
             <h2 className="text-2xl font-black text-gray-900 leading-tight">{tour.name}</h2>
             <div className="text-right flex-shrink-0">
               <p className="text-[10px] text-gray-400">Starting from</p>
-              <p className="text-2xl font-black text-primary">₱{startingPrice.toLocaleString()}</p>
+              <p className="text-2xl font-black text-primary">{convertPrice(startingPrice)}</p>
             </div>
           </div>
 
@@ -208,7 +210,7 @@ export function CarDetailsModal({ isOpen, onClose, tour, onBookNow }: TourDetail
                 {tour.pricing.map((p, i) => (
                   <div key={i} className="border border-gray-200 rounded-xl p-3 text-center">
                     <p className="text-xs text-gray-500 mb-1">{p.vehicle}</p>
-                    <p className="text-lg font-black text-primary">₱{parseInt(p.price).toLocaleString()}</p>
+                    <p className="text-lg font-black text-primary">{convertPrice(parseInt(p.price))}</p>
                     {p.capacity && <p className="text-[10px] text-gray-400 mt-0.5">Max {p.capacity} pax</p>}
                   </div>
                 ))}
