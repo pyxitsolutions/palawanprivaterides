@@ -67,6 +67,21 @@ export const tours: Tour[] = [
     ],
   },
   {
+    images: [tourElNidoA],
+    name: 'El Nido → PPS',
+    price: '7000',
+    type: 'Private Ride',
+    duration: 'Travel Duration (5-6 hrs)',
+    pax: 'Up to 8 pax',
+    description: 'Private door-to-door transfer from El Nido back to Puerto Princesa. Comfortable and exclusive ride with your group and a trusted local driver — no shared vans, no crowded trips. Optional stopovers along the way are available for meals, sightseeing, or quick breaks upon request.',
+    credit: 'fabionodariphoto.com',
+    pricing: [
+      { vehicle: 'Sedan/Hatchback', price: '7100' },
+      { vehicle: 'SUV', price: '7600' },
+      { vehicle: 'Van', price: '8100' },
+    ],
+  },
+  {
     images: [rides2],
     name: 'PPS → Port Barton',
     price: '5500',

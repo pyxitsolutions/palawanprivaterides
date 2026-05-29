@@ -19,6 +19,10 @@ const SEO: Record<string, { metaTitle: string; metaDescription: string }> = {
     metaTitle: 'Puerto Princesa to El Nido Private Van Transfer | Palawan Private Rides',
     metaDescription: 'Book a private van from Puerto Princesa to El Nido starting at ₱7,100. Door-to-door service, no shared vans, trusted local drivers. Book online today!',
   },
+  'el-nido-pps': {
+    metaTitle: 'El Nido to Puerto Princesa Private Van Transfer | Palawan Private Rides',
+    metaDescription: 'Book a private van from El Nido to Puerto Princesa starting at ₱7,100. Door-to-door service, no shared vans, trusted local drivers. Book online today!',
+  },
   'pps-port-barton': {
     metaTitle: 'Puerto Princesa to Port Barton Private Transfer | Palawan Private Rides',
     metaDescription: 'Private van transfer from Puerto Princesa to Port Barton starting at ₱5,600. Comfortable, air-conditioned, door-to-door service. No shared vans. Book now!',
