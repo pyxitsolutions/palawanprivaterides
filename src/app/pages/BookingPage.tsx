@@ -98,6 +98,7 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
   const [formData, setFormData] = useState({
     fullName: '',
     phone: '',
+    email: '',
     nationality: '',
     tourDate: '',
     tourTime: '',
@@ -162,7 +163,7 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
   };
   const vehicleTip = pricing ? getVehicleTip() : null;
 
-  const step1Valid = formData.fullName.trim() !== '' && formData.nationality !== '' && formData.phone.length >= 8;
+  const step1Valid = formData.fullName.trim() !== '' && formData.nationality !== '' && formData.phone.length >= 8 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
   const step2Valid = formData.tourDate !== '' && (formData.tourTime !== '' || formData.tourPeriod !== '');
   const step3Valid = formData.pax !== '' && (!pricing || isMultiVehicle || formData.vehicleType !== '');
   const step4Valid =
@@ -196,6 +197,7 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
         {
           from_name: formData.fullName,
           phone: formData.phone,
+          email: formData.email,
           nationality: formData.nationality || 'N/A',
           tour_name: tourName,
           vehicle_type: isMultiVehicle ? `Van ×${vehiclesNeeded} (${paxCount} pax)` : formData.vehicleType || 'N/A',
@@ -217,7 +219,7 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
 
       const vehicleInfo = isMultiVehicle ? ` (${vehiclesNeeded}× Van)` : formData.vehicleType ? ` (${formData.vehicleType})` : '';
       const beachInfo = formData.beachSelection ? `\nBeach: ${formData.beachSelection}` : '';
-      const rawMessage = `🏝️ New Booking!\nRoute: ${tourName}${vehicleInfo}\nPrice: ₱${grandTotal.toLocaleString()}\nName: ${formData.fullName}\nPhone: ${formData.phone}\nNationality: ${formData.nationality || 'N/A'}\nDate: ${formData.tourDate} at ${formData.tourTime || formData.tourPeriod}\nPax: ${formData.pax}${isMultiVehicle ? ` (${vehiclesNeeded} vans needed)` : ''}${beachInfo}\nPickup: ${formData.pickupLocation}\nDrop-off: ${formData.dropoffLocation}\nNotes: ${formData.message || 'None'}`;
+      const rawMessage = `🏝️ New Booking!\nRoute: ${tourName}${vehicleInfo}\nPrice: ₱${grandTotal.toLocaleString()}\nName: ${formData.fullName}\nPhone: ${formData.phone}\nEmail: ${formData.email}\nNationality: ${formData.nationality || 'N/A'}\nDate: ${formData.tourDate} at ${formData.tourTime || formData.tourPeriod}\nPax: ${formData.pax}${isMultiVehicle ? ` (${vehiclesNeeded} vans needed)` : ''}${beachInfo}\nPickup: ${formData.pickupLocation}\nDrop-off: ${formData.dropoffLocation}\nNotes: ${formData.message || 'None'}`;
       fetch('/api/notify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -350,6 +352,10 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
                       }}
                       dropdownStyle={{ borderRadius: '0.75rem', marginTop: '4px' }}
                     />
+                  </div>
+                  <div>
+                    <label className={labelClass}>Email Address *</label>
+                    <input type="email" name="email" value={formData.email} onChange={handleChange} className={inputClass} placeholder="ex. juan@email.com" />
                   </div>
                   <button
                     type="button"
@@ -572,6 +578,7 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
                       { label: 'Name', value: formData.fullName },
                       { label: 'Nationality', value: formData.nationality },
                       { label: 'Phone', value: `+${formData.phone}` },
+                      { label: 'Email', value: formData.email },
                       { label: tourType === 'Private Ride' ? 'Travel Date' : tourType === 'Transfer' ? 'Pick-up Date' : 'Tour Date', value: formData.tourDate },
                       { label: 'Time', value: formData.tourTime || formData.tourPeriod },
                       ...(isMultiVehicle ? [{ label: 'Fleet', value: `${vehiclesNeeded}× Van (${paxCount} pax)` }] : formData.vehicleType ? [{ label: 'Vehicle', value: formData.vehicleType }] : []),
