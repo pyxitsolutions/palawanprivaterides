@@ -648,7 +648,7 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
                         </button>
                         <button type="button" onClick={submitBooking} disabled={sending}
                           className="flex-1 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2">
-                          {sending ? 'Sending...' : <><Check size={14} /> Yes, Submit</>}
+                          {sending ? <><svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"/><path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8v8z"/></svg> Sending...</> : <><Check size={14} /> Yes, Submit</>}
                         </button>
                       </div>
                     </div>
@@ -660,7 +660,7 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
                       </button>
                       <button type="submit" disabled={sending || !agreedToTerms}
                         className="flex-1 py-3 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-                        <Check size={15} /> Submit Booking
+                        {sending ? <><svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"/><path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8v8z"/></svg> Sending...</> : <><Check size={15} /> Submit Booking</>}
                       </button>
                     </div>
                   )}
