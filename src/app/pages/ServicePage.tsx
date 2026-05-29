@@ -27,17 +27,33 @@ const SEO: Record<string, { metaTitle: string; metaDescription: string }> = {
     metaTitle: 'Puerto Princesa to Port Barton Private Transfer | Palawan Private Rides',
     metaDescription: 'Private van transfer from Puerto Princesa to Port Barton starting at ₱5,600. Comfortable, air-conditioned, door-to-door service. No shared vans. Book now!',
   },
+  'port-barton-pps': {
+    metaTitle: 'Port Barton to Puerto Princesa Private Van Transfer | Palawan Private Rides',
+    metaDescription: 'Book a private van from Port Barton to Puerto Princesa starting at ₱5,600. Door-to-door service, no shared vans, trusted local drivers. Book today!',
+  },
   'pps-san-vicente': {
     metaTitle: 'Puerto Princesa to San Vicente Private Van Transfer | Palawan Private Rides',
     metaDescription: 'Book a private van from Puerto Princesa to San Vicente starting at ₱6,100. Direct, door-to-door transfer to Long Beach. No shared vans. Book today!',
+  },
+  'san-vicente-pps': {
+    metaTitle: 'San Vicente to Puerto Princesa Private Van Transfer | Palawan Private Rides',
+    metaDescription: 'Book a private van from San Vicente to Puerto Princesa starting at ₱6,100. Door-to-door service, no shared vans, trusted local drivers. Book today!',
   },
   'pps-astoria-palawan': {
     metaTitle: 'Puerto Princesa to Astoria Palawan Private Transfer | Palawan Private Rides',
     metaDescription: 'Private van transfer from Puerto Princesa to Astoria Palawan starting at ₱3,100. Comfortable, on-time, door-to-door. Book your private ride today!',
   },
+  'astoria-palawan-pps': {
+    metaTitle: 'Astoria Palawan to Puerto Princesa Private Transfer | Palawan Private Rides',
+    metaDescription: 'Book a private van from Astoria Palawan to Puerto Princesa starting at ₱3,100. Comfortable, on-time, door-to-door service. Book today!',
+  },
   'pps-sabang-four-points': {
     metaTitle: 'Puerto Princesa to Sabang Private Van Transfer | Palawan Private Rides',
     metaDescription: 'Private van from Puerto Princesa to Sabang starting at ₱3,600. Perfect for Underground River day trips. Door-to-door, no shared vans. Book now!',
+  },
+  'sabang-four-points-pps': {
+    metaTitle: 'Sabang to Puerto Princesa Private Van Transfer | Palawan Private Rides',
+    metaDescription: 'Book a private van from Sabang to Puerto Princesa starting at ₱3,600. Door-to-door service after your Underground River visit. No shared vans. Book today!',
   },
   'airport-hotel-transfer': {
     metaTitle: 'Puerto Princesa Airport Transfer | Palawan Private Rides',

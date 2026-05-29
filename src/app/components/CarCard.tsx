@@ -28,12 +28,6 @@ export function CarCard({ images, name, price, type, duration, pax, description,
   const { convertPrice } = useCurrency();
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
-  const routeParts = name.includes(' → ') ? name.split(' → ') : [];
-  const directionOptions = routeParts.length === 2
-    ? [`${routeParts[0]} → ${routeParts[1]}`, `${routeParts[1]} → ${routeParts[0]}`]
-    : [];
-  const [selectedDirection] = useState(directionOptions[0] ?? '');
-
   const tourData = { images, name, price, type, duration, pax, description, pricing, whatsIncluded, credit };
   const startingPrice = pricing
     ? Math.min(...pricing.map((p) => parseInt(p.price)))
@@ -42,7 +36,7 @@ export function CarCard({ images, name, price, type, duration, pax, description,
   const displayPrice = convertPrice(startingPrice);
 
   const handleBook = () => {
-    navigate('/book', { state: { tourName: name, tourPrice: price, tourType: type, pricing, direction: selectedDirection || undefined } });
+    navigate('/book', { state: { tourName: name, tourPrice: price, tourType: type, pricing } });
   };
 
   return (

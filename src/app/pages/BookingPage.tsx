@@ -55,7 +55,7 @@ const stepLabels = ['Contact', 'Schedule', 'Passengers', 'Trip Details', 'Review
 export default function BookingPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const state = location.state as { tourName: string; tourPrice: string; tourType: string; pricing?: PricingTier[]; direction?: string } | null;
+  const state = location.state as { tourName: string; tourPrice: string; tourType: string; pricing?: PricingTier[] } | null;
 
   useEffect(() => {
     if (!state?.tourName) navigate('/', { replace: true });
@@ -64,7 +64,7 @@ export default function BookingPage() {
 
   if (!state?.tourName) return null;
 
-  const { tourName, tourPrice, tourType, pricing, direction } = state;
+  const { tourName, tourPrice, tourType, pricing } = state;
 
   return (
     <BookingForm
@@ -72,18 +72,16 @@ export default function BookingPage() {
       tourPrice={tourPrice}
       tourType={tourType}
       pricing={pricing}
-      initialDirection={direction}
       onBack={() => navigate(-1)}
     />
   );
 }
 
-function BookingForm({ tourName, tourPrice, tourType, pricing, initialDirection, onBack }: {
+function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
   tourName: string;
   tourPrice: string;
   tourType: string;
   pricing?: PricingTier[];
-  initialDirection?: string;
   onBack: () => void;
 }) {
   const navigate = useNavigate();
@@ -105,7 +103,6 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, initialDirection,
     tourTime: '',
     tourPeriod: '',
     pax: '',
-    direction: initialDirection ?? '',
     pickupLocation: '',
     dropoffLocation: '',
     vehicleType: '',
@@ -168,16 +165,10 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, initialDirection,
   const step1Valid = formData.fullName.trim() !== '' && formData.nationality !== '' && formData.phone.length >= 8;
   const step2Valid = formData.tourDate !== '' && (formData.tourTime !== '' || formData.tourPeriod !== '');
   const step3Valid = formData.pax !== '' && (!pricing || isMultiVehicle || formData.vehicleType !== '');
-  const routeParts = tourName.includes(' → ') ? tourName.split(' → ') : [];
-  const directionOptions = routeParts.length === 2
-    ? [`${routeParts[0]} → ${routeParts[1]}`, `${routeParts[1]} → ${routeParts[0]}`]
-    : [];
-
   const step4Valid =
     formData.pickupLocation.trim() !== '' &&
     formData.dropoffLocation.trim() !== '' &&
-    (!tourName.includes('PPC Beach') || formData.beachSelection !== '') &&
-    (directionOptions.length === 0 || formData.direction !== '');
+    (!tourName.includes('PPC Beach') || formData.beachSelection !== '');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -207,7 +198,6 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, initialDirection,
           phone: formData.phone,
           nationality: formData.nationality || 'N/A',
           tour_name: tourName,
-          direction: formData.direction || 'N/A',
           vehicle_type: isMultiVehicle ? `Van ×${vehiclesNeeded} (${paxCount} pax)` : formData.vehicleType || 'N/A',
           tour_price: isMultiVehicle ? (vehiclesNeeded * vanPrice).toString() : selectedPrice,
           tour_date: formData.tourDate,
@@ -227,9 +217,7 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, initialDirection,
 
       const vehicleInfo = isMultiVehicle ? ` (${vehiclesNeeded}× Van)` : formData.vehicleType ? ` (${formData.vehicleType})` : '';
       const beachInfo = formData.beachSelection ? `\nBeach: ${formData.beachSelection}` : '';
-      const directionInfo = formData.direction ? `\nDirection: ${formData.direction}` : '';
-      const routeLabel = formData.direction ? formData.direction : tourName;
-      const rawMessage = `🏝️ New Booking!\nRoute: ${routeLabel}${vehicleInfo}\nPrice: ₱${grandTotal.toLocaleString()}\nName: ${formData.fullName}\nPhone: ${formData.phone}\nNationality: ${formData.nationality || 'N/A'}\nDate: ${formData.tourDate} at ${formData.tourTime || formData.tourPeriod}\nPax: ${formData.pax}${isMultiVehicle ? ` (${vehiclesNeeded} vans needed)` : ''}${directionInfo}${beachInfo}\nPickup: ${formData.pickupLocation}\nDrop-off: ${formData.dropoffLocation}\nNotes: ${formData.message || 'None'}`;
+      const rawMessage = `🏝️ New Booking!\nRoute: ${tourName}${vehicleInfo}\nPrice: ₱${grandTotal.toLocaleString()}\nName: ${formData.fullName}\nPhone: ${formData.phone}\nNationality: ${formData.nationality || 'N/A'}\nDate: ${formData.tourDate} at ${formData.tourTime || formData.tourPeriod}\nPax: ${formData.pax}${isMultiVehicle ? ` (${vehiclesNeeded} vans needed)` : ''}${beachInfo}\nPickup: ${formData.pickupLocation}\nDrop-off: ${formData.dropoffLocation}\nNotes: ${formData.message || 'None'}`;
       fetch('/api/notify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -261,13 +249,7 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, initialDirection,
             <span className="inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full mb-1 bg-[#e8a020] text-white">
               {typeLabel}
             </span>
-            {routeParts.length === 2 ? (
-              <p className="font-black text-gray-900 text-base leading-tight">
-                {routeParts[0]} <span className="text-gray-400">↔</span> {routeParts[1]}
-              </p>
-            ) : (
-              <p className="font-black text-gray-900 text-base leading-tight truncate">{tourName}</p>
-            )}
+            <p className="font-black text-gray-900 text-base leading-tight truncate">{tourName}</p>
           </div>
         </div>
         {/* Progress bar */}
@@ -512,28 +494,6 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, initialDirection,
                     <p className="text-xs text-gray-400">Where should we pick you up and drop you off?</p>
                   </div>
 
-                  {directionOptions.length > 0 && (
-                    <div>
-                      <label className={labelClass}>🔄 Direction *</label>
-                      <div className="grid grid-cols-2 gap-3">
-                        {directionOptions.map((opt) => (
-                          <button
-                            key={opt}
-                            type="button"
-                            onClick={() => setFormData({ ...formData, direction: opt })}
-                            className={`py-3 px-3 border-2 rounded-xl text-xs font-semibold text-center transition-all ${
-                              formData.direction === opt
-                                ? 'border-primary bg-primary/5 text-primary'
-                                : 'border-gray-200 hover:border-primary/40 text-gray-500 bg-white'
-                            }`}
-                          >
-                            {opt}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
                   {tourName.includes('PPC Beach') && (
                     <div>
                       <label className={labelClass}>🏖️ Select Beach *</label>
@@ -616,7 +576,6 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, initialDirection,
                       { label: 'Time', value: formData.tourTime || formData.tourPeriod },
                       ...(isMultiVehicle ? [{ label: 'Fleet', value: `${vehiclesNeeded}× Van (${paxCount} pax)` }] : formData.vehicleType ? [{ label: 'Vehicle', value: formData.vehicleType }] : []),
                       { label: 'Passengers', value: formData.pax },
-                      ...(formData.direction ? [{ label: 'Direction', value: formData.direction }] : []),
                       { label: 'Pick-up', value: formData.pickupLocation },
                       { label: 'Drop-off', value: formData.dropoffLocation },
                       ...(formData.beachSelection ? [{ label: 'Beach', value: formData.beachSelection }] : []),
