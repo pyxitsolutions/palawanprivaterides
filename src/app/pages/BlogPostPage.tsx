@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Clock, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
@@ -8,6 +8,7 @@ import { blogPosts } from '../data/blog';
 export default function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
+  const [loadingCta, setLoadingCta] = useState(false);
 
   const post = blogPosts.find((p) => p.slug === slug);
   const postIndex = blogPosts.findIndex((p) => p.slug === slug);
@@ -85,10 +86,11 @@ export default function BlogPostPage() {
                 <div key={i} className="bg-primary rounded-2xl p-6 my-8 text-center">
                   <p className="text-white font-bold mb-4">Ready to explore Palawan?</p>
                   <button
-                    onClick={() => navigate(section.ctaHref ?? '/book')}
-                    className="bg-[#e8a020] text-white px-7 py-3 rounded-full font-bold text-sm hover:bg-[#d49020] transition-colors inline-flex items-center gap-2"
+                    disabled={loadingCta}
+                    onClick={() => { setLoadingCta(true); setTimeout(() => navigate(section.ctaHref ?? '/book'), 500); }}
+                    className="bg-[#e8a020] text-white px-7 py-3 rounded-full font-bold text-sm hover:bg-[#d49020] transition-colors inline-flex items-center gap-2 disabled:opacity-80"
                   >
-                    {section.ctaLabel} <ArrowRight size={15} />
+                    {loadingCta ? <><svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"/><path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8v8z"/></svg> Loading...</> : <>{section.ctaLabel} <ArrowRight size={15} /></>}
                   </button>
                 </div>
               );

@@ -27,6 +27,7 @@ export function CarCard({ images, name, price, type, duration, pax, description,
   const navigate = useNavigate();
   const { convertPrice } = useCurrency();
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [booking, setBooking] = useState(false);
 
   const tourData = { images, name, price, type, duration, pax, description, pricing, whatsIncluded, credit };
   const startingPrice = pricing
@@ -36,7 +37,8 @@ export function CarCard({ images, name, price, type, duration, pax, description,
   const displayPrice = convertPrice(startingPrice);
 
   const handleBook = () => {
-    navigate('/book', { state: { tourName: name, tourPrice: price, tourType: type, pricing } });
+    setBooking(true);
+    setTimeout(() => navigate('/book', { state: { tourName: name, tourPrice: price, tourType: type, pricing } }), 500);
   };
 
   return (
@@ -94,10 +96,11 @@ export function CarCard({ images, name, price, type, duration, pax, description,
           </div>
           <div className="flex flex-col gap-1.5 items-end">
             <button
+              disabled={booking}
               onClick={(e) => { e.stopPropagation(); handleBook(); }}
-              className="bg-[#e8a020] text-white text-sm font-bold px-5 py-2 hover:bg-[#d49020] transition-colors"
+              className="bg-[#e8a020] text-white text-sm font-bold px-5 py-2 hover:bg-[#d49020] transition-colors disabled:opacity-80 flex items-center gap-1.5"
             >
-              Book Now
+              {booking ? <><svg className="w-3 h-3 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"/><path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8v8z"/></svg> Loading...</> : 'Book Now'}
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); navigate(`/services/${slugify(name)}`); }}
