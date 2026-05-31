@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { MapPin, ArrowRight, ArrowLeft } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { SiteFooter } from '../components/SiteFooter';
-import { useCurrency } from '../context/CurrencyContext';
+import { PromoPrice } from '../components/PromoPrice';
+import { hasPromoRate } from '../utils/pricing';
 import { tours } from '../data/tours';
 import { slugify } from './ServicePage';
 
@@ -32,7 +33,7 @@ const DESTINATIONS: Record<string, DestinationData> = {
     description: 'El Nido is Palawan\'s crown jewel — a stunning coastal town surrounded by towering limestone karsts, crystal-clear lagoons, and pristine beaches. Whether you\'re island hopping through the famous tours A, B, C, and D, or simply soaking in the scenery, El Nido is an experience unlike any other. Palawan Private Rides offers private van transfers from Puerto Princesa to El Nido with trusted local drivers.',
     highlights: ['Big Lagoon & Secret Lagoon', 'Seven Commandos Beach', 'Nacpan Beach', 'Snake Island', 'Hidden Beach & Secret Beach'],
     metaTitle: 'El Nido Palawan Private Van Transfer & Island Tours | Palawan Private Rides',
-    metaDescription: 'Book private van transfers from Puerto Princesa to El Nido and island hopping tours. Starting at ₱7,100. No shared vans. Trusted local drivers. Book now!',
+    metaDescription: 'Book private van transfers from Puerto Princesa to El Nido and island hopping tours. Starting at ₱6,900 (promo from ₱7,000). No shared vans. Trusted local drivers. Book now!',
     serviceFilter: (name) => name.includes('El Nido') || name === 'PPS → El Nido',
   },
   'port-barton': {
@@ -86,7 +87,6 @@ const DESTINATIONS: Record<string, DestinationData> = {
 export default function DestinationPage() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const { convertPrice } = useCurrency();
 
   const dest = DESTINATIONS[slug ?? ''];
 
@@ -167,9 +167,11 @@ export default function DestinationPage() {
                 </h2>
                 <div className="space-y-4">
                   {relatedServices.map((t) => {
-                    const price = t.pricing
-                      ? Math.min(...t.pricing.map((p) => parseInt(p.price)))
-                      : parseInt(t.price);
+                    const price = hasPromoRate(t.type)
+                      ? parseInt(t.price)
+                      : t.pricing
+                        ? Math.min(...t.pricing.map((p) => parseInt(p.price)))
+                        : parseInt(t.price);
                     const perLabel = t.type === 'Tour Package' || t.type === 'Transfer' ? '/person' : '/booking';
                     return (
                       <div
@@ -189,8 +191,8 @@ export default function DestinationPage() {
                           {t.duration && <p className="text-xs text-gray-400 mt-0.5">{t.duration}</p>}
                         </div>
                         <div className="text-right flex-shrink-0">
-                          <p className="text-lg font-black text-primary">{convertPrice(price)}</p>
-                          <p className="text-[10px] text-gray-400">{perLabel}</p>
+                          <PromoPrice amount={price} type={t.type} size="sm" showPromoLabel={hasPromoRate(t.type)} />
+                          <p className="text-[10px] text-gray-400 mt-0.5">{perLabel}</p>
                           <span className="text-xs text-[#e8a020] font-semibold group-hover:underline flex items-center gap-1 justify-end mt-1">
                             View <ArrowRight size={11} />
                           </span>

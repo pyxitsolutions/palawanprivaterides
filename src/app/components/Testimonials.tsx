@@ -213,7 +213,7 @@ export function Testimonials() {
               ))}
             </div>
             <p className="text-sm text-gray-600">
-              <span className="font-bold text-gray-900">500+</span> satisfied travelers and counting
+              <span className="font-bold text-gray-900">5.0</span> on Google · <span className="font-bold text-gray-900">9</span> reviews
             </p>
           </div>
         </div>

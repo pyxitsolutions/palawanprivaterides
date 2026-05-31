@@ -1,42 +1,64 @@
+import dest1 from '../../dest/dest-1.webp';
+import dest4 from '../../dest/dest-4.webp';
+import tourElNidoA from '../../elnido/tour-a.webp';
+import tourRiver from '../../ur-tour/tour-river.webp';
+
+export type BlogCategory = 'Travel Guide' | 'Travel Tips';
+
+export interface PriceRow {
+  vehicle: string;
+  price: string;
+  was?: string;
+}
+
 export interface BlogPost {
   slug: string;
   title: string;
   metaTitle: string;
   metaDescription: string;
   excerpt: string;
-  category: string;
+  category: BlogCategory;
   readTime: string;
   publishedAt: string;
   keywords: string[];
+  featuredImage: string;
+  relatedSlugs: string[];
+  stickyBookHref?: string;
   content: Section[];
 }
 
 export interface Section {
-  type: 'h2' | 'h3' | 'p' | 'ul' | 'tip' | 'cta';
+  type: 'h2' | 'h3' | 'p' | 'ul' | 'tip' | 'cta' | 'link' | 'priceBox';
   text?: string;
   items?: string[];
   ctaLabel?: string;
   ctaHref?: string;
+  href?: string;
+  priceTitle?: string;
+  priceRows?: PriceRow[];
 }
 
 export const blogPosts: BlogPost[] = [
   {
     slug: 'puerto-princesa-to-el-nido-guide',
     title: 'Puerto Princesa to El Nido: Complete Travel Guide',
-    metaTitle: 'Puerto Princesa to El Nido Travel Guide 2025 | Palawan Private Rides',
-    metaDescription: 'Everything you need to know about getting from Puerto Princesa to El Nido — travel time, transport options, costs, and tips. Private van transfer starting at ₱7,100.',
+    metaTitle: 'Puerto Princesa to El Nido Travel Guide 2026 | Palawan Private Rides',
+    metaDescription: 'Everything you need to know about getting from Puerto Princesa to El Nido — travel time, transport options, costs, and tips. Private van transfer starting at ₱6,900 (promo from ₱7,000 flat rate).',
     excerpt: 'Planning your trip from Puerto Princesa to El Nido? Here\'s everything you need to know — travel time, transport options, best departure times, and travel tips.',
     category: 'Travel Guide',
     readTime: '5 min read',
     publishedAt: '2025-05-01',
     keywords: ['Puerto Princesa to El Nido', 'El Nido travel guide', 'Puerto Princesa El Nido van', 'Palawan transport'],
+    featuredImage: dest1,
+    relatedSlugs: ['best-time-to-visit-el-nido', 'el-nido-island-tours-guide', 'puerto-princesa-to-port-barton'],
+    stickyBookHref: '/services/pps-el-nido',
     content: [
       { type: 'p', text: 'El Nido is one of the most beautiful destinations in the Philippines — and getting there from Puerto Princesa is part of the adventure. Whether you\'re a first-time Palawan visitor or a seasoned traveler, this guide covers everything you need to know about the Puerto Princesa to El Nido journey.' },
       { type: 'h2', text: 'How Far is Puerto Princesa from El Nido?' },
       { type: 'p', text: 'Puerto Princesa to El Nido is approximately 238 kilometers by road. The journey takes 5 to 6 hours depending on road conditions, your stops along the way, and the type of vehicle you\'re traveling in.' },
       { type: 'h2', text: 'Transport Options from Puerto Princesa to El Nido' },
       { type: 'h3', text: '1. Private Van Transfer (Recommended)' },
-      { type: 'p', text: 'A private van transfer is the most comfortable and convenient way to get from Puerto Princesa to El Nido. You get the entire vehicle for your group — no shared rides, no unplanned stops, and no waiting for strangers. Palawan Private Rides offers door-to-door private van transfers starting at ₱7,100 per booking.' },
+      { type: 'p', text: 'A private van transfer is the most comfortable and convenient way to get from Puerto Princesa to El Nido. You get the entire vehicle for your group — no shared rides, no unplanned stops, and no waiting for strangers. Palawan Private Rides offers door-to-door private van transfers starting at ₱6,900 per booking (₱7,000 flat rate, save ₱100).' },
       { type: 'ul', items: ['Door-to-door service from your hotel', 'Air-conditioned sedan, SUV, or van', 'Optional stopovers for meals and sightseeing', 'Fixed rate — no hidden charges', 'Departure time of your choice'] },
       { type: 'h3', text: '2. Shared Shuttle Van' },
       { type: 'p', text: 'Shared vans are cheaper but less comfortable. You\'ll be sharing the ride with strangers, stopping at multiple drop-off points, and following a fixed schedule. They typically depart early in the morning and the journey can take longer due to multiple stops.' },
@@ -49,7 +71,19 @@ export const blogPosts: BlogPost[] = [
       { type: 'ul', items: ['Roxas town — great local restaurants for breakfast', 'Taytay — historic Spanish fort worth a quick photo stop', 'San Vicente junction — scenic mountain views', 'El Nido town proper — end of the road and beginning of paradise'] },
       { type: 'tip', text: '💡 Pro tip: Ask your driver to stop at a good local restaurant in Roxas for breakfast. It\'s roughly halfway through the journey and the local food is delicious.' },
       { type: 'h2', text: 'How Much Does the Trip Cost?' },
-      { type: 'p', text: 'Private van transfers from Puerto Princesa to El Nido start at ₱7,100 for a Sedan/Hatchback, ₱7,600 for an SUV, and ₱8,100 for a Van (up to 13 passengers). The rate covers the entire vehicle — not per person — making it excellent value for families and groups.' },
+      { type: 'p', text: 'Private transfers are priced per booking (whole vehicle), not per person. Current promotional rates:' },
+      {
+        type: 'priceBox',
+        priceTitle: 'Puerto Princesa → El Nido',
+        priceRows: [
+          { vehicle: 'Sedan / Hatchback', price: '6,900', was: '7,000' },
+          { vehicle: 'SUV', price: '7,400', was: '7,500' },
+          { vehicle: 'Van (up to 13 pax)', price: '7,900', was: '8,000' },
+        ],
+        ctaHref: '/services/pps-el-nido',
+        ctaLabel: 'Book this route',
+      },
+      { type: 'link', text: 'When is the best time to visit El Nido?', href: '/blog/best-time-to-visit-el-nido' },
       { type: 'h2', text: 'Tips for a Comfortable Journey' },
       { type: 'ul', items: ['Bring snacks and water for the 5-6 hour ride', 'Wear comfortable clothing', 'Charge your devices the night before — power banks are handy', 'Inform your driver of any motion sickness so they can adjust speed on mountain roads', 'Book your transfer at least 1 day in advance, especially during peak season (December to May)'] },
       { type: 'cta', ctaLabel: 'Book Your Private Van to El Nido', ctaHref: '/services/pps-el-nido' },
@@ -59,20 +93,34 @@ export const blogPosts: BlogPost[] = [
     slug: 'puerto-princesa-to-port-barton',
     title: 'How to Get from Puerto Princesa to Port Barton',
     metaTitle: 'Puerto Princesa to Port Barton Travel Guide | Palawan Private Rides',
-    metaDescription: 'Getting from Puerto Princesa to Port Barton? Learn your transport options, travel time, and costs. Private van transfer from ₱5,600. Book with Palawan Private Rides.',
+    metaDescription: 'Getting from Puerto Princesa to Port Barton? Transport options, travel time, and costs. Private transfer from ₱5,400 per booking (promo from ₱5,500).',
     excerpt: 'Port Barton is Palawan\'s hidden gem — and getting there from Puerto Princesa is easier than you think. Here\'s your complete guide to the journey.',
     category: 'Travel Guide',
     readTime: '4 min read',
     publishedAt: '2025-05-05',
     keywords: ['Puerto Princesa to Port Barton', 'Port Barton transfer', 'Port Barton transport', 'Palawan hidden gem'],
+    featuredImage: dest4,
+    relatedSlugs: ['puerto-princesa-to-el-nido-guide', 'best-time-to-visit-el-nido', 'things-to-do-puerto-princesa'],
+    stickyBookHref: '/services/pps-port-barton',
     content: [
       { type: 'p', text: 'Port Barton is one of Palawan\'s best-kept secrets — a peaceful beach town with crystal-clear waters, vibrant coral reefs, and a laid-back atmosphere that feels untouched by mass tourism. Getting there from Puerto Princesa is straightforward if you know your options.' },
       { type: 'h2', text: 'Distance and Travel Time' },
       { type: 'p', text: 'Port Barton is located about 160 kilometers north of Puerto Princesa. The journey takes approximately 2 to 3 hours by private van, making it one of the shorter transfers in Palawan.' },
       { type: 'h2', text: 'How to Get to Port Barton from Puerto Princesa' },
       { type: 'h3', text: '1. Private Van Transfer (Best Option)' },
-      { type: 'p', text: 'A private van transfer is the most comfortable and hassle-free way to reach Port Barton. Palawan Private Rides offers direct, door-to-door transfers starting at ₱5,600 per booking. Your driver will pick you up from your hotel or the airport and take you straight to Port Barton.' },
-      { type: 'ul', items: ['Starting at ₱5,600 for the whole vehicle', 'Air-conditioned and comfortable', 'Direct route — no unnecessary stops', 'Flexible departure time', 'Up to 8 passengers per booking'] },
+      { type: 'p', text: 'A private van transfer is the most comfortable and hassle-free way to reach Port Barton. Palawan Private Rides offers direct, door-to-door transfers with promotional rates per booking (whole vehicle).' },
+      {
+        type: 'priceBox',
+        priceTitle: 'Puerto Princesa → Port Barton',
+        priceRows: [
+          { vehicle: 'Sedan / Hatchback', price: '5,400', was: '5,500' },
+          { vehicle: 'SUV', price: '5,900', was: '6,000' },
+          { vehicle: 'Van', price: '6,400', was: '6,500' },
+        ],
+        ctaHref: '/services/pps-port-barton',
+        ctaLabel: 'Book this route',
+      },
+      { type: 'ul', items: ['Air-conditioned and comfortable', 'Direct route — no unnecessary stops', 'Flexible departure time', 'Per booking — not per person'] },
       { type: 'h3', text: '2. Shared Van' },
       { type: 'p', text: 'Shared vans to Port Barton depart from San Jose terminal in Puerto Princesa. However, schedules are limited and you\'ll be sharing the ride with other travelers. The journey can take longer due to multiple stops along the way.' },
       { type: 'h2', text: 'Best Time to Go to Port Barton' },
@@ -82,19 +130,23 @@ export const blogPosts: BlogPost[] = [
       { type: 'tip', text: '💡 Port Barton has limited ATMs — bring enough cash before leaving Puerto Princesa. Most accommodations and restaurants accept cash only.' },
       { type: 'h2', text: 'What to Pack' },
       { type: 'ul', items: ['Sufficient cash (ATMs are limited)', 'Reef-safe sunscreen', 'Insect repellent', 'Light clothing and swimwear', 'Snorkeling gear (or rent locally)', 'Power bank — electricity can be intermittent'] },
+      { type: 'link', text: 'Full guide: Puerto Princesa to El Nido', href: '/blog/puerto-princesa-to-el-nido-guide' },
       { type: 'cta', ctaLabel: 'Book Your Transfer to Port Barton', ctaHref: '/services/pps-port-barton' },
     ],
   },
   {
     slug: 'best-time-to-visit-el-nido',
     title: 'Best Time to Visit El Nido, Palawan',
-    metaTitle: 'Best Time to Visit El Nido Palawan 2025 | Palawan Private Rides',
+    metaTitle: 'Best Time to Visit El Nido Palawan 2026 | Palawan Private Rides',
     metaDescription: 'When is the best time to visit El Nido? Learn about El Nido\'s seasons, weather, crowd levels, and the best months to plan your Palawan trip.',
     excerpt: 'El Nido is stunning year-round, but timing your visit can make a huge difference. Here\'s a month-by-month breakdown to help you plan the perfect Palawan trip.',
     category: 'Travel Tips',
     readTime: '4 min read',
     publishedAt: '2025-05-10',
     keywords: ['best time to visit El Nido', 'El Nido weather', 'El Nido season', 'Palawan travel tips'],
+    featuredImage: tourElNidoA,
+    relatedSlugs: ['puerto-princesa-to-el-nido-guide', 'el-nido-island-tours-guide', 'puerto-princesa-to-port-barton'],
+    stickyBookHref: '/services/pps-el-nido',
     content: [
       { type: 'p', text: 'El Nido, Palawan is one of the most stunning destinations in Southeast Asia — but timing your visit matters. The weather, crowd levels, and sea conditions can vary significantly throughout the year. Here\'s everything you need to know to pick the best time for your El Nido trip.' },
       { type: 'h2', text: 'El Nido\'s Two Main Seasons' },
@@ -122,6 +174,7 @@ export const blogPosts: BlogPost[] = [
       { type: 'h2', text: 'Our Recommendation' },
       { type: 'p', text: 'The sweet spot for visiting El Nido is November to March. The weather is perfect, island hopping tours run daily, and while it\'s popular, it\'s not as overwhelmingly crowded as April during Holy Week. If you\'re traveling from abroad, January and February offer the most reliable weather.' },
       { type: 'tip', text: '💡 Book your private van transfer from Puerto Princesa to El Nido in advance during peak season (December to April). Vehicles fill up quickly, especially during holidays.' },
+      { type: 'link', text: 'Compare El Nido island tours A, B, C & D', href: '/blog/el-nido-island-tours-guide' },
       { type: 'cta', ctaLabel: 'Book Your Puerto Princesa to El Nido Transfer', ctaHref: '/services/pps-el-nido' },
     ],
   },
@@ -135,24 +188,27 @@ export const blogPosts: BlogPost[] = [
     readTime: '5 min read',
     publishedAt: '2025-05-15',
     keywords: ['El Nido island tour A B C D', 'El Nido tour guide', 'El Nido island hopping', 'best El Nido tour'],
+    featuredImage: tourElNidoA,
+    relatedSlugs: ['best-time-to-visit-el-nido', 'puerto-princesa-to-el-nido-guide', 'things-to-do-puerto-princesa'],
+    stickyBookHref: '/tours',
     content: [
       { type: 'p', text: 'El Nido\'s island hopping tours are divided into four official routes — Tour A, Tour B, Tour C, and Tour D. Each covers different islands, lagoons, beaches, and caves. Choosing the right one (or a combination) depends on your priorities and how many days you have.' },
       { type: 'h2', text: 'El Nido Island Tour A — The Classic' },
       { type: 'p', text: 'Tour A is the most popular El Nido island tour and for good reason — it covers the most iconic lagoons and beaches in the area.' },
       { type: 'ul', items: ['Big Lagoon — stunning turquoise water enclosed by limestone cliffs', 'Secret Lagoon — hidden lagoon accessible through a small hole in the rock', 'Shimizu Island — beautiful snorkeling spot with diverse marine life', 'Seven Commandos Beach — long white sand beach, perfect for lunch and relaxation', 'Cudugnon Cave — small sea cave with interesting rock formations'] },
-      { type: 'p', text: 'Best for: First-time El Nido visitors who want to see the most iconic spots. Starting at ₱1,550/person.' },
+      { type: 'p', text: 'Best for: First-time El Nido visitors who want to see the most iconic spots. Starting at ₱1,500/person (plus ₱400 environmental & ₱200 entrance fees).' },
       { type: 'h2', text: 'El Nido Island Tour B — Caves and Beaches' },
       { type: 'p', text: 'Tour B is perfect for travelers who love caves and more secluded beaches.' },
       { type: 'ul', items: ['Snake Island — famous sandbar that appears at low tide', 'Cudugnon Cave — sea cave with interesting formations', 'Cathedral Cave — impressive limestone cave with natural light', 'Entalula Beach — pristine white sand beach, perfect for swimming', 'Pinagbuyutan Island — beautiful island with snorkeling opportunities'] },
-      { type: 'p', text: 'Best for: Travelers who want something different from Tour A. Fewer crowds. Starting at ₱1,650/person.' },
+      { type: 'p', text: 'Best for: Travelers who want something different from Tour A. Fewer crowds. Starting at ₱1,600/person (plus ₱400 environmental fee).' },
       { type: 'h2', text: 'El Nido Island Tour C — The Scenic Route' },
       { type: 'p', text: 'Tour C covers the more remote northern islands of El Nido — featuring hidden beaches and dramatic cliff scenery.' },
       { type: 'ul', items: ['Hidden Beach — secret beach only accessible by swimming through a narrow passage', 'Secret Beach — another hidden gem tucked behind massive limestone walls', 'Matinloc Shrine — hilltop shrine with panoramic views of El Nido', 'Helicopter Island — shaped like a helicopter, great snorkeling', 'Tapiutan Island — secluded island with beautiful scenery'] },
-      { type: 'p', text: 'Best for: Adventurous travelers who want dramatic scenery and hidden beaches. Starting at ₱1,750/person.' },
+      { type: 'p', text: 'Best for: Adventurous travelers who want dramatic scenery and hidden beaches. Starting at ₱1,700/person (plus ₱400 environmental & ₱200 entrance fees).' },
       { type: 'h2', text: 'El Nido Island Tour D — The Peaceful Route' },
       { type: 'p', text: 'Tour D is the least crowded of the four official tours, covering the western side of El Nido with beautiful lagoons and peaceful beaches.' },
       { type: 'ul', items: ['Small Lagoon — emerald green lagoon, great for kayaking', 'Cadlao Lagoon — large, dramatic lagoon surrounded by towering cliffs', 'Pasandigan Beach — hidden white sand beach with crystal water', 'Paradise Beach — aptly named stretch of white sand and coconut trees', 'Bukal Island — snorkeling with colorful fish and corals'] },
-      { type: 'p', text: 'Best for: Travelers who want fewer crowds and a more relaxed island hopping experience. Starting at ₱1,550/person.' },
+      { type: 'p', text: 'Best for: Travelers who want fewer crowds and a more relaxed island hopping experience. Starting at ₱1,500/person (plus ₱400 environmental & ₱200 entrance fees).' },
       { type: 'h2', text: 'Which Tour Should You Take?' },
       { type: 'ul', items: [
         'First-time visitor → Tour A (most iconic)',
@@ -162,6 +218,7 @@ export const blogPosts: BlogPost[] = [
         'Have 2+ days → Do Tour A + Tour C for the best combination',
       ] },
       { type: 'tip', text: '💡 Book your tours at least a day in advance. Tours are limited in capacity and sell out quickly during peak season.' },
+      { type: 'link', text: 'How to get from Puerto Princesa to El Nido', href: '/blog/puerto-princesa-to-el-nido-guide' },
       { type: 'cta', ctaLabel: 'Book El Nido Island Tours', ctaHref: '/services/el-nido-island-tour-a' },
     ],
   },
@@ -175,13 +232,16 @@ export const blogPosts: BlogPost[] = [
     readTime: '5 min read',
     publishedAt: '2025-05-20',
     keywords: ['things to do Puerto Princesa', 'Puerto Princesa attractions', 'Palawan travel guide', 'Puerto Princesa tour'],
+    featuredImage: tourRiver,
+    relatedSlugs: ['puerto-princesa-to-el-nido-guide', 'puerto-princesa-to-port-barton', 'el-nido-island-tours-guide'],
+    stickyBookHref: '/tours',
     content: [
       { type: 'p', text: 'Most travelers see Puerto Princesa as just a transit point on the way to El Nido or Port Barton. But the city and its surroundings offer some of the most impressive attractions in all of Palawan. Here are the top things to do in Puerto Princesa.' },
       { type: 'h2', text: '1. Underground River Day Tour' },
-      { type: 'p', text: 'The Puerto Princesa Subterranean River National Park is a UNESCO World Heritage Site and one of the New Seven Wonders of Nature. The underground river stretches 8.2 kilometers through a massive cave system filled with dramatic stalactites and stalagmites. Boat tours take you inside the cave for an unforgettable experience.' },
+      { type: 'p', text: 'The Puerto Princesa Subterranean River National Park is a UNESCO World Heritage Site and one of the New Seven Wonders of Nature. The underground river stretches 8.2 kilometers through a massive cave system filled with dramatic stalactites and stalagmites. Our private day tour starts at ₱2,500/person plus ₱150 environmental fee.' },
       { type: 'ul', items: ['UNESCO World Heritage Site', 'One of the New Seven Wonders of Nature', 'Boat tour inside the cave', 'Includes buffet lunch', 'Advance booking required for permits'] },
       { type: 'h2', text: '2. Honda Bay Island Hopping' },
-      { type: 'p', text: 'Honda Bay is a stunning bay just north of Puerto Princesa with several beautiful islands perfect for snorkeling and swimming. The most popular stops include Cowrie Island, Luli Island (which partially disappears at high tide), and Pambato Reef — one of the best snorkeling spots in the area.' },
+      { type: 'p', text: 'Honda Bay is a stunning bay just north of Puerto Princesa with several beautiful islands perfect for snorkeling and swimming. The most popular stops include Cowrie Island, Luli Island (which partially disappears at high tide), and Pambato Reef. Tours start at ₱1,800/person plus ₱150 environmental fee.' },
       { type: 'h2', text: '3. Iwahig Firefly Watching' },
       { type: 'p', text: 'One of the most magical experiences in Palawan — watching thousands of fireflies light up the mangroves along the Iwahig River at night. The experience is truly mesmerizing and unlike anything you\'ve seen before. Tours depart in the evening and include a buffet dinner.' },
       { type: 'h2', text: '4. Puerto Princesa City Tour' },
@@ -192,6 +252,7 @@ export const blogPosts: BlogPost[] = [
       { type: 'h2', text: 'How to Get Around Puerto Princesa' },
       { type: 'p', text: 'The easiest and most comfortable way to explore Puerto Princesa\'s attractions is with a private vehicle and driver. Palawan Private Rides offers private guided tours for all the major attractions, with hotel pickup and drop-off included.' },
       { type: 'tip', text: '💡 If you have 2-3 days in Puerto Princesa, do the Underground River on Day 1 (it\'s a full day), Honda Bay Island Hopping on Day 2, and the Firefly Watching in the evening of Day 2.' },
+      { type: 'link', text: 'Browse all tour packages', href: '/tours' },
       { type: 'cta', ctaLabel: 'Browse Puerto Princesa Tour Packages', ctaHref: '/services/underground-river-day-tour' },
     ],
   },

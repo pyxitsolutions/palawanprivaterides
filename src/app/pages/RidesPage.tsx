@@ -1,10 +1,28 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Navbar } from '../components/Navbar';
 import { SiteFooter } from '../components/SiteFooter';
 import { ScrollToTopButton } from '../components/ScrollToTopButton';
-import { CarCard } from '../components/CarCard';
-import { privateRides } from '../data/tours';
+import { HomePromoBanner } from '../components/HomePromoBanner';
+import { InstantQuote } from '../components/InstantQuote';
+import { PageTrustLine } from '../components/PageTrustLine';
+import { privateRides, tours } from '../data/tours';
+import {
+  RIDES_BLOG_LINKS,
+  RIDES_POPULAR_NAMES,
+  RIDES_POPULAR_ORDER,
+  groupRides,
+  sortByPopular,
+  sortByPriceAsc,
+} from '../data/listingPages';
+import { setListingPageMeta } from '../utils/pageMeta';
+import { ListingControls, type SortOption } from '../components/listing/ListingControls';
+import { PopularRouteChips } from '../components/listing/PopularRouteChips';
+import { VehicleTierTable } from '../components/listing/VehicleTierTable';
+import { ListingBlogLinks } from '../components/listing/ListingBlogLinks';
+import { CrossSellBanner } from '../components/listing/CrossSellBanner';
+import { ListingCardGrid, ListingGroupedSections } from '../components/listing/ListingCardGrid';
 import { Shield, Users, MapPin, Clock, MessageCircle } from 'lucide-react';
+import { useCurrency } from '../context/CurrencyContext';
 import heroImg from '../../rides/rides-1.webp';
 
 const filters = [
@@ -21,21 +39,39 @@ const highlights = [
 ];
 
 export default function RidesPage() {
+  const { convertPrice } = useCurrency();
   const [typeFilter, setTypeFilter] = useState('all');
+  const [sort, setSort] = useState<SortOption>('popular');
+  const [groupBy, setGroupBy] = useState(true);
+  const [highlightName, setHighlightName] = useState<string | null>(null);
 
-  const filtered = privateRides.filter(
-    (t) => typeFilter === 'all' || t.type === typeFilter
-  );
+  useEffect(() => {
+    setListingPageMeta(
+      '/rides',
+      'Private Rides & Transfers in Palawan | Palawan Private Rides',
+      'Book private van transfers from Puerto Princesa to El Nido, Port Barton & San Vicente. Door-to-door, no shared vans. Promo from ₱6,900 per booking.',
+    );
+  }, []);
+
+  const filtered = useMemo(() => {
+    let list = privateRides.filter((t) => typeFilter === 'all' || t.type === typeFilter);
+    list = sort === 'popular' ? sortByPopular(list, RIDES_POPULAR_ORDER) : sortByPriceAsc(list);
+    return list;
+  }, [typeFilter, sort]);
+
+  const groups = useMemo(() => groupRides(filtered), [filtered]);
+  const elNidoTour = tours.find((t) => t.name === 'PPS → El Nido');
+  const showGrouped = groupBy && typeFilter === 'all';
 
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
+      <HomePromoBanner />
 
-      {/* Hero */}
       <section className="relative min-h-[55vh] flex items-end">
         <img
           src={heroImg}
-          alt="Private Rides Palawan"
+          alt="Private van transfers across Palawan - Puerto Princesa to El Nido and Port Barton"
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
@@ -45,18 +81,22 @@ export default function RidesPage() {
             Private Land Transport
           </p>
           <h1 className="text-5xl md:text-6xl font-black text-white leading-tight mb-4">
-            Private Rides<br />
+            Private Rides
+            <br />
             <span className="text-[#e8a020]">& Transfers</span>
           </h1>
-          <p className="text-white/70 text-lg max-w-xl mb-8">
+          <p className="text-white/70 text-lg max-w-xl mb-4">
             Door-to-door transfers across Palawan — just your group, your driver, and the open road.
           </p>
+          <p className="text-[#ffc84d] text-sm font-black mb-4">
+            Promotional rates from {convertPrice(6900)} per booking
+          </p>
+          <PageTrustLine className="mb-6" />
 
-          {/* Highlight pills */}
           <div className="flex flex-wrap gap-3">
-            {highlights.map((h, i) => (
+            {highlights.map((h) => (
               <div
-                key={i}
+                key={h.label}
                 className="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-medium px-4 py-2 rounded-full"
               >
                 <span className="text-[#e8a020]">{h.icon}</span>
@@ -67,15 +107,13 @@ export default function RidesPage() {
         </div>
       </section>
 
-      {/* Rides Grid */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-          {/* Filter Tabs */}
-          <div className="flex flex-wrap gap-2 justify-center mb-10">
+          <div className="flex flex-wrap gap-2 justify-center mb-6">
             {filters.map((f) => (
               <button
                 key={f.value}
+                type="button"
                 onClick={() => setTypeFilter(f.value)}
                 className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
                   typeFilter === f.value
@@ -88,13 +126,46 @@ export default function RidesPage() {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {filtered.map((tour, index) => (
-              <CarCard key={index} {...tour} />
-            ))}
-          </div>
+          <PopularRouteChips
+            names={RIDES_POPULAR_NAMES}
+            onSelect={(name) => {
+              setHighlightName(name);
+              setTimeout(() => setHighlightName(null), 4000);
+            }}
+          />
 
-          {/* CTA */}
+          <ListingControls
+            resultCount={filtered.length}
+            resultLabel={filtered.length === 1 ? 'route' : 'routes'}
+            sort={sort}
+            onSortChange={setSort}
+            groupBy={groupBy}
+            onGroupByChange={setGroupBy}
+          />
+
+          <CrossSellBanner variant="rides" />
+
+          {elNidoTour && <VehicleTierTable exampleFromPrice={elNidoTour.price} />}
+
+          <ListingBlogLinks links={RIDES_BLOG_LINKS} heading="Plan your route" />
+
+          {filtered.length === 0 ? (
+            <div className="text-center py-16 rounded-2xl border border-dashed border-gray-300 bg-white">
+              <p className="text-gray-600 font-semibold mb-2">No routes match this filter.</p>
+              <button
+                type="button"
+                onClick={() => setTypeFilter('all')}
+                className="text-primary font-bold text-sm hover:underline"
+              >
+                Show all routes
+              </button>
+            </div>
+          ) : showGrouped ? (
+            <ListingGroupedSections groups={groups} highlightName={highlightName} />
+          ) : (
+            <ListingCardGrid tours={filtered} highlightName={highlightName} />
+          )}
+
           <div className="mt-14 rounded-3xl bg-primary overflow-hidden">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6 px-8 py-8">
               <div>
@@ -113,9 +184,10 @@ export default function RidesPage() {
               </a>
             </div>
           </div>
-
         </div>
       </section>
+
+      <InstantQuote />
 
       <SiteFooter />
       <ScrollToTopButton />

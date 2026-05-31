@@ -1,10 +1,15 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCurrency } from './context/CurrencyContext';
-import { tours } from './data/tours';
 import { Navbar } from './components/Navbar';
+import { InstantQuote } from './components/InstantQuote';
+import { PromoPrice } from './components/PromoPrice';
+import { hasPromoRate } from './utils/pricing';
+import { tours } from './data/tours';
 import { HeroCarousel } from './components/HeroCarousel';
+import { HomePromoBanner } from './components/HomePromoBanner';
 import { ScrollToTopButton } from './components/ScrollToTopButton';
+import { BlogPreview } from './components/BlogPreview';
+import { GalleryPreview } from './components/GalleryPreview';
 import { Testimonials } from './components/Testimonials';
 import { SiteFooter } from './components/SiteFooter';
 import {
@@ -18,113 +23,6 @@ import dest2 from '../dest/dest-2.webp';
 import dest3 from '../dest/dest-3.webp';
 import dest4 from '../dest/dest-4.webp';
 import dest5 from '../dest/dest-5.webp';
-
-const RIDE_OPTIONS = tours.filter((t) => t.type === 'Private Ride' || t.type === 'Transfer');
-const DEFAULT_CAPACITY: Record<string, number> = { 'Sedan/Hatchback': 3, 'SUV': 6, 'Van': 13 };
-
-function InstantQuote({ onNavigate }: { onNavigate: (href: string) => void }) {
-  const { convertPrice } = useCurrency();
-  const navigate = useNavigate();
-  const [serviceIdx, setServiceIdx] = useState(0);
-  const [pax, setPax] = useState('');
-  const [booking, setBooking] = useState(false);
-
-  const service = RIDE_OPTIONS[serviceIdx];
-
-  const MAX_VAN = 13;
-  const quote = useMemo(() => {
-    const n = parseInt(pax);
-    if (!n || n < 1 || !service) return null;
-    if (service.pricing) {
-      const vanPrice = parseInt(service.pricing.find((p) => p.vehicle === 'Van')?.price ?? service.price);
-      if (n > MAX_VAN) {
-        const vansNeeded = Math.ceil(n / MAX_VAN);
-        return { vehicle: `${vansNeeded}× Van`, price: vansNeeded * vanPrice, capacity: vansNeeded * MAX_VAN, isFleet: true };
-      }
-      const tier = service.pricing.find((p) => (DEFAULT_CAPACITY[p.vehicle] ?? 13) >= n)
-        ?? service.pricing[service.pricing.length - 1];
-      return { vehicle: tier.vehicle, price: parseInt(tier.price), capacity: DEFAULT_CAPACITY[tier.vehicle] ?? 13, isFleet: false };
-    }
-    return { vehicle: 'Van', price: parseInt(service.price), capacity: 8, isFleet: false };
-  }, [service, pax]);
-
-  return (
-    <section className="py-14 bg-white border-t border-gray-100">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8">
-          <p className="text-sm font-bold text-[#e8a020] uppercase tracking-widest mb-2">No surprises</p>
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Get an Instant Quote</h2>
-          <p className="text-gray-500 text-sm mt-2">Select your route and group size — see the price instantly.</p>
-        </div>
-
-        <div className="bg-gray-50 rounded-2xl p-6 sm:p-8 border border-gray-200">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-            {/* Service selector */}
-            <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Service / Route</label>
-              <select
-                value={serviceIdx}
-                onChange={(e) => { setServiceIdx(Number(e.target.value)); setPax(''); }}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm font-semibold text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-primary"
-              >
-                {RIDE_OPTIONS.map((t, i) => (
-                  <option key={t.name} value={i}>{t.name}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Passengers */}
-            <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Number of Passengers</label>
-              <input
-                type="number"
-                min={1}
-                max={30}
-                value={pax}
-                onChange={(e) => setPax(e.target.value)}
-                placeholder="e.g. 4"
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm font-semibold text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </div>
-          </div>
-
-          {/* Result */}
-          {quote ? (
-            <div className="bg-white rounded-xl border border-gray-200 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <p className="text-xs text-gray-400 mb-1">{quote.isFleet ? 'Fleet booking required' : 'Recommended vehicle'}</p>
-                <p className="font-black text-gray-900 text-lg">{quote.vehicle} <span className="text-xs font-normal text-gray-400">— max {quote.capacity} pax</span></p>
-                <div className="flex items-end gap-2 mt-1">
-                  <p className="text-3xl font-black text-primary">{convertPrice(quote.price)}</p>
-                  <p className="text-xs text-gray-400 mb-1">{quote.isFleet ? 'estimated total' : 'per booking'}</p>
-                </div>
-                {quote.isFleet && (
-                  <p className="text-xs text-amber-600 mt-1">⚠️ Final fleet arrangement confirmed via WhatsApp.</p>
-                )}
-              </div>
-              <button
-                disabled={booking}
-                onClick={() => {
-                  setBooking(true);
-                  setTimeout(() => navigate('/book', {
-                    state: { tourName: service.name, tourPrice: service.price, tourType: service.type, pricing: service.pricing }
-                  }), 600);
-                }}
-                className="bg-[#e8a020] text-white px-7 py-3.5 rounded-xl font-bold text-sm hover:bg-[#d49020] transition-colors flex-shrink-0 flex items-center gap-2 disabled:opacity-80"
-              >
-                {booking ? <><svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"/><path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8v8z"/></svg> Loading...</> : 'Book Now →'}
-              </button>
-            </div>
-          ) : (
-            <div className="bg-white rounded-xl border border-dashed border-gray-200 p-5 text-center text-gray-400 text-sm">
-              Select a route and enter your group size to see the price.
-            </div>
-          )}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 function FAQItem({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = useState(false);
@@ -151,7 +49,6 @@ const spinStyle = `@keyframes _spin { to { transform: rotate(360deg); } } @keyfr
 export default function App() {
   const navigate = useNavigate();
   const [navigating, setNavigating] = useState(false);
-  const { convertPrice } = useCurrency();
 
   const handleNavigate = (href: string) => {
     setNavigating(true);
@@ -179,6 +76,7 @@ export default function App() {
       {/* Hero */}
       <section id="home">
         <HeroCarousel />
+        <HomePromoBanner />
       </section>
 
       {/* Trust Badges */}
@@ -209,8 +107,8 @@ export default function App() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[
-              { route: 'Puerto Princesa → El Nido', tourName: 'PPS → El Nido', duration: '5–6 hrs', price: 7100, note: 'per booking' },
-              { route: 'Puerto Princesa → Port Barton', tourName: 'PPS → Port Barton', duration: '2–3 hrs', price: 5600, note: 'per booking' },
+              { route: 'Puerto Princesa → El Nido', tourName: 'PPS → El Nido', duration: '5–6 hrs', price: 6900, note: 'per booking' },
+              { route: 'Puerto Princesa → Port Barton', tourName: 'PPS → Port Barton', duration: '2–3 hrs', price: 5400, note: 'per booking' },
               { route: 'Airport / Hotel Transfer', tourName: 'Airport / Hotel Transfer', duration: 'Puerto Princesa', price: 550, note: 'per booking' },
             ].map((item) => {
               const tour = tours.find((t) => t.name === item.tourName);
@@ -220,9 +118,16 @@ export default function App() {
                   <p className="text-xs text-gray-400">{item.duration}</p>
                   <div className="mt-3 flex items-end justify-between">
                     <div>
-                      <p className="text-xs text-gray-400">Starting from</p>
-                      <p className="text-2xl font-black text-primary">{convertPrice(item.price)}</p>
-                      <p className="text-xs text-gray-400">{item.note}</p>
+                      <p className="text-xs text-gray-400">
+                        {tour && hasPromoRate(tour.type) ? 'Promo rate from' : 'Starting from'}
+                      </p>
+                      <PromoPrice
+                        amount={item.price}
+                        type={tour?.type ?? 'Transfer'}
+                        size="md"
+                        showPromoLabel={false}
+                      />
+                      <p className="text-xs text-gray-400 mt-0.5">{item.note}</p>
                     </div>
                     <button
                       onClick={() => navigate('/book', { state: { tourName: tour?.name, tourPrice: tour?.price, tourType: tour?.type, pricing: tour?.pricing } })}
@@ -239,7 +144,7 @@ export default function App() {
       </section>
 
       {/* Instant Quote Calculator */}
-      <InstantQuote onNavigate={handleNavigate} />
+      <InstantQuote />
 
       {/* Premium Services */}
       <section id="services" className="py-24 bg-white">
@@ -352,7 +257,7 @@ export default function App() {
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-4">
                 The Comfortable Way to Explore Palawan
               </h2>
-              <p className="text-gray-500 text-lg mb-8">We're a local Palawan transportation provider trusted by hundreds of travelers each year. From first-time tourists to repeat visitors, our guests choose us for one reason — peace of mind from the moment they land.</p>
+              <p className="text-gray-500 text-lg mb-8">We're a local Palawan transportation provider trusted by 300+ travelers. From first-time tourists to repeat visitors, our guests choose us for one reason — peace of mind from the moment they land.</p>
               <div className="space-y-5">
                 {[
                   { title: 'Truly Private Rides', desc: 'Travel with only your group. No strangers, no unplanned stops, no shared van headaches.' },
@@ -436,6 +341,9 @@ export default function App() {
         </div>
       </section>
 
+      <BlogPreview />
+      <GalleryPreview />
+
       {/* Testimonials */}
       <div id="reviews">
         <Testimonials />
@@ -487,7 +395,7 @@ export default function App() {
           </div>
           <div className="space-y-4">
             {[
-              { q: 'How much does a private van transfer from Puerto Princesa to El Nido cost?', a: 'Our private van transfers to El Nido start at ₱8,100 depending on vehicle type. Unlike shared vans, you get the entire vehicle for your group — no strangers, no unnecessary detours.' },
+              { q: 'How much does a private van transfer from Puerto Princesa to El Nido cost?', a: 'Our private van transfers to El Nido start at ₱6,900 (sedan) up to ₱7,900 (van) depending on vehicle type. Unlike shared vans, you get the entire vehicle for your group — no strangers, no unnecessary detours.' },
               { q: 'How long is the drive from Puerto Princesa to El Nido?', a: 'The drive typically takes 5 to 6 hours depending on road conditions. We recommend an early morning departure to arrive before sunset and make the most of your first day.' },
               { q: 'Do you offer airport pickup in Puerto Princesa?', a: 'Yes. We provide on-time airport transfers from Puerto Princesa Airport to any hotel in the city or surrounding areas. Just share your flight details when booking and we will be there.' },
               { q: 'Can I book a private tour for my group in Palawan?', a: 'Absolutely. We offer private day tours including the Underground River, Honda Bay Island Hopping, Iwahig Firefly Watching, and Puerto Princesa City Tour — all fully private for your group.' },

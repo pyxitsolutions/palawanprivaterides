@@ -1,13 +1,32 @@
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import emailjs from '@emailjs/browser';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { Navbar } from '../components/Navbar';
 import { SiteFooter } from '../components/SiteFooter';
 import { PolicyModal, type PolicyType } from '../components/PolicyModal';
+import { PromoPrice } from '../components/PromoPrice';
+import { BookingStepIndicator, stepLabels } from '../components/booking/BookingStepIndicator';
+import { BookingSummaryPanel } from '../components/booking/BookingSummaryPanel';
+import { BookingMobileNav } from '../components/booking/BookingMobileNav';
 import { useCurrency } from '../context/CurrencyContext';
-import { Calendar, Clock, MapPin, Users, MessageSquare, Car, Check, ChevronRight, ChevronLeft, ArrowLeft } from 'lucide-react';
+import { getTourExtraFees, hasPromoRate } from '../utils/pricing';
+import { buildServiceWhatsAppUrl, getServiceListPath } from '../utils/serviceHelpers';
+import {
+  clearBookingDraft,
+  emptyBookingFormData,
+  loadBookingDraft,
+  saveBookingDraft,
+} from '../utils/bookingDraft';
+import {
+  getStep1Errors,
+  getStep2Errors,
+  getStep3Errors,
+  getStep4Errors,
+} from '../utils/bookingValidation';
+import { slugify } from './ServicePage';
+import { Calendar, Clock, MapPin, Users, MessageSquare, Car, Check, ChevronRight, ChevronLeft, ArrowLeft, ExternalLink } from 'lucide-react';
 
 const EMAILJS_SERVICE_ID = 'service_w5vk124';
 const EMAILJS_TEMPLATE_RIDES = 'template_pnxzs9s';
@@ -50,7 +69,25 @@ const NATIONALITIES = [
 ];
 
 const MAX_VAN_CAPACITY = 13;
-const stepLabels = ['Contact', 'Schedule', 'Passengers', 'Trip Details', 'Review'];
+
+function getPickupPlaceholder(tourName: string): string {
+  if (tourName.includes('El Nido')) return 'e.g. Spin Designer Hostel, El Nido town';
+  if (tourName.includes('Port Barton')) return 'e.g. your hotel in Port Barton';
+  if (tourName.includes('Sabang') || tourName.includes('Underground')) return 'e.g. hotel in Sabang or Puerto Princesa';
+  if (tourName.includes('San Vicente')) return 'e.g. Long Beach resort, San Vicente';
+  return 'e.g. Sunlight Hotel, Puerto Princesa';
+}
+
+function getDropoffPlaceholder(tourName: string): string {
+  if (tourName.includes('El Nido')) return 'e.g. El Nido town or resort name';
+  if (tourName.includes('Puerto Princesa') && tourName.includes('Airport')) return 'e.g. Puerto Princesa International Airport';
+  return 'e.g. El Nido Town, hotel name';
+}
+
+function FieldError({ message }: { message?: string }) {
+  if (!message) return null;
+  return <p className="text-xs text-red-500 mt-1">{message}</p>;
+}
 
 export default function BookingPage() {
   const navigate = useNavigate();
@@ -58,13 +95,18 @@ export default function BookingPage() {
   const state = location.state as { tourName: string; tourPrice: string; tourType: string; pricing?: PricingTier[] } | null;
 
   useEffect(() => {
-    if (!state?.tourName) navigate('/', { replace: true });
+    if (!state?.tourName) {
+      navigate('/', { replace: true });
+      return;
+    }
     window.scrollTo(0, 0);
-  }, []);
+    document.title = `Book ${state.tourName} | Palawan Private Rides`;
+  }, [state?.tourName, navigate]);
 
   if (!state?.tourName) return null;
 
   const { tourName, tourPrice, tourType, pricing } = state;
+  const listPath = getServiceListPath(tourType);
 
   return (
     <BookingForm
@@ -72,21 +114,29 @@ export default function BookingPage() {
       tourPrice={tourPrice}
       tourType={tourType}
       pricing={pricing}
-      onBack={() => navigate(-1)}
+      listHref={listPath.href}
+      listLabel={listPath.label}
+      onBack={() => navigate(listPath.href)}
     />
   );
 }
 
-function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
+function BookingForm({ tourName, tourPrice, tourType, pricing, listHref, listLabel, onBack }: {
   tourName: string;
   tourPrice: string;
   tourType: string;
   pricing?: PricingTier[];
+  listHref: string;
+  listLabel: string;
   onBack: () => void;
 }) {
   const navigate = useNavigate();
   const { convertPrice } = useCurrency();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(() => {
+    const draft = loadBookingDraft(tourName);
+    const s = draft?.step ?? 1;
+    return s >= 1 && s <= 5 ? s : 1;
+  });
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -94,22 +144,32 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
   const [honeypot, setHoneypot] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [openPolicy, setOpenPolicy] = useState<PolicyType>(null);
+  const [stepAttempted, setStepAttempted] = useState<number | null>(null);
 
-  const [formData, setFormData] = useState({
-    fullName: '',
-    phone: '',
-    email: '',
-    nationality: '',
-    tourDate: '',
-    tourTime: '',
-    tourPeriod: '',
-    pax: '',
-    pickupLocation: '',
-    dropoffLocation: '',
-    vehicleType: '',
-    beachSelection: '',
-    message: '',
+  const [formData, setFormData] = useState(() => {
+    const draft = loadBookingDraft(tourName);
+    return draft?.formData ?? emptyBookingFormData();
   });
+
+  useEffect(() => {
+    if (!submitted) {
+      saveBookingDraft({ tourName, tourType, step, formData });
+    }
+  }, [tourName, tourType, step, formData, submitted]);
+
+  const whatsappHref = buildServiceWhatsAppUrl(tourName);
+  const servicePath = `/services/${slugify(tourName)}`;
+  const progressPct = ((step - 1) / (stepLabels.length - 1)) * 100;
+
+  const tryAdvance = (nextStep: number, valid: boolean, currentStep: number) => {
+    if (!valid) {
+      setStepAttempted(currentStep);
+      return;
+    }
+    setStepAttempted(null);
+    setStep(nextStep);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const updated = { ...formData, [e.target.name]: e.target.value };
@@ -131,8 +191,9 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
 
   const paxCount = parseInt(formData.pax) || 0;
   const basePrice = parseInt(selectedPrice) || 0;
-  const hasEnvFee = tourType === 'Tour Package' && !tourName.includes('City Tour') && !tourName.includes('PPC Beach') && !tourName.includes('El Nido Island Tour');
-  const envFee = hasEnvFee ? 150 : 0;
+  const tourExtras = tourType === 'Tour Package' ? getTourExtraFees(tourName, tourType) : null;
+  const envFee = tourExtras?.environmental ?? 0;
+  const entranceFee = tourExtras?.entrance ?? 0;
 
   const isMultiVehicle = !!pricing && paxCount > MAX_VAN_CAPACITY;
   const vehiclesNeeded = isMultiVehicle ? Math.ceil(paxCount / MAX_VAN_CAPACITY) : 1;
@@ -144,7 +205,8 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
       ? basePrice * paxCount
       : basePrice;
   const envTotal = envFee * paxCount;
-  const grandTotal = subtotal + envTotal;
+  const entranceTotal = entranceFee * paxCount;
+  const grandTotal = subtotal + envTotal + entranceTotal;
   const showTotal = !!formData.pax && !!selectedPrice;
 
   const getSelectedCapacity = () => {
@@ -163,13 +225,17 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
   };
   const vehicleTip = pricing ? getVehicleTip() : null;
 
-  const step1Valid = formData.fullName.trim() !== '' && formData.nationality !== '' && formData.phone.length >= 8 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
-  const step2Valid = formData.tourDate !== '' && (formData.tourTime !== '' || formData.tourPeriod !== '');
-  const step3Valid = formData.pax !== '' && (!pricing || isMultiVehicle || formData.vehicleType !== '');
-  const step4Valid =
-    formData.pickupLocation.trim() !== '' &&
-    formData.dropoffLocation.trim() !== '' &&
-    (!tourName.includes('PPC Beach') || formData.beachSelection !== '');
+  const step1Valid = Object.keys(getStep1Errors(formData)).length === 0;
+  const step2Valid = Object.keys(getStep2Errors(formData)).length === 0;
+  const step3Valid =
+    Object.keys(getStep3Errors(formData, { needsVehicle: !!pricing, isMultiVehicle })).length === 0 &&
+    !overCapacity;
+  const step4Valid = Object.keys(getStep4Errors(formData, tourName)).length === 0;
+
+  const step1Errors = stepAttempted === 1 ? getStep1Errors(formData) : {};
+  const step2Errors = stepAttempted === 2 ? getStep2Errors(formData) : {};
+  const step3Errors = stepAttempted === 3 ? getStep3Errors(formData, { needsVehicle: !!pricing, isMultiVehicle }) : {};
+  const step4Errors = stepAttempted === 4 ? getStep4Errors(formData, tourName) : {};
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -226,6 +292,7 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
         body: JSON.stringify({ message: rawMessage }),
       }).catch(() => {});
 
+      clearBookingDraft();
       setSubmitted(true);
       window.scrollTo(0, 0);
     } catch {
@@ -243,8 +310,8 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
 
       {/* Top bar */}
       <div className="pt-20 pb-0 bg-white border-b border-gray-100">
-        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-4">
-          <button onClick={onBack} className="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors flex-shrink-0">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center gap-4">
+          <button onClick={onBack} aria-label={`Back to ${listLabel}`} className="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors flex-shrink-0">
             <ArrowLeft size={18} className="text-gray-600" />
           </button>
           <div className="flex-1 min-w-0">
@@ -253,49 +320,28 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
             </span>
             <p className="font-black text-gray-900 text-base leading-tight truncate">{tourName}</p>
           </div>
+          <Link
+            to={servicePath}
+            className="hidden sm:inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline flex-shrink-0"
+          >
+            View details <ExternalLink size={12} />
+          </Link>
         </div>
-        {/* Progress bar */}
         <div className="h-1 bg-gray-100">
           <div
             className="h-full bg-primary transition-all duration-500 ease-out"
-            style={{ width: `${(step / stepLabels.length) * 100}%` }}
+            style={{ width: `${progressPct}%` }}
           />
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-8">
+      <div className={`max-w-6xl mx-auto px-4 py-8 ${!submitted && step < 5 ? 'pb-28 lg:pb-8' : ''}`}>
         {!submitted ? (
-          <div>
+          <div className="lg:grid lg:grid-cols-3 lg:gap-8 lg:items-start">
+            <div className="lg:col-span-2">
+            <BookingStepIndicator step={step} />
 
-            {/* Step indicator */}
-            <div className="pb-6 mb-6 border-b border-gray-100">
-              <div className="flex items-center justify-between">
-                {stepLabels.map((label, i) => {
-                  const num = i + 1;
-                  const isActive = step === num;
-                  const isDone = step > num;
-                  return (
-                    <div key={num} className="flex items-center flex-1">
-                      <div className="flex flex-col items-center">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
-                          isDone ? 'bg-primary text-white' : isActive ? 'bg-primary text-white' : 'bg-gray-100 text-gray-400'
-                        }`}>
-                          {isDone ? <Check size={14} /> : num}
-                        </div>
-                        <span className={`text-[10px] mt-1 font-semibold hidden sm:block ${isActive ? 'text-primary' : isDone ? 'text-primary/60' : 'text-gray-400'}`}>
-                          {label}
-                        </span>
-                      </div>
-                      {i < stepLabels.length - 1 && (
-                        <div className={`flex-1 h-0.5 mx-2 mb-4 transition-all ${step > num ? 'bg-primary' : 'bg-gray-200'}`} />
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="h-[480px] overflow-y-auto pr-2">
+            <div>
               <input type="text" value={honeypot} onChange={(e) => setHoneypot(e.target.value)} style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
 
               {/* Step 1: Contact */}
@@ -303,11 +349,17 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
                 <div className="space-y-7">
                   <div>
                     <h3 className="text-lg font-black text-gray-900 mb-1">Your Contact Info</h3>
-                    <p className="text-xs text-gray-400">We'll use this to confirm your booking.</p>
+                    <p className="text-xs text-gray-400">We'll use this to confirm your booking. Fast reply on WhatsApp after you submit.</p>
+                  </div>
+                  <div className="rounded-xl border border-[#e8a020]/30 bg-[#e8a020]/5 px-4 py-3 text-xs text-gray-700">
+                    <span className="font-bold text-[#1a3728]">Trusted by 300+ travelers</span>
+                    {' · '}
+                    Request only — no payment on this form.
                   </div>
                   <div>
                     <label className={labelClass}>{tourType === 'Tour Package' ? 'Lead Guest Name' : 'Full Name'} *</label>
                     <input type="text" name="fullName" value={formData.fullName} onChange={handleChange} className={inputClass} placeholder="ex. Juan Dela Cruz" />
+                    <FieldError message={step1Errors.fullName} />
                   </div>
                   <div>
                     <label className={labelClass}>Nationality *</label>
@@ -321,6 +373,7 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
                         )
                       )}
                     </select>
+                    <FieldError message={step1Errors.nationality} />
                   </div>
                   <div>
                     <label className={labelClass}>Phone Number *</label>
@@ -352,19 +405,28 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
                       }}
                       dropdownStyle={{ borderRadius: '0.75rem', marginTop: '4px' }}
                     />
+                    <FieldError message={step1Errors.phone} />
                   </div>
                   <div>
                     <label className={labelClass}>Email Address *</label>
                     <input type="email" name="email" value={formData.email} onChange={handleChange} className={inputClass} placeholder="ex. juan@email.com" />
+                    <FieldError message={step1Errors.email} />
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setStep(2)}
-                    disabled={!step1Valid}
-                    className="w-full py-3 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                  >
-                    Next — Schedule <ChevronRight size={16} />
-                  </button>
+                  <p className="text-xs text-gray-500 text-center">
+                    Prefer WhatsApp?{' '}
+                    <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="text-[#25D366] font-semibold hover:underline">
+                      Chat with us directly
+                    </a>
+                  </p>
+                  <div className="hidden lg:flex">
+                    <button
+                      type="button"
+                      onClick={() => tryAdvance(2, step1Valid, 1)}
+                      className="w-full py-3 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+                    >
+                      Next — Schedule <ChevronRight size={16} />
+                    </button>
+                  </div>
                 </div>
               )}
 
@@ -382,6 +444,7 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
                     </label>
                     <input type="date" name="tourDate" value={formData.tourDate} onChange={handleChange}
                       min={new Date().toISOString().split('T')[0]} className={inputClass} />
+                    <FieldError message={step2Errors.tourDate} />
                   </div>
 
                   {(tourType === 'Private Ride' || tourType === 'Transfer') && (
@@ -391,6 +454,7 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
                         {tourType === 'Transfer' ? 'Pick-up Time' : 'Preferred Time'} *
                       </label>
                       <input type="time" name="tourTime" value={formData.tourTime} onChange={handleChange} className={inputClass} />
+                      <FieldError message={step2Errors.tourTime} />
                     </div>
                   )}
 
@@ -417,17 +481,18 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
                         </div>
                         {isUnderground && <p className="text-xs text-amber-600 mt-2 flex items-start gap-1"><span>⚠️</span><span>AM only (8:00 AM – 4:00 PM). PM tours are not available.</span></p>}
                         {isFirefly && <p className="text-xs text-amber-600 mt-2 flex items-start gap-1"><span>⚠️</span><span>Evening tour (PM only). Tours depart after sundown.</span></p>}
+                        <FieldError message={step2Errors.tourTime} />
                       </div>
                     );
                   })()}
 
-                  <div className="flex gap-3">
+                  <div className="hidden lg:flex gap-3">
                     <button type="button" onClick={() => setStep(1)}
                       className="flex-1 py-3 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
                       <ChevronLeft size={16} /> Back
                     </button>
-                    <button type="button" onClick={() => setStep(3)} disabled={!step2Valid}
-                      className="flex-1 py-3 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                    <button type="button" onClick={() => tryAdvance(3, step2Valid, 2)}
+                      className="flex-1 py-3 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
                       Next <ChevronRight size={16} />
                     </button>
                   </div>
@@ -445,6 +510,7 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
                     <label className={labelClass}><Users size={12} className="inline mr-1" />Number of Passengers *</label>
                     <input type="number" name="pax" value={formData.pax} onChange={handleChange} min={1}
                       placeholder="ex. 3" className={inputClass} />
+                    <FieldError message={step3Errors.pax} />
                     {isMultiVehicle && (
                       <div className="mt-3 p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800">
                         <p className="font-bold mb-1">⚠️ Fleet booking required</p>
@@ -475,17 +541,18 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
                         ))}
                       </div>
                       {overCapacity && <p className="text-xs text-red-500 mt-2">⚠️ Exceeds {formData.vehicleType} capacity ({selectedCapacity} pax). Choose a larger vehicle.</p>}
+                      <FieldError message={step3Errors.vehicleType} />
                       {vehicleTip && !overCapacity && <p className="text-xs text-blue-600 mt-2">💡 {vehicleTip}</p>}
                     </div>
                   )}
 
-                  <div className="flex gap-3">
+                  <div className="hidden lg:flex gap-3">
                     <button type="button" onClick={() => setStep(2)}
                       className="flex-1 py-3 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
                       <ChevronLeft size={16} /> Back
                     </button>
-                    <button type="button" onClick={() => setStep(4)} disabled={!step3Valid}
-                      className="flex-1 py-3 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                    <button type="button" onClick={() => tryAdvance(4, step3Valid, 3)}
+                      className="flex-1 py-3 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
                       Next <ChevronRight size={16} />
                     </button>
                   </div>
@@ -519,16 +586,19 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
                           </button>
                         ))}
                       </div>
+                      <FieldError message={step4Errors.beachSelection} />
                     </div>
                   )}
 
                   <div>
                     <label className={labelClass}><MapPin size={12} className="inline mr-1" />Pick-up Location *</label>
-                    <input type="text" name="pickupLocation" value={formData.pickupLocation} onChange={handleChange} className={inputClass} placeholder="ex. Sunlight Hotel" />
+                    <input type="text" name="pickupLocation" value={formData.pickupLocation} onChange={handleChange} className={inputClass} placeholder={getPickupPlaceholder(tourName)} />
+                    <FieldError message={step4Errors.pickupLocation} />
                   </div>
                   <div>
                     <label className={labelClass}><MapPin size={12} className="inline mr-1" />Drop-off Location *</label>
-                    <input type="text" name="dropoffLocation" value={formData.dropoffLocation} onChange={handleChange} className={inputClass} placeholder="ex. El Nido Town" />
+                    <input type="text" name="dropoffLocation" value={formData.dropoffLocation} onChange={handleChange} className={inputClass} placeholder={getDropoffPlaceholder(tourName)} />
+                    <FieldError message={step4Errors.dropoffLocation} />
                   </div>
 
                   {tourName.includes('El Nido') && !tourName.includes('El Nido Island Tour') && (
@@ -537,10 +607,14 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
                       <span>Drop-off within El Nido town is included. Resorts outside town may incur <strong>₱500–₱1,500</strong> extra.</span>
                     </p>
                   )}
-                  {tourName.includes('El Nido Island Tour') && (
+                  {tourExtras && (tourExtras.environmental > 0 || tourExtras.entrance > 0) && (
                     <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2.5 flex items-start gap-2">
-                      <span className="flex-shrink-0">⚠️</span>
-                      <span>Additional fees are paid on site to the guide: ₱400 environmental fee per person{tourName.includes('Tour A') ? ' + ₱200 Big Lagoon entrance fee' : tourName.includes('Tour C') ? ' + ₱200 Matinloc Shrine entrance fee' : tourName.includes('Tour D') ? ' + ₱200 Small Lagoon entrance fee' : ''}.</span>
+                      <span className="flex-shrink-0">ℹ️</span>
+                      <span>
+                        Estimated total includes tour rate
+                        {tourExtras.environmental > 0 ? `, ₱${tourExtras.environmental} environmental fee` : ''}
+                        {tourExtras.entrance > 0 ? `, and ₱${tourExtras.entrance} entrance fee` : ''} per person.
+                      </span>
                     </p>
                   )}
 
@@ -550,13 +624,13 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
                       className={`${inputClass} resize-none`} placeholder="ex. Need child seat, early pick-up, extra stop..." />
                   </div>
 
-                  <div className="flex gap-3">
+                  <div className="hidden lg:flex gap-3">
                     <button type="button" onClick={() => setStep(3)}
                       className="flex-1 py-3 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
                       <ChevronLeft size={16} /> Back
                     </button>
-                    <button type="button" onClick={() => setStep(5)} disabled={!step4Valid}
-                      className="flex-1 py-3 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                    <button type="button" onClick={() => tryAdvance(5, step4Valid, 4)}
+                      className="flex-1 py-3 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
                       Review <ChevronRight size={16} />
                     </button>
                   </div>
@@ -610,17 +684,27 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
                           <span>{convertPrice(subtotal)}</span>
                         </div>
                       )}
-                      {hasEnvFee && (
+                      {envFee > 0 && (
                         <div className="flex justify-between text-sm text-gray-500">
-                          <span>Environmental fee × {paxCount} pax</span>
+                          <span>🌿 Environmental fee × {paxCount} pax</span>
                           <span>{convertPrice(envTotal)}</span>
+                        </div>
+                      )}
+                      {entranceFee > 0 && (
+                        <div className="flex justify-between text-sm text-gray-500">
+                          <span>🎫 Entrance fee × {paxCount} pax</span>
+                          <span>{convertPrice(entranceTotal)}</span>
                         </div>
                       )}
                       <div className="flex justify-between items-center border-t border-gray-100 pt-3 mt-1">
                         <span className="font-semibold text-gray-700">
                           {isMultiVehicle ? 'Fleet Estimate' : (tourType === 'Tour Package' && !pricing) || tourType === 'Transfer' ? 'Estimated Total' : 'Total (flat rate)'}
                         </span>
-                        <span className="text-2xl font-black text-primary">{convertPrice(grandTotal)}</span>
+                        {hasPromoRate(tourType) && !isMultiVehicle ? (
+                          <PromoPrice amount={grandTotal} type={tourType} size="md" showSavings showPromoLabel={false} />
+                        ) : (
+                          <span className="text-2xl font-black text-primary">{convertPrice(grandTotal)}</span>
+                        )}
                       </div>
                       <p className="text-[11px] text-gray-400">Final payment is in Philippine Peso (PHP).</p>
                       {tourType === 'Transfer' && (
@@ -671,9 +755,69 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
                       </button>
                     </div>
                   )}
-                  <p className="text-[11px] text-gray-400 text-center">We'll contact you via WhatsApp, phone or email to confirm.</p>
+                  <p className="text-[11px] text-gray-400 text-center">Fast reply on WhatsApp, phone, or email to confirm.</p>
                 </form>
               )}
+            </div>
+            </div>
+
+            <div className="hidden lg:block lg:col-span-1 mt-8 lg:mt-0">
+              <BookingSummaryPanel
+                tourName={tourName}
+                tourType={tourType}
+                typeLabel={typeLabel}
+                showTotal={showTotal}
+                grandTotal={grandTotal}
+                convertPrice={convertPrice}
+                isMultiVehicle={isMultiVehicle}
+                vehiclesNeeded={vehiclesNeeded}
+                vanPrice={vanPrice}
+                paxCount={paxCount}
+                basePrice={basePrice}
+                pricing={pricing}
+                formData={formData}
+                envFee={envFee}
+                entranceFee={entranceFee}
+                envTotal={envTotal}
+                entranceTotal={entranceTotal}
+                subtotal={subtotal}
+              />
+            </div>
+
+            <BookingMobileNav
+              show={step >= 1 && step <= 4}
+              showBack={step > 1}
+              onBack={() => setStep(step - 1)}
+              onNext={() => {
+                if (step === 1) tryAdvance(2, step1Valid, 1);
+                else if (step === 2) tryAdvance(3, step2Valid, 2);
+                else if (step === 3) tryAdvance(4, step3Valid, 3);
+                else if (step === 4) tryAdvance(5, step4Valid, 4);
+              }}
+              nextLabel={step === 4 ? 'Review' : 'Next'}
+            />
+
+            <div className="lg:hidden mt-6">
+              <BookingSummaryPanel
+                tourName={tourName}
+                tourType={tourType}
+                typeLabel={typeLabel}
+                showTotal={showTotal}
+                grandTotal={grandTotal}
+                convertPrice={convertPrice}
+                isMultiVehicle={isMultiVehicle}
+                vehiclesNeeded={vehiclesNeeded}
+                vanPrice={vanPrice}
+                paxCount={paxCount}
+                basePrice={basePrice}
+                pricing={pricing}
+                formData={formData}
+                envFee={envFee}
+                entranceFee={entranceFee}
+                envTotal={envTotal}
+                entranceTotal={entranceTotal}
+                subtotal={subtotal}
+              />
             </div>
           </div>
         ) : (
@@ -687,7 +831,8 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
               </div>
             </div>
             <h3 className="text-2xl font-black text-gray-900 mb-1">Request Sent!</h3>
-            <p className="text-gray-400 text-sm mb-6">Your booking request for <span className="font-semibold text-gray-600">{tourName}</span> has been received.</p>
+            <p className="text-gray-400 text-sm mb-4">Your booking request for <span className="font-semibold text-gray-600">{tourName}</span> has been received.</p>
+            <p className="text-xs text-gray-500 mb-6">Expect a fast reply on WhatsApp — we usually respond within a few hours.</p>
             <div className="bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 text-left space-y-3 mb-6">
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-full bg-[#25D366]/10 flex items-center justify-center flex-shrink-0">
@@ -708,9 +853,19 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, onBack }: {
                 </div>
               </div>
             </div>
-            <button onClick={() => navigate('/')} className="w-full py-3 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity">
-              Back to Home
-            </button>
+            <div className="flex flex-col gap-3">
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-3 bg-[#25D366] text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity text-center"
+              >
+                Message us on WhatsApp
+              </a>
+              <button onClick={() => navigate('/')} className="w-full py-3 border border-gray-200 text-gray-700 rounded-xl text-sm font-semibold hover:bg-gray-50 transition-colors">
+                Back to Home
+              </button>
+            </div>
           </div>
         )}
       </div>

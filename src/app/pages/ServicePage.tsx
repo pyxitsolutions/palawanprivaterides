@@ -1,10 +1,23 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { MapPin, Clock, Users, Check, ArrowLeft, MessageCircle, Car } from 'lucide-react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { MapPin, Clock, Users, Check, ArrowLeft, MessageCircle, Car, Star, Shield } from 'lucide-react';
 import { Navbar } from '../components/Navbar';
 import { SiteFooter } from '../components/SiteFooter';
+import { ServiceBreadcrumb } from '../components/ServiceBreadcrumb';
+import { ServiceTourFeesBox } from '../components/ServiceTourFeesBox';
+import { ServicePhotoGrid } from '../components/ServicePhotoGrid';
+import { ServiceFaq } from '../components/ServiceFaq';
+import { ServiceStickyCta } from '../components/ServiceStickyCta';
 import { useCurrency } from '../context/CurrencyContext';
+import { PromoBadge, PromoPrice } from '../components/PromoPrice';
+import { getPromoOriginalPrice, hasPromoRate } from '../utils/pricing';
 import { tours } from '../data/tours';
+import { buildServiceWhatsAppUrl, getRelatedTours, getServiceListPath } from '../utils/serviceHelpers';
+import {
+  getDefaultServiceMeta,
+  getServiceJsonLd,
+  setServicePageMeta,
+} from '../utils/serviceMeta';
 
 export function slugify(s: string) {
   return s.toLowerCase()
@@ -17,43 +30,43 @@ export function slugify(s: string) {
 const SEO: Record<string, { metaTitle: string; metaDescription: string }> = {
   'pps-el-nido': {
     metaTitle: 'Puerto Princesa to El Nido Private Van Transfer | Palawan Private Rides',
-    metaDescription: 'Book a private van from Puerto Princesa to El Nido starting at ₱7,100. Door-to-door service, no shared vans, trusted local drivers. Book online today!',
+    metaDescription: 'Book a private van from Puerto Princesa to El Nido starting at ₱6,900 (promo from ₱7,000). Door-to-door service, no shared vans, trusted local drivers. Book online today!',
   },
   'el-nido-pps': {
     metaTitle: 'El Nido to Puerto Princesa Private Van Transfer | Palawan Private Rides',
-    metaDescription: 'Book a private van from El Nido to Puerto Princesa starting at ₱7,100. Door-to-door service, no shared vans, trusted local drivers. Book online today!',
+    metaDescription: 'Book a private van from El Nido to Puerto Princesa starting at ₱6,900 (promo from ₱7,000). Door-to-door service, no shared vans, trusted local drivers. Book online today!',
   },
   'pps-port-barton': {
     metaTitle: 'Puerto Princesa to Port Barton Private Transfer | Palawan Private Rides',
-    metaDescription: 'Private van transfer from Puerto Princesa to Port Barton starting at ₱5,600. Comfortable, air-conditioned, door-to-door service. No shared vans. Book now!',
+    metaDescription: 'Private van transfer from Puerto Princesa to Port Barton starting at ₱5,400 (promo from ₱5,500). Comfortable, air-conditioned, door-to-door service. No shared vans. Book now!',
   },
   'port-barton-pps': {
     metaTitle: 'Port Barton to Puerto Princesa Private Van Transfer | Palawan Private Rides',
-    metaDescription: 'Book a private van from Port Barton to Puerto Princesa starting at ₱5,600. Door-to-door service, no shared vans, trusted local drivers. Book today!',
+    metaDescription: 'Book a private van from Port Barton to Puerto Princesa starting at ₱5,400 (promo from ₱5,500). Door-to-door service, no shared vans, trusted local drivers. Book today!',
   },
   'pps-san-vicente': {
     metaTitle: 'Puerto Princesa to San Vicente Private Van Transfer | Palawan Private Rides',
-    metaDescription: 'Book a private van from Puerto Princesa to San Vicente starting at ₱6,100. Direct, door-to-door transfer to Long Beach. No shared vans. Book today!',
+    metaDescription: 'Book a private van from Puerto Princesa to San Vicente starting at ₱5,900 (promo from ₱6,000). Direct, door-to-door transfer to Long Beach. No shared vans. Book today!',
   },
   'san-vicente-pps': {
     metaTitle: 'San Vicente to Puerto Princesa Private Van Transfer | Palawan Private Rides',
-    metaDescription: 'Book a private van from San Vicente to Puerto Princesa starting at ₱6,100. Door-to-door service, no shared vans, trusted local drivers. Book today!',
+    metaDescription: 'Book a private van from San Vicente to Puerto Princesa starting at ₱5,900 (promo from ₱6,000). Door-to-door service, no shared vans, trusted local drivers. Book today!',
   },
   'pps-astoria-palawan': {
     metaTitle: 'Puerto Princesa to Astoria Palawan Private Transfer | Palawan Private Rides',
-    metaDescription: 'Private van transfer from Puerto Princesa to Astoria Palawan starting at ₱3,100. Comfortable, on-time, door-to-door. Book your private ride today!',
+    metaDescription: 'Private van transfer from Puerto Princesa to Astoria Palawan starting at ₱2,900 (promo from ₱3,000). Comfortable, on-time, door-to-door. Book your private ride today!',
   },
   'astoria-palawan-pps': {
     metaTitle: 'Astoria Palawan to Puerto Princesa Private Transfer | Palawan Private Rides',
-    metaDescription: 'Book a private van from Astoria Palawan to Puerto Princesa starting at ₱3,100. Comfortable, on-time, door-to-door service. Book today!',
+    metaDescription: 'Book a private van from Astoria Palawan to Puerto Princesa starting at ₱2,900 (promo from ₱3,000). Comfortable, on-time, door-to-door service. Book today!',
   },
   'pps-sabang-four-points': {
     metaTitle: 'Puerto Princesa to Sabang Private Van Transfer | Palawan Private Rides',
-    metaDescription: 'Private van from Puerto Princesa to Sabang starting at ₱3,600. Perfect for Underground River day trips. Door-to-door, no shared vans. Book now!',
+    metaDescription: 'Private van from Puerto Princesa to Sabang starting at ₱3,400 (promo from ₱3,500). Perfect for Underground River day trips. Door-to-door, no shared vans. Book now!',
   },
   'sabang-four-points-pps': {
     metaTitle: 'Sabang to Puerto Princesa Private Van Transfer | Palawan Private Rides',
-    metaDescription: 'Book a private van from Sabang to Puerto Princesa starting at ₱3,600. Door-to-door service after your Underground River visit. No shared vans. Book today!',
+    metaDescription: 'Book a private van from Sabang to Puerto Princesa starting at ₱3,400 (promo from ₱3,500). Door-to-door service after your Underground River visit. No shared vans. Book today!',
   },
   'airport-hotel-transfer': {
     metaTitle: 'Puerto Princesa Airport Transfer | Palawan Private Rides',
@@ -65,7 +78,7 @@ const SEO: Record<string, { metaTitle: string; metaDescription: string }> = {
   },
   'underground-river-day-tour': {
     metaTitle: 'Underground River Day Tour Puerto Princesa | Palawan Private Rides',
-    metaDescription: 'Private Underground River Day Tour from Puerto Princesa starting at ₱2,550/person. Includes transport, guide, buffet lunch & permits. Book today!',
+    metaDescription: 'Private Underground River Day Tour from Puerto Princesa at ₱2,500/person plus ₱150 environmental fee. Includes transport, guide, buffet lunch & permits. Book today!',
   },
   'iwahig-firefly-watching': {
     metaTitle: 'Iwahig Firefly Watching Tour Puerto Princesa | Palawan Private Rides',
@@ -77,23 +90,23 @@ const SEO: Record<string, { metaTitle: string; metaDescription: string }> = {
   },
   'honda-bay-island-tour': {
     metaTitle: 'Honda Bay Island Tour Puerto Princesa | Palawan Private Rides',
-    metaDescription: 'Book Honda Bay Island Tour from Puerto Princesa at ₱1,850/person. Visit Cowrie Island, Luli Island & Pambato Reef. Includes boat, guide & lunch!',
+    metaDescription: 'Book Honda Bay Island Tour from Puerto Princesa at ₱1,800/person plus ₱150 environmental fee. Visit Cowrie Island, Luli Island & Pambato Reef. Includes boat, guide & lunch!',
   },
   'el-nido-island-tour-a': {
     metaTitle: 'El Nido Island Tour A | Palawan Private Rides',
-    metaDescription: 'Book El Nido Island Tour A at ₱1,550/person. Visit Big Lagoon, Secret Lagoon & Seven Commandos Beach. Includes boat, guide & buffet lunch.',
+    metaDescription: 'Book El Nido Island Tour A at ₱1,500/person plus ₱400 environmental & ₱200 entrance fees. Big Lagoon, Secret Lagoon & Seven Commandos Beach. Includes boat, guide & lunch.',
   },
   'el-nido-island-tour-b': {
     metaTitle: 'El Nido Island Tour B | Palawan Private Rides',
-    metaDescription: 'Book El Nido Island Tour B at ₱1,650/person. Visit Snake Island, Cathedral Cave & Entalula Beach. Includes boat, guide & buffet lunch.',
+    metaDescription: 'Book El Nido Island Tour B at ₱1,600/person plus ₱400 environmental fee. Snake Island, Cathedral Cave & Entalula Beach. Includes boat, guide & buffet lunch.',
   },
   'el-nido-island-tour-c': {
     metaTitle: 'El Nido Island Tour C | Palawan Private Rides',
-    metaDescription: 'Book El Nido Island Tour C at ₱1,750/person. Visit Hidden Beach, Secret Beach & Matinloc Shrine. Includes boat, guide & buffet lunch.',
+    metaDescription: 'Book El Nido Island Tour C at ₱1,700/person plus ₱400 environmental & ₱200 entrance fees. Hidden Beach, Secret Beach & Matinloc Shrine. Includes boat, guide & lunch.',
   },
   'el-nido-island-tour-d': {
     metaTitle: 'El Nido Island Tour D | Palawan Private Rides',
-    metaDescription: 'Book El Nido Island Tour D at ₱1,550/person. Visit Small Lagoon, Cadlao Lagoon & Paradise Beach. Includes boat, guide & buffet lunch.',
+    metaDescription: 'Book El Nido Island Tour D at ₱1,500/person plus ₱400 environmental & ₱200 entrance fees. Small Lagoon, Cadlao Lagoon & Paradise Beach. Includes boat, guide & lunch.',
   },
 };
 
@@ -111,14 +124,24 @@ export default function ServicePage() {
   const [booking, setBooking] = useState(false);
 
   const tour = tours.find((t) => slugify(t.name) === slug);
-  const seo = SEO[slug ?? ''];
+  const seo = tour
+    ? (SEO[slug ?? ''] ?? getDefaultServiceMeta(tour))
+    : null;
 
   useEffect(() => {
-    if (!seo) return;
-    document.title = seo.metaTitle;
-    const meta = document.querySelector('meta[name="description"]');
-    if (meta) meta.setAttribute('content', seo.metaDescription);
-  }, [slug, seo]);
+    if (!tour || !seo || !slug) return;
+    setServicePageMeta(slug, seo);
+
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.id = 'service-jsonld';
+    script.textContent = JSON.stringify(getServiceJsonLd(slug, tour, seo.metaDescription));
+    document.head.appendChild(script);
+
+    return () => {
+      document.getElementById('service-jsonld')?.remove();
+    };
+  }, [slug, tour, seo]);
 
   if (!tour) {
     return (
@@ -129,15 +152,18 @@ export default function ServicePage() {
     );
   }
 
+  const flatPrice = parseInt(tour.price);
   const startingPrice = tour.pricing
     ? Math.min(...tour.pricing.map((p) => parseInt(p.price)))
-    : parseInt(tour.price);
+    : flatPrice;
+  const displayPrice = hasPromoRate(tour.type) ? flatPrice : startingPrice;
   const perLabel = tour.type === 'Tour Package' || tour.type === 'Transfer' ? 'per person' : 'per booking';
   const included = tour.whatsIncluded ?? DEFAULT_INCLUDED;
 
-  const relatedTours = tours
-    .filter((t) => t !== tour && t.type === tour.type)
-    .slice(0, 3);
+  const relatedTours = getRelatedTours(tour, tours);
+  const whatsappHref = buildServiceWhatsAppUrl(tour.name);
+  const listPath = getServiceListPath(tour.type);
+  const tourBasePrice = parseInt(tour.price);
 
   const handleBook = () => {
     setBooking(true);
@@ -152,10 +178,9 @@ export default function ServicePage() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white pb-24 lg:pb-0">
       <Navbar />
 
-      {/* Hero */}
       <div className="relative h-[50vh] min-h-[320px] mt-16">
         <img
           src={tour.images[0]}
@@ -164,17 +189,27 @@ export default function ServicePage() {
           loading="eager"
         />
         <div className="absolute inset-0 bg-black/55" />
-        <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-10 max-w-5xl mx-auto">
+        <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-10 max-w-5xl mx-auto w-full">
+          <ServiceBreadcrumb type={tour.type} serviceName={tour.name} />
           <span className="inline-block bg-[#e8a020] text-white text-xs font-bold px-3 py-1 rounded-full mb-3 w-fit">
             {tour.type}
           </span>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-tight">
             {tour.name}
           </h1>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-xs text-white/75 font-medium">
+            <span className="inline-flex items-center gap-1">
+              <Star size={12} className="text-[#e8a020] fill-[#e8a020]" />
+              5.0 · 9 Google reviews
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <Shield size={12} className="text-[#e8a020]" />
+              Trusted by 300+ travelers
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Content */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
 
@@ -206,14 +241,34 @@ export default function ServicePage() {
             {tour.pricing && (
               <div>
                 <h2 className="text-xl font-black text-gray-900 mb-4">Pricing</h2>
-                <div className="grid grid-cols-3 gap-3">
-                  {tour.pricing.map((p) => (
-                    <div key={p.vehicle} className="border border-gray-200 rounded-2xl p-4 text-center hover:border-primary transition-colors">
-                      <p className="text-xs text-gray-500 mb-1">{p.vehicle}</p>
-                      <p className="text-xl font-black text-primary">{convertPrice(parseInt(p.price))}</p>
-                      {p.capacity && <p className="text-xs text-gray-400 mt-1">Max {p.capacity} pax</p>}
-                    </div>
-                  ))}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {tour.pricing.map((p) => {
+                    const tierPrice = parseInt(p.price);
+                    const tierOriginal = getPromoOriginalPrice(tierPrice, tour.type);
+                    const tierPromo = hasPromoRate(tour.type) && tierOriginal !== null;
+                    return (
+                      <div
+                        key={p.vehicle}
+                        className={`border rounded-2xl p-4 text-center transition-colors ${
+                          tierPromo
+                            ? 'border-[#e8a020]/40 bg-[#e8a020]/10 hover:border-[#e8a020]'
+                            : 'border-gray-200 hover:border-primary'
+                        }`}
+                      >
+                        <p className="text-xs text-gray-500 mb-1">{p.vehicle}</p>
+                        {tierPromo ? (
+                          <>
+                            <p className="text-sm text-gray-400 line-through">{convertPrice(tierOriginal)}</p>
+                            <p className="text-xl font-black text-[#c8870f]">{convertPrice(tierPrice)}</p>
+                            <p className="text-xs font-black text-[#1a3728] mt-1">Promo rate</p>
+                          </>
+                        ) : (
+                          <p className="text-xl font-black text-primary">{convertPrice(tierPrice)}</p>
+                        )}
+                        {p.capacity && <p className="text-xs text-gray-400 mt-1">Max {p.capacity} pax</p>}
+                      </div>
+                    );
+                  })}
                 </div>
                 <p className="text-xs text-primary mt-2 flex items-center gap-1">
                   <Check size={12} /> Rates include fuel and professional driver
@@ -221,7 +276,8 @@ export default function ServicePage() {
               </div>
             )}
 
-            {/* What's included */}
+            <ServiceTourFeesBox name={tour.name} type={tour.type} basePrice={tourBasePrice} />
+
             <div>
               <h2 className="text-xl font-black text-gray-900 mb-4">What's Included</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -236,31 +292,25 @@ export default function ServicePage() {
               </div>
             </div>
 
-            {/* Additional images */}
-            {tour.images.length > 1 && (
-              <div>
-                <h2 className="text-xl font-black text-gray-900 mb-4">Photos</h2>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {tour.images.slice(1, 7).map((img, i) => (
-                    <img
-                      key={i}
-                      src={img}
-                      alt={`${tour.name} photo ${i + 2} - Palawan Private Rides`}
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full aspect-[4/3] object-cover rounded-xl"
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
+            <ServicePhotoGrid images={tour.images} title={tour.name} />
+
+            <ServiceFaq tour={tour} />
           </div>
 
           {/* Right — sticky booking card */}
           <div className="lg:col-span-1">
             <div className="sticky top-24 bg-white border border-gray-200 rounded-2xl shadow-lg p-6">
-              <p className="text-xs text-gray-400 mb-1">Starting from</p>
-              <p className="text-3xl font-black text-primary mb-1">{convertPrice(startingPrice)}</p>
+              {hasPromoRate(tour.type) && (
+                <div className="mb-2">
+                  <PromoBadge />
+                </div>
+              )}
+              <p className="text-xs text-gray-400 mb-1">
+                {hasPromoRate(tour.type) ? 'Promo rate from' : 'Starting from'}
+              </p>
+              <div className="mb-1">
+                <PromoPrice amount={displayPrice} type={tour.type} size="lg" />
+              </div>
               <p className="text-xs text-gray-400 mb-6">{perLabel}</p>
 
               <button
@@ -271,7 +321,7 @@ export default function ServicePage() {
                 {booking ? <><svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"/><path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8v8z"/></svg> Loading...</> : <><Car size={16} /> Book Now</>}
               </button>
               <a
-                href="https://api.whatsapp.com/send?phone=639217792016&text=Hi!%20I%20want%20to%20inquire%20about%20your%20service."
+                href={whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full border border-[#25D366] text-[#25D366] py-3.5 rounded-xl font-bold text-sm hover:bg-[#25D366] hover:text-white transition-colors flex items-center justify-center gap-2"
@@ -309,9 +359,21 @@ export default function ServicePage() {
                   />
                   <div className="p-4">
                     <p className="font-bold text-gray-900 text-sm">{t.name}</p>
-                    <p className="text-primary font-black text-sm mt-1">
-                      {convertPrice(t.pricing ? Math.min(...t.pricing.map((p) => parseInt(p.price))) : parseInt(t.price))}
-                    </p>
+                    <div className="mt-1">
+                      <PromoPrice
+                        amount={
+                          hasPromoRate(t.type)
+                            ? parseInt(t.price)
+                            : t.pricing
+                              ? Math.min(...t.pricing.map((p) => parseInt(p.price)))
+                              : parseInt(t.price)
+                        }
+                        type={t.type}
+                        size="sm"
+                        showPromoLabel={false}
+                        showSavings={false}
+                      />
+                    </div>
                   </div>
                 </button>
               ))}
@@ -321,15 +383,16 @@ export default function ServicePage() {
 
         {/* Back button */}
         <div className="mt-10">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 transition-colors"
+          <Link
+            to={listPath.href}
+            className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 transition-colors w-fit"
           >
-            <ArrowLeft size={16} /> Back
-          </button>
+            <ArrowLeft size={16} /> Back to {listPath.label}
+          </Link>
         </div>
       </div>
 
+      <ServiceStickyCta onBook={handleBook} booking={booking} whatsappHref={whatsappHref} />
       <SiteFooter />
     </div>
   );

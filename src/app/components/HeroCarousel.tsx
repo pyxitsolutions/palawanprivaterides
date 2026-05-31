@@ -76,7 +76,7 @@ export function HeroCarousel() {
           {/* Trust indicators */}
           <div className="mt-8 flex flex-wrap justify-center gap-x-5 gap-y-2">
             {[
-              '⭐ 4.9 Rating',
+              '⭐ 5.0 · 9 Google Reviews',
               '✔ Local Drivers',
               '✔ Air-Conditioned',
               '✔ Private Only',

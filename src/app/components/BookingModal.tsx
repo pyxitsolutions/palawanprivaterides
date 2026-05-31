@@ -4,6 +4,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { X, Calendar, Clock, MapPin, Users, MessageSquare, Car, Check, ChevronRight, ChevronLeft } from 'lucide-react';
 import { PolicyModal, type PolicyType } from './PolicyModal';
+import { getTourExtraFees } from '../utils/pricing';
 
 const EMAILJS_SERVICE_ID = 'service_w5vk124';
 const EMAILJS_TEMPLATE_RIDES = 'template_pnxzs9s';
@@ -109,8 +110,9 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
 
   const paxCount = parseInt(formData.pax) || 0;
   const basePrice = parseInt(selectedPrice) || 0;
-  const hasEnvFee = tourType === 'Tour Package' && !tourName.includes('City Tour') && !tourName.includes('PPC Beach');
-  const envFee = hasEnvFee ? 150 : 0;
+  const tourExtras = tourType === 'Tour Package' ? getTourExtraFees(tourName, tourType) : null;
+  const envFee = tourExtras?.environmental ?? 0;
+  const entranceFee = tourExtras?.entrance ?? 0;
 
   // Multi-vehicle
   const isMultiVehicle = !!pricing && paxCount > MAX_VAN_CAPACITY;
@@ -123,7 +125,8 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
       ? basePrice * paxCount
       : basePrice;
   const envTotal = envFee * paxCount;
-  const grandTotal = subtotal + envTotal;
+  const entranceTotal = entranceFee * paxCount;
+  const grandTotal = subtotal + envTotal + entranceTotal;
   const showTotal = !!formData.pax && !!selectedPrice;
 
   const getSelectedCapacity = () => {
@@ -549,10 +552,16 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                           <span>₱{subtotal.toLocaleString()}</span>
                         </div>
                       )}
-                      {hasEnvFee && (
+                      {envFee > 0 && (
                         <div className="flex justify-between text-xs text-gray-500">
-                          <span>Environmental fee × {paxCount} pax</span>
+                          <span>🌿 Environmental fee × {paxCount} pax</span>
                           <span>₱{envTotal.toLocaleString()}</span>
+                        </div>
+                      )}
+                      {entranceFee > 0 && (
+                        <div className="flex justify-between text-xs text-gray-500">
+                          <span>🎫 Entrance fee × {paxCount} pax</span>
+                          <span>₱{entranceTotal.toLocaleString()}</span>
                         </div>
                       )}
                       <div className="flex justify-between items-center border-t border-gray-200 pt-2 mt-1">

@@ -1,6 +1,10 @@
 import { useState } from 'react';
-import { X, Clock, MapPin, Users, ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import { X, Clock, MapPin, Users, ChevronLeft, ChevronRight, Check, MessageCircle } from 'lucide-react';
 import { useCurrency } from '../context/CurrencyContext';
+import { PromoBadge, PromoPrice } from './PromoPrice';
+import { ServiceTourFeesBox } from './ServiceTourFeesBox';
+import { getPromoOriginalPrice, hasPromoRate } from '../utils/pricing';
+import { buildServiceWhatsAppUrl } from '../utils/serviceHelpers';
 
 interface PricingTier {
   vehicle: string;
@@ -24,6 +28,7 @@ interface TourDetailsModalProps {
     credit?: string;
   };
   onBookNow: () => void;
+  onViewDetails?: () => void;
 }
 
 const typeColors: Record<string, string> = {
@@ -39,16 +44,18 @@ const defaultIncluded = [
   'Friendly & knowledgeable local driver',
 ];
 
-export function CarDetailsModal({ isOpen, onClose, tour, onBookNow }: TourDetailsModalProps) {
+export function CarDetailsModal({ isOpen, onClose, tour, onBookNow, onViewDetails }: TourDetailsModalProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [singleIndex, setSingleIndex] = useState(0);
   const { convertPrice } = useCurrency();
 
   if (!isOpen) return null;
 
+  const flatPrice = parseInt(tour.price);
   const startingPrice = tour.pricing
     ? Math.min(...tour.pricing.map((p) => parseInt(p.price)))
-    : parseInt(tour.price);
+    : flatPrice;
+  const displayPrice = hasPromoRate(tour.type) ? flatPrice : startingPrice;
 
   const showCollage = tour.images.length >= 3;
 
@@ -170,8 +177,15 @@ export function CarDetailsModal({ isOpen, onClose, tour, onBookNow }: TourDetail
           <div className="flex items-start justify-between gap-4">
             <h2 className="text-2xl font-black text-gray-900 leading-tight">{tour.name}</h2>
             <div className="text-right flex-shrink-0">
-              <p className="text-[10px] text-gray-400">Starting from</p>
-              <p className="text-2xl font-black text-primary">{convertPrice(startingPrice)}</p>
+              {hasPromoRate(tour.type) && (
+                <div className="flex justify-end mb-1">
+                  <PromoBadge />
+                </div>
+              )}
+              <p className="text-[10px] text-gray-400">
+                {hasPromoRate(tour.type) ? 'Promo rate from' : 'Starting from'}
+              </p>
+              <PromoPrice amount={displayPrice} type={tour.type} size="md" />
             </div>
           </div>
 
@@ -206,20 +220,43 @@ export function CarDetailsModal({ isOpen, onClose, tour, onBookNow }: TourDetail
           {tour.pricing && tour.pricing.length > 0 && (
             <div>
               <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-3">Pricing</h3>
-              <div className="grid grid-cols-3 gap-2">
-                {tour.pricing.map((p, i) => (
-                  <div key={i} className="border border-gray-200 rounded-xl p-3 text-center">
-                    <p className="text-xs text-gray-500 mb-1">{p.vehicle}</p>
-                    <p className="text-lg font-black text-primary">{convertPrice(parseInt(p.price))}</p>
-                    {p.capacity && <p className="text-[10px] text-gray-400 mt-0.5">Max {p.capacity} pax</p>}
-                  </div>
-                ))}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                {tour.pricing.map((p, i) => {
+                  const tierPrice = parseInt(p.price);
+                  const tierOriginal = getPromoOriginalPrice(tierPrice, tour.type);
+                  const tierPromo = hasPromoRate(tour.type) && tierOriginal !== null;
+                  return (
+                    <div
+                      key={i}
+                      className={`border rounded-xl p-3 text-center ${
+                        tierPromo ? 'border-[#e8a020]/40 bg-[#e8a020]/10' : 'border-gray-200'
+                      }`}
+                    >
+                      <p className="text-xs text-gray-500 mb-1">{p.vehicle}</p>
+                      {tierPromo ? (
+                        <>
+                          <p className="text-xs text-gray-400 line-through">{convertPrice(tierOriginal)}</p>
+                          <p className="text-xl font-black text-[#c8870f]">{convertPrice(tierPrice)}</p>
+                        </>
+                      ) : (
+                        <p className="text-lg font-black text-primary">{convertPrice(tierPrice)}</p>
+                      )}
+                      {p.capacity && <p className="text-[10px] text-gray-400 mt-0.5">Max {p.capacity} pax</p>}
+                    </div>
+                  );
+                })}
               </div>
               <p className="text-xs text-green-600 font-semibold mt-2 flex items-center gap-1">
                 <Check size={12} /> Rates include fuel and professional driver
               </p>
             </div>
           )}
+
+          <ServiceTourFeesBox
+            name={tour.name}
+            type={tour.type}
+            basePrice={parseInt(tour.price)}
+          />
 
           {/* What's Included */}
           <div>
@@ -237,20 +274,40 @@ export function CarDetailsModal({ isOpen, onClose, tour, onBookNow }: TourDetail
           </div>
 
           {/* Actions */}
-          <div className="flex gap-3 pt-2">
+          <div className="flex flex-col sm:flex-row gap-3 pt-2">
             <button
+              type="button"
               onClick={onClose}
               className="flex-1 px-4 py-3 border border-gray-200 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors"
             >
               Close
             </button>
+            {onViewDetails && (
+              <button
+                type="button"
+                onClick={() => { onClose(); onViewDetails(); }}
+                className="flex-1 px-4 py-3 border-2 border-primary text-primary rounded-xl text-sm font-bold hover:bg-primary/5 transition-colors"
+              >
+                See full page
+              </button>
+            )}
             <button
+              type="button"
               onClick={() => { onClose(); onBookNow(); }}
               className="flex-1 px-4 py-3 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-opacity"
             >
               Book Now
             </button>
           </div>
+          <a
+            href={buildServiceWhatsAppUrl(tour.name)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex w-full items-center justify-center gap-2 border border-[#25D366] text-[#25D366] py-3 rounded-xl text-sm font-bold hover:bg-[#25D366] hover:text-white transition-colors"
+          >
+            <MessageCircle size={16} />
+            Ask on WhatsApp
+          </a>
         </div>
       </div>
 

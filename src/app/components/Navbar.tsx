@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, ArrowRight, ChevronDown } from 'lucide-react';
+import { Menu, X, ArrowRight, ChevronDown, Star, Shield, Car } from 'lucide-react';
 import { CURRENCIES, useCurrency, type CurrencyCode } from '../context/CurrencyContext';
 import logo from '../../logo/logo.webp';
 import ridesHero from '../../rides/rides-1.webp';
@@ -34,12 +34,24 @@ const transitionStyles = `
 
 function BookNowModal({ onClose }: { onClose: () => void }) {
   const navigate = useNavigate();
+  const { convertPrice } = useCurrency();
   const [exiting, setExiting] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     containerRef.current?.focus({ preventScroll: true });
-  }, []);
+    document.body.style.overflow = 'hidden';
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !exiting) onClose();
+    };
+    window.addEventListener('keydown', onKey);
+
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [exiting, onClose]);
 
   const handleNavigate = (href: string) => {
     setExiting(true);
@@ -49,11 +61,16 @@ function BookNowModal({ onClose }: { onClose: () => void }) {
     }, 350);
   };
 
+  const panelBtn =
+    'group relative flex-1 min-h-[240px] md:min-h-[360px] overflow-hidden text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#e8a020] focus-visible:ring-inset';
+
+  const ctaClass =
+    'inline-flex items-center gap-1.5 bg-[#e8a020] text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-md group-hover:bg-[#ffc84d] group-hover:text-[#1a3728] transition-colors';
+
   return (
     <>
       <style>{transitionStyles}</style>
 
-      {/* Loading spinner overlay */}
       {exiting && (
         <div
           className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm"
@@ -66,88 +83,127 @@ function BookNowModal({ onClose }: { onClose: () => void }) {
         </div>
       )}
 
-      {/* Backdrop */}
       <div
         ref={containerRef}
         tabIndex={-1}
-        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm outline-none"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="book-now-modal-title"
+        className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm outline-none"
         style={{ animation: exiting ? 'backdropOut 0.3s ease forwards' : 'backdropIn 0.25s ease' }}
         onClick={!exiting ? onClose : undefined}
         onMouseDown={(e) => e.preventDefault()}
       >
-        {/* Modal */}
         <div
-          className="relative w-full max-w-2xl rounded-3xl overflow-hidden shadow-2xl"
-          style={{
-            height: '420px',
-            animation: 'modalSlideUp 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-          }}
+          className="relative w-full max-w-2xl max-h-[min(92vh,680px)] rounded-3xl overflow-hidden shadow-2xl flex flex-col bg-[#1a3728]"
+          style={{ animation: 'modalSlideUp 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94)' }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Close button */}
+          <h2 id="book-now-modal-title" className="sr-only">
+            Book now — choose private rides or tour packages
+          </h2>
+
           <button
+            type="button"
             onClick={onClose}
-            className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-black/30 hover:bg-black/50 backdrop-blur-sm flex items-center justify-center transition-colors"
+            aria-label="Close"
+            className="absolute top-3 right-3 z-30 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-sm flex items-center justify-center transition-colors"
           >
             <X size={16} className="text-white" />
           </button>
 
-          {/* Top label */}
-          <div className="absolute top-4 left-5 z-20">
-            <span className="text-[10px] font-bold text-[#e8a020] uppercase tracking-widest bg-black/30 backdrop-blur-sm px-3 py-1 rounded-full">
+          <div className="relative z-20 flex justify-center pt-4 pb-1 px-12 pointer-events-none">
+            <span className="text-[10px] font-bold text-[#e8a020] uppercase tracking-widest bg-black/40 backdrop-blur-sm px-3 py-1.5 rounded-full border border-[#e8a020]/30 text-center">
               Book Now — Choose Your Journey
             </span>
           </div>
 
-          {/* Split cards */}
-          <div className="flex h-full">
-            {/* Private Rides */}
+          <div className="flex flex-col md:flex-row flex-1 min-h-0">
             <button
+              type="button"
               onClick={() => handleNavigate('/rides')}
-              className="group relative flex-1 overflow-hidden text-left"
+              className={panelBtn}
             >
               <img
                 src={ridesHero}
-                alt="Private van transfers Palawan - Puerto Princesa to El Nido, Port Barton and San Vicente"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                alt="Private van transfers in Palawan"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
-              <div className="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors duration-300" />
+              <div className="absolute inset-0 bg-black/55 group-hover:bg-black/45 transition-colors duration-300" />
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
-                <p className="text-[#e8a020] text-[10px] font-bold uppercase tracking-widest mb-2">Intercity Transport</p>
-                <h3 className="text-2xl font-black text-white mb-2">Private Rides</h3>
-                <p className="text-white/70 text-xs mb-6 leading-relaxed">
-                  El Nido · Port Barton<br />San Vicente & more
+                <p className="text-[#e8a020] text-[10px] font-bold uppercase tracking-widest mb-2">
+                  Intercity Transport
                 </p>
-                <span className="inline-flex items-center gap-1.5 bg-[#e8a020] text-white px-5 py-2 rounded-full text-xs font-bold group-hover:bg-white group-hover:text-primary transition-colors">
+                <h3 className="text-2xl sm:text-3xl font-black text-white mb-1 drop-shadow-md">Private Rides</h3>
+                <p className="text-white/80 text-[11px] mb-1">Door-to-door · No shared vans</p>
+                <p className="text-white/70 text-xs mb-2 leading-relaxed">
+                  El Nido · Port Barton
+                  <br />
+                  San Vicente & more
+                </p>
+                <p className="text-[#ffc84d] text-xs font-black mb-4">
+                  From {convertPrice(6900)} <span className="font-semibold text-white/70">per booking</span>
+                </p>
+                <span className={ctaClass}>
                   View Rides <ArrowRight size={12} />
                 </span>
               </div>
             </button>
 
-            {/* Divider */}
-            <div className="w-px bg-white/20 z-10 flex-shrink-0" />
+            <div className="hidden md:block w-px bg-white/20 z-10 flex-shrink-0" aria-hidden />
+            <div className="md:hidden h-px bg-white/20 z-10 flex-shrink-0" aria-hidden />
 
-            {/* Tour Packages */}
             <button
+              type="button"
               onClick={() => handleNavigate('/tours')}
-              className="group relative flex-1 overflow-hidden text-left"
+              className={panelBtn}
             >
               <img
                 src={toursHero}
-                alt="Palawan tour packages - Underground River, Honda Bay, Firefly Watching and El Nido island tours"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                alt="Palawan private tour packages"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
-              <div className="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors duration-300" />
+              <div className="absolute inset-0 bg-black/55 group-hover:bg-black/45 transition-colors duration-300" />
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
-                <p className="text-[#e8a020] text-[10px] font-bold uppercase tracking-widest mb-2">Puerto Princesa</p>
-                <h3 className="text-2xl font-black text-white mb-2">Tour Packages</h3>
-                <p className="text-white/70 text-xs mb-6 leading-relaxed">
-                  Underground River · Honda Bay<br />Firefly & more
+                <p className="text-[#e8a020] text-[10px] font-bold uppercase tracking-widest mb-2">
+                  PPC & El Nido Tours
                 </p>
-                <span className="inline-flex items-center gap-1.5 bg-[#e8a020] text-white px-5 py-2 rounded-full text-xs font-bold group-hover:bg-white group-hover:text-primary transition-colors">
+                <h3 className="text-2xl sm:text-3xl font-black text-white mb-1 drop-shadow-md">Tour Packages</h3>
+                <p className="text-white/80 text-[11px] mb-1">Private group · Hotel pickup</p>
+                <p className="text-white/70 text-xs mb-2 leading-relaxed">
+                  Underground River · Honda Bay
+                  <br />
+                  El Nido A–D · Firefly & more
+                </p>
+                <p className="text-[#ffc84d] text-xs font-black mb-4">
+                  From {convertPrice(1500)} <span className="font-semibold text-white/70">/ person</span>
+                </p>
+                <span className={ctaClass}>
                   View Tours <ArrowRight size={12} />
                 </span>
               </div>
+            </button>
+          </div>
+
+          <div className="shrink-0 border-t border-white/10 bg-[#1a3728] px-4 py-3 space-y-2.5">
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[10px] sm:text-[11px] text-white/75 font-medium">
+              <span className="inline-flex items-center gap-1">
+                <Star size={11} className="text-[#e8a020] fill-[#e8a020]" />
+                5.0 · 9 Google reviews
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <Shield size={11} className="text-[#e8a020]" />
+                Trusted by 300+ travelers
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => handleNavigate('/book')}
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-[#e8a020]/50 text-[#e8a020] text-xs font-bold hover:bg-[#e8a020]/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#e8a020]"
+            >
+              <Car size={14} />
+              Already know your trip? Book now
+              <ArrowRight size={12} />
             </button>
           </div>
         </div>
