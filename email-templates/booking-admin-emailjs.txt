@@ -1,0 +1,15 @@
+=== EmailJS template: "Booking" (admin — papunta sa palawanprivaterides@gmail.com) ===
+
+SUBJECT:
+New Booking — {{tour_type}}: {{tour_name}}
+
+--- Settings tab (right panel) ---
+To Email:     palawanprivaterides@gmail.com
+To Name:      Palawan Private Rides
+From Name:    Palawan Private Rides Website
+From Email:   ✓ Use Default Email Address
+Reply To:     {{email}}
+Bcc / Cc:     (leave empty)
+
+--- Content tab (body) — use HTML file: booking-admin-emailjs.html ---
+(Plain-text fallback is in that file’s table; paste the HTML into EmailJS Content tab.)

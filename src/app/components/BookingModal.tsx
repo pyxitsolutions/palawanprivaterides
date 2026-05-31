@@ -1,16 +1,11 @@
 import { useState, useEffect } from 'react';
-import emailjs from '@emailjs/browser';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { X, Calendar, Clock, MapPin, Users, MessageSquare, Car, Check, ChevronRight, ChevronLeft } from 'lucide-react';
 import { PolicyModal, type PolicyType } from './PolicyModal';
 import { getTourExtraFees } from '../utils/pricing';
-import { formatBookingEmail, getStep1Errors } from '../utils/bookingValidation';
-
-const EMAILJS_SERVICE_ID = 'service_w5vk124';
-const EMAILJS_TEMPLATE_RIDES = 'template_pnxzs9s';
-const EMAILJS_TEMPLATE_TOURS = 'template_vxsclk9';
-const EMAILJS_PUBLIC_KEY = 'RaznTonJuUEVxkdZp';
+import { getStep1Errors } from '../utils/bookingValidation';
+import { sendBookingEmails, type BookingEmailParams } from '../utils/bookingEmailJs';
 
 interface PricingTier {
   vehicle: string;
@@ -171,36 +166,36 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
     setError('');
 
     try {
-      await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        tourType === 'Tour Package' ? EMAILJS_TEMPLATE_TOURS : EMAILJS_TEMPLATE_RIDES,
-        {
-          from_name: formData.fullName,
-          phone: formData.phone,
-          email: formatBookingEmail(formData.email),
-          nationality: formData.nationality || 'N/A',
-          tour_name: tourName,
-          vehicle_type: isMultiVehicle ? `Van ×${vehiclesNeeded} (${paxCount} pax)` : formData.vehicleType || 'N/A',
-          tour_price: isMultiVehicle ? (vehiclesNeeded * vanPrice).toString() : selectedPrice,
-          tour_date: formData.tourDate,
-          tour_time: formData.tourTime || formData.tourPeriod,
-          pax: formData.pax,
-          pickup_location: formData.pickupLocation,
-          dropoff_location: formData.dropoffLocation,
-          beach_selection: formData.beachSelection || 'N/A',
-          message: isMultiVehicle
-            ? `[FLEET BOOKING: ${vehiclesNeeded} vans for ${paxCount} pax] ${formData.message || 'No additional message.'}`
-            : formData.message || 'No additional message.',
-        },
-        EMAILJS_PUBLIC_KEY
-      );
+      const typeLabel =
+        tourType === 'Private Ride' ? 'Private Ride' : tourType === 'Transfer' ? 'Airport Transfer' : 'Tour Package';
+      const emailParams: BookingEmailParams = {
+        from_name: formData.fullName,
+        phone: formData.phone,
+        email: formData.email.trim(),
+        nationality: formData.nationality || 'N/A',
+        tour_type: typeLabel,
+        tour_name: tourName,
+        vehicle_type: isMultiVehicle ? `Van ×${vehiclesNeeded} (${paxCount} pax)` : formData.vehicleType || 'N/A',
+        tour_price: isMultiVehicle ? (vehiclesNeeded * vanPrice).toString() : selectedPrice,
+        estimated_total: `₱${grandTotal.toLocaleString('en-PH')}`,
+        tour_date: formData.tourDate,
+        tour_time: formData.tourTime || formData.tourPeriod,
+        pax: formData.pax,
+        pickup_location: formData.pickupLocation,
+        dropoff_location: formData.dropoffLocation,
+        beach_selection: formData.beachSelection || 'N/A',
+        message: isMultiVehicle
+          ? `[FLEET BOOKING: ${vehiclesNeeded} vans for ${paxCount} pax] ${formData.message || 'No additional message.'}`
+          : formData.message || 'No additional message.',
+      };
+      await sendBookingEmails(emailParams);
 
       localStorage.setItem('lastBookingSent', Date.now().toString());
 
       const vehicleInfo = isMultiVehicle ? ` (${vehiclesNeeded}× Van)` : formData.vehicleType ? ` (${formData.vehicleType})` : '';
       const beachInfo = formData.beachSelection ? `\nBeach: ${formData.beachSelection}` : '';
       const waMessage = encodeURIComponent(
-        `🏝️ New Booking!\nRoute: ${tourName}${vehicleInfo}\nPrice: ₱${grandTotal.toLocaleString()}\nName: ${formData.fullName}\nPhone: ${formData.phone}\nEmail: ${formatBookingEmail(formData.email)}\nNationality: ${formData.nationality || 'N/A'}\nDate: ${formData.tourDate} at ${formData.tourTime || formData.tourPeriod}\nPax: ${formData.pax}${isMultiVehicle ? ` (${vehiclesNeeded} vans needed)` : ''}${beachInfo}\nPickup: ${formData.pickupLocation}\nDrop-off: ${formData.dropoffLocation}\nNotes: ${formData.message || 'None'}`
+        `🏝️ New Booking!\nRoute: ${tourName}${vehicleInfo}\nPrice: ₱${grandTotal.toLocaleString()}\nName: ${formData.fullName}\nPhone: ${formData.phone}\nEmail: ${formData.email.trim()}\nNationality: ${formData.nationality || 'N/A'}\nDate: ${formData.tourDate} at ${formData.tourTime || formData.tourPeriod}\nPax: ${formData.pax}${isMultiVehicle ? ` (${vehiclesNeeded} vans needed)` : ''}${beachInfo}\nPickup: ${formData.pickupLocation}\nDrop-off: ${formData.dropoffLocation}\nNotes: ${formData.message || 'None'}`
       );
       fetch(`https://api.callmebot.com/whatsapp.php?phone=639217792016&text=${waMessage}&apikey=1091963`).catch(() => {});
 
@@ -326,8 +321,8 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                     />
                   </div>
                   <div>
-                    <label className={labelClass}>Email Address <span className="normal-case font-normal text-gray-400">(Optional)</span></label>
-                    <input type="email" name="email" value={formData.email} onChange={handleChange} className={inputClass} placeholder="Optional — ex. juan@email.com" />
+                    <label className={labelClass}>Email Address *</label>
+                    <input type="email" name="email" value={formData.email} onChange={handleChange} className={inputClass} placeholder="ex. juan@email.com" required />
                   </div>
                   <button
                     type="button"
@@ -528,7 +523,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                       { label: 'Name', value: formData.fullName },
                       { label: 'Nationality', value: formData.nationality },
                       { label: 'Phone', value: `+${formData.phone}` },
-                      ...(formData.email.trim() ? [{ label: 'Email', value: formData.email.trim() }] : []),
+                      { label: 'Email', value: formData.email.trim() },
                       { label: tourType === 'Private Ride' ? 'Travel Date' : tourType === 'Transfer' ? 'Pick-up Date' : 'Tour Date', value: formData.tourDate },
                       { label: 'Time', value: formData.tourTime || formData.tourPeriod },
                       ...(isMultiVehicle ? [{ label: 'Fleet', value: `${vehiclesNeeded}× Van (${paxCount} pax)` }] : formData.vehicleType ? [{ label: 'Vehicle', value: formData.vehicleType }] : []),

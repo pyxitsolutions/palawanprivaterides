@@ -1,0 +1,15 @@
+EmailJS template: "Client" (template_vxsclk9)
+Paste HTML from: booking-guest-emailjs.html
+
+SUBJECT:
+We received your booking — {{tour_name}}
+
+Settings tab:
+  To Email:     {{guest_email}}
+  To Name:      {{from_name}}
+  From Name:    Palawan Private Rides
+  From Email:   ✓ Use Default Email Address
+  Reply To:     palawanprivaterides@gmail.com
+
+After saving, add to Vercel and redeploy:
+  VITE_EMAILJS_TEMPLATE_GUEST_CONFIRM=template_vxsclk9

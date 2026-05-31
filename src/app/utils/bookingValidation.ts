@@ -1,17 +1,13 @@
 import type { BookingFormData } from './bookingDraft';
 
-/** Value sent to EmailJS {{email}} and notifications when the guest leaves email blank. */
-export function formatBookingEmail(raw: string): string {
-  return raw.trim() || 'Not provided';
-}
-
 export function getStep1Errors(data: BookingFormData): Record<string, string> {
   const errors: Record<string, string> = {};
   if (!data.fullName.trim()) errors.fullName = 'Please enter your full name.';
   if (!data.nationality) errors.nationality = 'Please select your nationality.';
   if (!data.phone || data.phone.length < 8) errors.phone = 'Please enter a valid phone number.';
   const email = data.email.trim();
-  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  if (!email) errors.email = 'Please enter your email address.';
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     errors.email = 'Please enter a valid email address.';
   }
   return errors;

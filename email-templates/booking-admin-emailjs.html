@@ -1,0 +1,35 @@
+<!-- EmailJS: one "Booking" template — rides, transfers, and tours -->
+<!-- Subject: New Booking — {{tour_type}}: {{tour_name}} -->
+<!-- To Email: palawanprivaterides@gmail.com | Reply To: {{email}} -->
+
+<div style="font-family: system-ui, sans-serif, Arial; font-size: 12px">
+  <div>A new <strong>booking</strong> ({{tour_type}}) has been received from <strong>{{from_name}}</strong>. Kindly respond at your earliest convenience.</div>
+  <div style="margin-top: 20px; padding: 15px 0; border-width: 1px 0; border-style: dashed; border-color: lightgrey;">
+    <table role="presentation">
+      <tr>
+        <td style="vertical-align: top">
+          <div style="padding: 6px 10px; margin: 0 10px; background-color: aliceblue; border-radius: 5px; font-size: 26px;" role="img">🚗</div>
+        </td>
+        <td style="vertical-align: top">
+          <div style="color: #2c3e50; font-size: 14px; margin-bottom: 4px;"><strong>{{tour_type}}</strong></div>
+          <div style="color: #2c3e50; font-size: 16px"><strong>{{tour_name}}</strong></div>
+          <div style="color: #cccccc; font-size: 13px">{{tour_date}} at {{tour_time}}</div>
+          <table style="margin-top: 12px; font-size: 13px; border-collapse: collapse;">
+            <tr><td style="color:#999; padding: 3px 12px 3px 0;">Vehicle</td><td style="color:#2c3e50;"><strong>{{vehicle_type}}</strong></td></tr>
+            <tr><td style="color:#999; padding: 3px 12px 3px 0;">Est. total</td><td style="color:#2c3e50;"><strong>{{estimated_total}}</strong></td></tr>
+            <tr><td style="color:#999; padding: 3px 12px 3px 0;">Rate</td><td style="color:#2c3e50;">₱{{tour_price}}</td></tr>
+            <tr><td style="color:#999; padding: 3px 12px 3px 0;">Name</td><td style="color:#2c3e50;">{{from_name}}</td></tr>
+            <tr><td style="color:#999; padding: 3px 12px 3px 0;">Phone</td><td style="color:#2c3e50;">{{phone}}</td></tr>
+            <tr><td style="color:#999; padding: 3px 12px 3px 0;">Email</td><td style="color:#2c3e50;">{{email}}</td></tr>
+            <tr><td style="color:#999; padding: 3px 12px 3px 0;">Nationality</td><td style="color:#2c3e50;">{{nationality}}</td></tr>
+            <tr><td style="color:#999; padding: 3px 12px 3px 0;">Passengers</td><td style="color:#2c3e50;">{{pax}}</td></tr>
+            <tr><td style="color:#999; padding: 3px 12px 3px 0;">Pick-up</td><td style="color:#2c3e50;">{{pickup_location}}</td></tr>
+            <tr><td style="color:#999; padding: 3px 12px 3px 0;">Drop-off</td><td style="color:#2c3e50;">{{dropoff_location}}</td></tr>
+            <tr><td style="color:#999; padding: 3px 12px 3px 0;">Beach</td><td style="color:#2c3e50;">{{beach_selection}}</td></tr>
+            <tr><td style="color:#999; padding: 3px 12px 3px 0; vertical-align: top;">Notes</td><td style="color:#2c3e50;">{{message}}</td></tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>

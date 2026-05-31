@@ -1,0 +1,78 @@
+<!-- EmailJS template: "Client" (confirmation TO the guest) -->
+<!--
+  SUBJECT: We received your booking — {{tour_name}}
+
+  Settings:
+  To Email:     {{guest_email}}
+  To Name:      {{from_name}}
+  From Name:    Palawan Private Rides
+  From Email:   ✓ Use Default Email Address
+  Reply To:     palawanprivaterides@gmail.com
+-->
+
+<div style="font-family: system-ui, sans-serif, Arial; font-size: 12px; color: #333;">
+  <div style="margin-bottom: 16px;">
+    Hi <strong>{{from_name}}</strong>,<br /><br />
+    Thank you for your <strong>{{tour_type}}</strong> booking with <strong>Palawan Private Rides</strong>.
+    We have received your request and will confirm via WhatsApp, phone, or email shortly.
+  </div>
+
+  <div style="padding: 15px 0; border-width: 1px 0; border-style: dashed; border-color: #e0e0e0;">
+    <table role="presentation" cellpadding="0" cellspacing="0">
+      <tr>
+        <td style="vertical-align: top; padding-right: 12px;">
+          <div style="padding: 8px 12px; background-color: #e8f5e9; border-radius: 8px; font-size: 28px; line-height: 1;" role="img">🏝️</div>
+        </td>
+        <td style="vertical-align: top;">
+          <div style="color: #1a3728; font-size: 13px; font-weight: 700; margin-bottom: 4px;">{{tour_type}}</div>
+          <div style="color: #2c3e50; font-size: 17px; font-weight: 700; margin-bottom: 4px;">{{tour_name}}</div>
+          <div style="color: #999; font-size: 13px;">{{tour_date}} • {{tour_time}}</div>
+
+          <table style="margin-top: 14px; font-size: 13px; border-collapse: collapse; width: 100%;">
+            <tr>
+              <td style="color: #999; padding: 4px 16px 4px 0; white-space: nowrap; vertical-align: top;">Price</td>
+              <td style="color: #2c3e50; font-weight: 700; font-size: 15px;">{{estimated_total}}</td>
+            </tr>
+            <tr>
+              <td style="color: #999; padding: 4px 16px 4px 0; white-space: nowrap; vertical-align: top;">Base rate</td>
+              <td style="color: #2c3e50;">₱{{tour_price}}</td>
+            </tr>
+            <tr>
+              <td style="color: #999; padding: 4px 16px 4px 0; white-space: nowrap; vertical-align: top;">Vehicle</td>
+              <td style="color: #2c3e50;">{{vehicle_type}}</td>
+            </tr>
+            <tr>
+              <td style="color: #999; padding: 4px 16px 4px 0; white-space: nowrap; vertical-align: top;">Passengers</td>
+              <td style="color: #2c3e50;">{{pax}}</td>
+            </tr>
+            <tr>
+              <td style="color: #999; padding: 4px 16px 4px 0; white-space: nowrap; vertical-align: top;">Pick-up</td>
+              <td style="color: #2c3e50;">{{pickup_location}}</td>
+            </tr>
+            <tr>
+              <td style="color: #999; padding: 4px 16px 4px 0; white-space: nowrap; vertical-align: top;">Drop-off</td>
+              <td style="color: #2c3e50;">{{dropoff_location}}</td>
+            </tr>
+            <tr>
+              <td style="color: #999; padding: 4px 16px 4px 0; white-space: nowrap; vertical-align: top;">Beach</td>
+              <td style="color: #2c3e50;">{{beach_selection}}</td>
+            </tr>
+            <tr>
+              <td style="color: #999; padding: 4px 16px 4px 0; white-space: nowrap; vertical-align: top;">Notes</td>
+              <td style="color: #2c3e50;">{{message}}</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <p style="margin-top: 18px; font-size: 12px; color: #666; line-height: 1.5;">
+    <strong>This is not final confirmation</strong> until we contact you and any downpayment is received.<br /><br />
+    Questions? Reply to this email or WhatsApp us at <strong>+63 921-779-2016</strong>.
+  </p>
+
+  <p style="margin-top: 20px; font-size: 12px; color: #1a3728;">
+    — Palawan Private Rides
+  </p>
+</div>
