@@ -20,6 +20,7 @@ import {
   saveBookingDraft,
 } from '../utils/bookingDraft';
 import {
+  formatBookingEmail,
   getStep1Errors,
   getStep2Errors,
   getStep3Errors,
@@ -263,7 +264,7 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, listHref, listLab
         {
           from_name: formData.fullName,
           phone: formData.phone,
-          email: formData.email,
+          email: formatBookingEmail(formData.email),
           nationality: formData.nationality || 'N/A',
           tour_name: tourName,
           vehicle_type: isMultiVehicle ? `Van ×${vehiclesNeeded} (${paxCount} pax)` : formData.vehicleType || 'N/A',
@@ -285,7 +286,7 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, listHref, listLab
 
       const vehicleInfo = isMultiVehicle ? ` (${vehiclesNeeded}× Van)` : formData.vehicleType ? ` (${formData.vehicleType})` : '';
       const beachInfo = formData.beachSelection ? `\nBeach: ${formData.beachSelection}` : '';
-      const rawMessage = `🏝️ New Booking!\nRoute: ${tourName}${vehicleInfo}\nPrice: ₱${grandTotal.toLocaleString()}\nName: ${formData.fullName}\nPhone: ${formData.phone}\nEmail: ${formData.email}\nNationality: ${formData.nationality || 'N/A'}\nDate: ${formData.tourDate} at ${formData.tourTime || formData.tourPeriod}\nPax: ${formData.pax}${isMultiVehicle ? ` (${vehiclesNeeded} vans needed)` : ''}${beachInfo}\nPickup: ${formData.pickupLocation}\nDrop-off: ${formData.dropoffLocation}\nNotes: ${formData.message || 'None'}`;
+      const rawMessage = `🏝️ New Booking!\nRoute: ${tourName}${vehicleInfo}\nPrice: ₱${grandTotal.toLocaleString()}\nName: ${formData.fullName}\nPhone: ${formData.phone}\nEmail: ${formatBookingEmail(formData.email)}\nNationality: ${formData.nationality || 'N/A'}\nDate: ${formData.tourDate} at ${formData.tourTime || formData.tourPeriod}\nPax: ${formData.pax}${isMultiVehicle ? ` (${vehiclesNeeded} vans needed)` : ''}${beachInfo}\nPickup: ${formData.pickupLocation}\nDrop-off: ${formData.dropoffLocation}\nNotes: ${formData.message || 'None'}`;
       fetch('/api/notify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -408,8 +409,8 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, listHref, listLab
                     <FieldError message={step1Errors.phone} />
                   </div>
                   <div>
-                    <label className={labelClass}>Email Address *</label>
-                    <input type="email" name="email" value={formData.email} onChange={handleChange} className={inputClass} placeholder="ex. juan@email.com" />
+                    <label className={labelClass}>Email Address <span className="normal-case font-normal text-gray-400">(Optional)</span></label>
+                    <input type="email" name="email" value={formData.email} onChange={handleChange} className={inputClass} placeholder="Optional — ex. juan@email.com" />
                     <FieldError message={step1Errors.email} />
                   </div>
                   <p className="text-xs text-gray-500 text-center">
@@ -652,7 +653,7 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, listHref, listLab
                       { label: 'Name', value: formData.fullName },
                       { label: 'Nationality', value: formData.nationality },
                       { label: 'Phone', value: `+${formData.phone}` },
-                      { label: 'Email', value: formData.email },
+                      ...(formData.email.trim() ? [{ label: 'Email', value: formData.email.trim() }] : []),
                       { label: tourType === 'Private Ride' ? 'Travel Date' : tourType === 'Transfer' ? 'Pick-up Date' : 'Tour Date', value: formData.tourDate },
                       { label: 'Time', value: formData.tourTime || formData.tourPeriod },
                       ...(isMultiVehicle ? [{ label: 'Fleet', value: `${vehiclesNeeded}× Van (${paxCount} pax)` }] : formData.vehicleType ? [{ label: 'Vehicle', value: formData.vehicleType }] : []),

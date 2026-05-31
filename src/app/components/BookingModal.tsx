@@ -5,6 +5,7 @@ import 'react-phone-input-2/lib/style.css';
 import { X, Calendar, Clock, MapPin, Users, MessageSquare, Car, Check, ChevronRight, ChevronLeft } from 'lucide-react';
 import { PolicyModal, type PolicyType } from './PolicyModal';
 import { getTourExtraFees } from '../utils/pricing';
+import { formatBookingEmail, getStep1Errors } from '../utils/bookingValidation';
 
 const EMAILJS_SERVICE_ID = 'service_w5vk124';
 const EMAILJS_TEMPLATE_RIDES = 'template_pnxzs9s';
@@ -62,6 +63,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
   const [formData, setFormData] = useState({
     fullName: '',
     phone: '',
+    email: '',
     nationality: '',
     tourDate: '',
     tourTime: '',
@@ -146,7 +148,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
   const vehicleTip = pricing ? getVehicleTip() : null;
 
   // Step validation
-  const step1Valid = formData.fullName.trim() !== '' && formData.nationality !== '' && formData.phone.length >= 8;
+  const step1Valid = Object.keys(getStep1Errors(formData)).length === 0;
   const step2Valid = formData.tourDate !== '' && (formData.tourTime !== '' || formData.tourPeriod !== '');
   const step3Valid = formData.pax !== '' && (!pricing || isMultiVehicle || formData.vehicleType !== '');
   const step4Valid =
@@ -175,6 +177,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
         {
           from_name: formData.fullName,
           phone: formData.phone,
+          email: formatBookingEmail(formData.email),
           nationality: formData.nationality || 'N/A',
           tour_name: tourName,
           vehicle_type: isMultiVehicle ? `Van ×${vehiclesNeeded} (${paxCount} pax)` : formData.vehicleType || 'N/A',
@@ -197,7 +200,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
       const vehicleInfo = isMultiVehicle ? ` (${vehiclesNeeded}× Van)` : formData.vehicleType ? ` (${formData.vehicleType})` : '';
       const beachInfo = formData.beachSelection ? `\nBeach: ${formData.beachSelection}` : '';
       const waMessage = encodeURIComponent(
-        `🏝️ New Booking!\nRoute: ${tourName}${vehicleInfo}\nPrice: ₱${grandTotal.toLocaleString()}\nName: ${formData.fullName}\nPhone: ${formData.phone}\nNationality: ${formData.nationality || 'N/A'}\nDate: ${formData.tourDate} at ${formData.tourTime || formData.tourPeriod}\nPax: ${formData.pax}${isMultiVehicle ? ` (${vehiclesNeeded} vans needed)` : ''}${beachInfo}\nPickup: ${formData.pickupLocation}\nDrop-off: ${formData.dropoffLocation}\nNotes: ${formData.message || 'None'}`
+        `🏝️ New Booking!\nRoute: ${tourName}${vehicleInfo}\nPrice: ₱${grandTotal.toLocaleString()}\nName: ${formData.fullName}\nPhone: ${formData.phone}\nEmail: ${formatBookingEmail(formData.email)}\nNationality: ${formData.nationality || 'N/A'}\nDate: ${formData.tourDate} at ${formData.tourTime || formData.tourPeriod}\nPax: ${formData.pax}${isMultiVehicle ? ` (${vehiclesNeeded} vans needed)` : ''}${beachInfo}\nPickup: ${formData.pickupLocation}\nDrop-off: ${formData.dropoffLocation}\nNotes: ${formData.message || 'None'}`
       );
       fetch(`https://api.callmebot.com/whatsapp.php?phone=639217792016&text=${waMessage}&apikey=1091963`).catch(() => {});
 
@@ -321,6 +324,10 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                       }}
                       dropdownStyle={{ borderRadius: '0.75rem', marginTop: '4px' }}
                     />
+                  </div>
+                  <div>
+                    <label className={labelClass}>Email Address <span className="normal-case font-normal text-gray-400">(Optional)</span></label>
+                    <input type="email" name="email" value={formData.email} onChange={handleChange} className={inputClass} placeholder="Optional — ex. juan@email.com" />
                   </div>
                   <button
                     type="button"
@@ -521,6 +528,7 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                       { label: 'Name', value: formData.fullName },
                       { label: 'Nationality', value: formData.nationality },
                       { label: 'Phone', value: `+${formData.phone}` },
+                      ...(formData.email.trim() ? [{ label: 'Email', value: formData.email.trim() }] : []),
                       { label: tourType === 'Private Ride' ? 'Travel Date' : tourType === 'Transfer' ? 'Pick-up Date' : 'Tour Date', value: formData.tourDate },
                       { label: 'Time', value: formData.tourTime || formData.tourPeriod },
                       ...(isMultiVehicle ? [{ label: 'Fleet', value: `${vehiclesNeeded}× Van (${paxCount} pax)` }] : formData.vehicleType ? [{ label: 'Vehicle', value: formData.vehicleType }] : []),
