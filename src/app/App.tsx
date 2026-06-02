@@ -1,17 +1,26 @@
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
-import { InstantQuote } from './components/InstantQuote';
 import { PromoPrice } from './components/PromoPrice';
 import { hasPromoRate } from './utils/pricing';
 import { tours } from './data/tours';
 import { HeroCarousel } from './components/HeroCarousel';
 import { HomePromoBanner } from './components/HomePromoBanner';
 import { ScrollToTopButton } from './components/ScrollToTopButton';
-import { BlogPreview } from './components/BlogPreview';
-import { GalleryPreview } from './components/GalleryPreview';
-import { Testimonials } from './components/Testimonials';
 import { SiteFooter } from './components/SiteFooter';
+
+const InstantQuote = lazy(() =>
+  import('./components/InstantQuote').then((m) => ({ default: m.InstantQuote })),
+);
+const BlogPreview = lazy(() =>
+  import('./components/BlogPreview').then((m) => ({ default: m.BlogPreview })),
+);
+const GalleryPreview = lazy(() =>
+  import('./components/GalleryPreview').then((m) => ({ default: m.GalleryPreview })),
+);
+const Testimonials = lazy(() =>
+  import('./components/Testimonials').then((m) => ({ default: m.Testimonials })),
+);
 import {
   Car, Shield, Clock, Award, Phone, Mail, Facebook, MapPin,
   MessageCircle, CheckCircle, ArrowRight,
@@ -44,16 +53,8 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
   );
 }
 
-const spinStyle = `@keyframes _spin { to { transform: rotate(360deg); } } @keyframes _fadeIn { from { opacity:0; } to { opacity:1; } }`;
-
 export default function App() {
   const navigate = useNavigate();
-  const [navigating, setNavigating] = useState(false);
-
-  const handleNavigate = (href: string) => {
-    setNavigating(true);
-    setTimeout(() => { setNavigating(false); navigate(href); }, 400);
-  };
 
   const destinations = [
     { name: 'El Nido', image: dest1, desc: 'Lagoons, limestone cliffs & island hopping', href: '/destinations/el-nido' },
@@ -65,12 +66,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white">
-      <style>{spinStyle}</style>
-      {navigating && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 backdrop-blur-sm" style={{ animation: '_fadeIn 0.2s ease forwards' }}>
-          <div className="w-12 h-12 rounded-full border-4 border-white/20 border-t-[#e8a020]" style={{ animation: '_spin 0.8s linear infinite' }} />
-        </div>
-      )}
       <Navbar />
 
       {/* Hero */}
@@ -144,7 +139,9 @@ export default function App() {
       </section>
 
       {/* Instant Quote Calculator */}
-      <InstantQuote />
+      <Suspense fallback={null}>
+        <InstantQuote />
+      </Suspense>
 
       {/* Premium Services */}
       <section id="services" className="py-24 bg-white">
@@ -189,7 +186,7 @@ export default function App() {
               <div
                 key={i}
                 className="group p-7 rounded-2xl border border-gray-100 hover:border-primary hover:shadow-lg transition-all duration-300 cursor-pointer"
-                onClick={() => handleNavigate(s.href)}
+                onClick={() => navigate(s.href)}
               >
                 <div className="text-primary mb-4 group-hover:scale-110 transition-transform inline-block">{s.icon}</div>
                 <h3 className="text-lg font-bold text-gray-900 mb-2">{s.title}</h3>
@@ -221,12 +218,14 @@ export default function App() {
               <div
                 key={i}
                 className="group relative rounded-2xl overflow-hidden aspect-[3/4] cursor-pointer"
-                onClick={() => handleNavigate(dest.href)}
+                onClick={() => navigate(dest.href)}
               >
                 <img
                   src={dest.image}
                   alt={`${dest.name} Palawan - Private Van Transfer destination`}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                  decoding="async"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-4">
@@ -238,10 +237,10 @@ export default function App() {
           </div>
 
           <div className="flex flex-wrap gap-3 justify-center mt-8">
-            <button onClick={() => handleNavigate('/rides')} className="bg-primary text-white px-6 py-2.5 rounded-full text-sm font-bold hover:opacity-90 transition-all flex items-center gap-2">
+            <button onClick={() => navigate('/rides')} className="bg-primary text-white px-6 py-2.5 rounded-full text-sm font-bold hover:opacity-90 transition-all flex items-center gap-2">
               <Car size={15} /> View All Private Rides
             </button>
-            <button onClick={() => handleNavigate('/tours')} className="border border-primary text-primary px-6 py-2.5 rounded-full text-sm font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-2">
+            <button onClick={() => navigate('/tours')} className="border border-primary text-primary px-6 py-2.5 rounded-full text-sm font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-2">
               <MapPin size={15} /> View Tour Packages
             </button>
           </div>
@@ -277,10 +276,10 @@ export default function App() {
                 ))}
               </div>
               <div className="flex flex-wrap gap-3 mt-8">
-                <button onClick={() => handleNavigate('/rides')} className="bg-[#e8a020] text-white px-6 py-3 rounded-full text-sm font-bold hover:bg-[#d49020] transition-all flex items-center gap-2">
+                <button onClick={() => navigate('/rides')} className="bg-[#e8a020] text-white px-6 py-3 rounded-full text-sm font-bold hover:bg-[#d49020] transition-all flex items-center gap-2">
                   <Car size={15} /> Book a Private Ride
                 </button>
-                <button onClick={() => handleNavigate('/tours')} className="border-2 border-primary text-primary px-6 py-3 rounded-full text-sm font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-2">
+                <button onClick={() => navigate('/tours')} className="border-2 border-primary text-primary px-6 py-3 rounded-full text-sm font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-2">
                   <MapPin size={15} /> Browse Tour Packages
                 </button>
               </div>
@@ -290,6 +289,8 @@ export default function App() {
                 src={aboutImg}
                 alt="Palawan Private Rides - Private van transfers and tours across Palawan Philippines"
                 className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent" />
             </div>
@@ -331,28 +332,38 @@ export default function App() {
           </div>
 
           <div className="flex flex-wrap gap-3 justify-center mt-12">
-            <button onClick={() => handleNavigate('/rides')} className="bg-[#e8a020] text-white px-7 py-3.5 rounded-full font-bold hover:bg-[#d49020] transition-all flex items-center gap-2">
+            <button onClick={() => navigate('/rides')} className="bg-[#e8a020] text-white px-7 py-3.5 rounded-full font-bold hover:bg-[#d49020] transition-all flex items-center gap-2">
               <Car size={16} /> Browse Private Rides
             </button>
-            <button onClick={() => handleNavigate('/tours')} className="bg-primary text-white px-7 py-3.5 rounded-full font-bold hover:opacity-90 transition-all flex items-center gap-2">
+            <button onClick={() => navigate('/tours')} className="bg-primary text-white px-7 py-3.5 rounded-full font-bold hover:opacity-90 transition-all flex items-center gap-2">
               <MapPin size={16} /> Browse Tour Packages
             </button>
           </div>
         </div>
       </section>
 
-      <BlogPreview />
-      <GalleryPreview />
+      <Suspense fallback={null}>
+        <BlogPreview />
+        <GalleryPreview />
+      </Suspense>
 
       {/* Testimonials */}
       <div id="reviews">
-        <Testimonials />
+        <Suspense fallback={null}>
+          <Testimonials />
+        </Suspense>
       </div>
 
       {/* CTA Banner */}
       <section className="py-24 relative bg-primary">
         <div className="absolute inset-0">
-          <img src={whereImg} alt="Palawan Philippines map - service areas for Palawan Private Rides" className="w-full h-full object-cover" />
+          <img
+            src={whereImg}
+            alt="Palawan Philippines map - service areas for Palawan Private Rides"
+            className="w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
           <div className="absolute inset-0 bg-primary/80" />
         </div>
         <div className="relative max-w-4xl mx-auto px-4 text-center">

@@ -30,8 +30,18 @@ export default defineConfig({
       png: { quality: 75 },
       jpg: { quality: 80 },
       jpeg: { quality: 80 },
+      webp: { quality: 78 },
     }),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router', 'react-router-dom'],
+        },
+      },
+    },
+  },
   resolve: {
     alias: {
       // Alias @ to the src directory

@@ -378,7 +378,6 @@ export function CarCard({
 }: TourCardProps & { credit?: string }) {
   const navigate = useNavigate();
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-  const [booking, setBooking] = useState(false);
 
   const tourData = { images, name, price, type, duration, pax, description, pricing, whatsIncluded, credit };
   const flatPrice = parseInt(price);
@@ -388,8 +387,7 @@ export function CarCard({
   const perLabel = type === 'Tour Package' || type === 'Transfer' ? 'per person' : 'per booking';
 
   const handleBook = () => {
-    setBooking(true);
-    setTimeout(() => navigate('/book', { state: { tourName: name, tourPrice: price, tourType: type, pricing } }), 500);
+    navigate('/book', { state: { tourName: name, tourPrice: price, tourType: type, pricing } });
   };
 
   const handleViewDetails = () => {
@@ -412,7 +410,7 @@ export function CarCard({
     perLabel,
     isDetailsOpen,
     setIsDetailsOpen,
-    booking,
+    booking: false,
     handleBook,
     onViewDetails: handleViewDetails,
     navigate,

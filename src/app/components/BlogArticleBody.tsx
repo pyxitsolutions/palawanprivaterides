@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ExternalLink } from 'lucide-react';
 import type { Section } from '../data/blog';
@@ -9,7 +8,6 @@ interface BlogArticleBodyProps {
 
 export function BlogArticleBody({ sections }: BlogArticleBodyProps) {
   const navigate = useNavigate();
-  const [loadingCta, setLoadingCta] = useState<string | null>(null);
 
   return (
     <div className="prose prose-gray max-w-none">
@@ -99,12 +97,8 @@ export function BlogArticleBody({ sections }: BlogArticleBodyProps) {
                 <div className="px-5 py-4 bg-white border-t border-gray-100">
                   <button
                     type="button"
-                    disabled={loadingCta === section.ctaHref}
-                    onClick={() => {
-                      setLoadingCta(section.ctaHref!);
-                      setTimeout(() => navigate(section.ctaHref!), 400);
-                    }}
-                    className="w-full sm:w-auto bg-[#e8a020] text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-[#d49020] transition-colors inline-flex items-center justify-center gap-2 disabled:opacity-80"
+                    onClick={() => navigate(section.ctaHref!)}
+                    className="w-full sm:w-auto bg-[#e8a020] text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-[#d49020] transition-colors inline-flex items-center justify-center gap-2"
                   >
                     {section.ctaLabel ?? 'Book now'}
                     <ArrowRight size={15} />
@@ -120,27 +114,11 @@ export function BlogArticleBody({ sections }: BlogArticleBodyProps) {
               <p className="text-white font-bold mb-4">Ready to explore Palawan?</p>
               <button
                 type="button"
-                disabled={loadingCta === section.ctaHref}
-                onClick={() => {
-                  setLoadingCta(section.ctaHref ?? '/book');
-                  setTimeout(() => navigate(section.ctaHref ?? '/book'), 500);
-                }}
-                className="bg-[#e8a020] text-white px-7 py-3 rounded-full font-bold text-sm hover:bg-[#d49020] transition-colors inline-flex items-center gap-2 disabled:opacity-80"
+                onClick={() => navigate(section.ctaHref ?? '/book')}
+                className="bg-[#e8a020] text-white px-7 py-3 rounded-full font-bold text-sm hover:bg-[#d49020] transition-colors inline-flex items-center gap-2"
               >
-                {loadingCta === section.ctaHref ? (
-                  <>
-                    <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="4" />
-                      <path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8v8z" />
-                    </svg>
-                    Loading...
-                  </>
-                ) : (
-                  <>
-                    {section.ctaLabel}
-                    <ArrowRight size={15} />
-                  </>
-                )}
+                {section.ctaLabel}
+                <ArrowRight size={15} />
               </button>
             </div>
           );

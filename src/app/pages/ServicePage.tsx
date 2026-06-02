@@ -121,7 +121,6 @@ export default function ServicePage() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { convertPrice } = useCurrency();
-  const [booking, setBooking] = useState(false);
 
   const tour = tours.find((t) => slugify(t.name) === slug);
   const seo = tour
@@ -166,15 +165,14 @@ export default function ServicePage() {
   const tourBasePrice = parseInt(tour.price);
 
   const handleBook = () => {
-    setBooking(true);
-    setTimeout(() => navigate('/book', {
+    navigate('/book', {
       state: {
         tourName: tour.name,
         tourPrice: tour.price,
         tourType: tour.type,
         pricing: tour.pricing,
       },
-    }), 500);
+    });
   };
 
   return (
@@ -314,11 +312,11 @@ export default function ServicePage() {
               <p className="text-xs text-gray-400 mb-6">{perLabel}</p>
 
               <button
-                disabled={booking}
+                type="button"
                 onClick={handleBook}
-                className="w-full bg-[#e8a020] text-white py-3.5 rounded-xl font-bold text-sm hover:bg-[#d49020] transition-colors mb-3 flex items-center justify-center gap-2 disabled:opacity-80"
+                className="w-full bg-[#e8a020] text-white py-3.5 rounded-xl font-bold text-sm hover:bg-[#d49020] transition-colors mb-3 flex items-center justify-center gap-2"
               >
-                {booking ? <><svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="4"/><path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8v8z"/></svg> Loading...</> : <><Car size={16} /> Book Now</>}
+                <Car size={16} /> Book Now
               </button>
               <a
                 href={whatsappHref}
@@ -392,7 +390,7 @@ export default function ServicePage() {
         </div>
       </div>
 
-      <ServiceStickyCta onBook={handleBook} booking={booking} whatsappHref={whatsappHref} />
+      <ServiceStickyCta onBook={handleBook} booking={false} whatsappHref={whatsappHref} />
       <SiteFooter />
     </div>
   );

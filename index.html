@@ -21,23 +21,33 @@
       <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png" />
       <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
       <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-      <!-- Microsoft Clarity -->
-      <script type="text/javascript">
-        (function(c,l,a,r,i,t,y){
-          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-        })(window, document, "clarity", "script", "wy7hbwg7qv");
-      </script>
-
-      <!-- Google tag (gtag.js) — Google Ads + Google Analytics -->
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-8PMLNREC62"></script>
       <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', 'AW-18193947431');
-        gtag('config', 'G-8PMLNREC62');
+
+        function loadAnalytics() {
+          (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+          })(window, document, "clarity", "script", "wy7hbwg7qv");
+
+          var gtagScript = document.createElement('script');
+          gtagScript.async = true;
+          gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-8PMLNREC62';
+          gtagScript.onload = function() {
+            gtag('config', 'AW-18193947431');
+            gtag('config', 'G-8PMLNREC62');
+          };
+          document.head.appendChild(gtagScript);
+        }
+
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(loadAnalytics, { timeout: 3500 });
+        } else {
+          window.addEventListener('load', function() { setTimeout(loadAnalytics, 2000); });
+        }
       </script>
       <!-- JSON-LD: LocalBusiness -->
       <script type="application/ld+json">

@@ -35,7 +35,6 @@ const transitionStyles = `
 function BookNowModal({ onClose }: { onClose: () => void }) {
   const navigate = useNavigate();
   const { convertPrice } = useCurrency();
-  const [exiting, setExiting] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -43,7 +42,7 @@ function BookNowModal({ onClose }: { onClose: () => void }) {
     document.body.style.overflow = 'hidden';
 
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && !exiting) onClose();
+      if (e.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', onKey);
 
@@ -51,14 +50,11 @@ function BookNowModal({ onClose }: { onClose: () => void }) {
       document.body.style.overflow = '';
       window.removeEventListener('keydown', onKey);
     };
-  }, [exiting, onClose]);
+  }, [onClose]);
 
   const handleNavigate = (href: string) => {
-    setExiting(true);
-    setTimeout(() => {
-      onClose();
-      navigate(href);
-    }, 350);
+    onClose();
+    navigate(href);
   };
 
   const panelBtn =
@@ -71,18 +67,6 @@ function BookNowModal({ onClose }: { onClose: () => void }) {
     <>
       <style>{transitionStyles}</style>
 
-      {exiting && (
-        <div
-          className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm"
-          style={{ animation: 'fadeInLoader 0.2s ease forwards' }}
-        >
-          <div
-            className="w-12 h-12 rounded-full border-4 border-white/20 border-t-[#e8a020]"
-            style={{ animation: 'spin 0.8s linear infinite' }}
-          />
-        </div>
-      )}
-
       <div
         ref={containerRef}
         tabIndex={-1}
@@ -90,8 +74,8 @@ function BookNowModal({ onClose }: { onClose: () => void }) {
         aria-modal="true"
         aria-labelledby="book-now-modal-title"
         className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm outline-none"
-        style={{ animation: exiting ? 'backdropOut 0.3s ease forwards' : 'backdropIn 0.25s ease' }}
-        onClick={!exiting ? onClose : undefined}
+        style={{ animation: 'backdropIn 0.25s ease' }}
+        onClick={onClose}
         onMouseDown={(e) => e.preventDefault()}
       >
         <div
@@ -128,6 +112,8 @@ function BookNowModal({ onClose }: { onClose: () => void }) {
                 src={ridesHero}
                 alt="Private van transfers in Palawan"
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                loading="lazy"
+                decoding="async"
               />
               <div className="absolute inset-0 bg-black/55 group-hover:bg-black/45 transition-colors duration-300" />
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
@@ -162,6 +148,8 @@ function BookNowModal({ onClose }: { onClose: () => void }) {
                 src={toursHero}
                 alt="Palawan private tour packages"
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                loading="lazy"
+                decoding="async"
               />
               <div className="absolute inset-0 bg-black/55 group-hover:bg-black/45 transition-colors duration-300" />
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
