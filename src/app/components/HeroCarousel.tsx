@@ -14,8 +14,8 @@ export function HeroCarousel() {
         loading="eager"
         fetchPriority="high"
         decoding="async"
-        width={1920}
-        height={1080}
+        width={1400}
+        height={584}
       />
 
       <div className="absolute inset-0 bg-black/65 backdrop-blur-[2px]" />
