@@ -19,7 +19,10 @@ for (const { name, url } of urls) {
   console.log('canonical:', canonical);
   console.log('root text length:', rootText.length);
   console.log('root preview:', rootText.slice(0, 120) + (rootText.length > 120 ? '...' : ''));
-  console.log('prerender ok:', rootText.length > 200 ? 'YES' : 'NO');
+  console.log('static seo ok:', rootText.length > 80 ? 'YES' : 'NO');
+  if (name.includes('service')) {
+    console.log('has service title:', /El Nido Private Van Transfer/.test(html));
+  }
 }
 
 const redirect = await fetch('https://palawanprivaterides.com/services/pps-el-nido', { redirect: 'manual' });

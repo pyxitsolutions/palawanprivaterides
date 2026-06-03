@@ -4,8 +4,9 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "build": "vite build && node scripts/prerender.mjs",
+    "build": "vite build && node scripts/generate-static-pages.mjs",
     "build:spa": "vite build",
+    "prerender:full": "vite build && node scripts/prerender.mjs",
     "verify:deploy": "node scripts/verify-deploy.mjs",
     "dev": "vite"
   },
