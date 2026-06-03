@@ -1,15 +1,25 @@
 import { spawn } from 'child_process';
 import fs from 'fs';
+import net from 'net';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import puppeteer from 'puppeteer';
 import { getPrerenderRoutes } from './prerender-routes.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.join(__dirname, '..');
 const distDir = path.join(rootDir, 'dist');
-const port = 4173;
-const baseUrl = `http://127.0.0.1:${port}`;
+
+function getAvailablePort() {
+  return new Promise((resolve, reject) => {
+    const server = net.createServer();
+    server.listen(0, '127.0.0.1', () => {
+      const address = server.address();
+      const port = typeof address === 'object' && address ? address.port : 4173;
+      server.close(() => resolve(port));
+    });
+    server.on('error', reject);
+  });
+}
 
 /** @param {string} route */
 function routeToOutputFile(route) {
@@ -18,8 +28,35 @@ function routeToOutputFile(route) {
   return path.join(distDir, segments, 'index.html');
 }
 
-/** @returns {Promise<import('child_process').ChildProcess>} */
-function startPreviewServer() {
+async function launchBrowser() {
+  const launchArgs = [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage',
+    '--disable-gpu',
+  ];
+
+  if (process.env.VERCEL) {
+    const chromium = (await import('@sparticuz/chromium')).default;
+    const puppeteer = (await import('puppeteer-core')).default;
+    return puppeteer.launch({
+      args: [...chromium.args, ...launchArgs],
+      defaultViewport: { width: 1280, height: 900 },
+      executablePath: await chromium.executablePath(),
+      headless: true,
+    });
+  }
+
+  const puppeteer = (await import('puppeteer')).default;
+  return puppeteer.launch({
+    headless: true,
+    args: launchArgs,
+  });
+}
+
+/** @returns {Promise<{ proc: import('child_process').ChildProcess, port: number }>} */
+function startPreviewServer(port) {
+  const baseUrl = `http://127.0.0.1:${port}`;
   return new Promise((resolve, reject) => {
     const proc = spawn(
       process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm',
@@ -28,20 +65,22 @@ function startPreviewServer() {
     );
 
     let settled = false;
+    let logs = '';
     const timeout = setTimeout(() => {
       if (!settled) {
         settled = true;
-        reject(new Error('Timed out waiting for vite preview'));
+        reject(new Error(`Timed out waiting for vite preview\n${logs}`));
       }
     }, 45000);
 
     const onReady = (chunk) => {
       const text = String(chunk);
+      logs += text;
       if (text.includes('Local:') || text.includes(`127.0.0.1:${port}`)) {
         if (!settled) {
           settled = true;
           clearTimeout(timeout);
-          resolve(proc);
+          resolve({ proc, port: port });
         }
       }
     };
@@ -53,7 +92,7 @@ function startPreviewServer() {
       if (!settled) {
         settled = true;
         clearTimeout(timeout);
-        reject(new Error(`vite preview exited early with code ${code}`));
+        reject(new Error(`vite preview exited early with code ${code}\n${logs}`));
       }
     });
   });
@@ -80,11 +119,10 @@ async function prerender() {
   const routes = getPrerenderRoutes();
   console.log(`Prerendering ${routes.length} routes...`);
 
-  const preview = await startPreviewServer();
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
-  });
+  const port = await getAvailablePort();
+  const { proc: preview } = await startPreviewServer(port);
+  const baseUrl = `http://127.0.0.1:${port}`;
+  const browser = await launchBrowser();
 
   try {
     for (const route of routes) {
@@ -109,6 +147,15 @@ async function prerender() {
   }
 
   console.log('Prerender complete.');
+
+  const samplePath = path.join(distDir, 'services', 'pps-el-nido', 'index.html');
+  const sampleHtml = fs.readFileSync(samplePath, 'utf8');
+  if (!sampleHtml.includes('El Nido Private Van Transfer')) {
+    throw new Error('Prerender verification failed: service page missing expected SEO content.');
+  }
+  if (sampleHtml.length < 20000) {
+    throw new Error(`Prerender verification failed: service page HTML too small (${sampleHtml.length} bytes).`);
+  }
 }
 
 prerender().catch((error) => {

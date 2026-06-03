@@ -6,6 +6,7 @@
   "scripts": {
     "build": "vite build && node scripts/prerender.mjs",
     "build:spa": "vite build",
+    "verify:deploy": "node scripts/verify-deploy.mjs",
     "dev": "vite"
   },
   "dependencies": {
@@ -71,12 +72,14 @@
     "vaul": "1.1.2"
   },
   "devDependencies": {
+    "@sparticuz/chromium": "^149.0.0",
     "@tailwindcss/vite": "4.1.12",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
     "@vercel/node": "^5.8.5",
     "@vitejs/plugin-react": "4.7.0",
     "puppeteer": "^25.1.0",
+    "puppeteer-core": "^25.1.0",
     "sharp": "^0.34.5",
     "tailwindcss": "4.1.12",
     "vite": "6.3.5",
@@ -99,6 +102,7 @@
       "vite": "6.3.5"
     },
     "onlyBuiltDependencies": [
+      "@sparticuz/chromium",
       "@tailwindcss/oxide",
       "esbuild",
       "puppeteer"
