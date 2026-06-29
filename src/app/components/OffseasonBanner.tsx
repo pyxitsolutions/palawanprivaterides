@@ -20,7 +20,7 @@ export function OffseasonBanner() {
           />
         </button>
         <p className="text-center text-[11px] text-white/50 mt-2">
-          Promo valid for a limited time · PPS → El Nido, Port Barton & San Vicente
+          Promo valid for a limited time · PPS ↔ El Nido, Port Barton & San Vicente
         </p>
       </div>
     </section>

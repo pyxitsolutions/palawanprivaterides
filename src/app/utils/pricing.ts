@@ -1,10 +1,13 @@
 export const OFFSEASON_DISCOUNT_PER_BOOKING = 500;
 
-/** Outbound private rides from Puerto Princesa — offseason promo routes */
+/** Offseason promo routes — PPS ↔ El Nido, Port Barton & San Vicente */
 export const OFFSEASON_ROUTE_NAMES = [
   'PPS → El Nido',
+  'El Nido → PPS',
   'PPS → Port Barton',
+  'Port Barton → PPS',
   'PPS → San Vicente',
+  'San Vicente → PPS',
 ] as const;
 
 export function hasOffseasonDiscount(tourName: string): boolean {

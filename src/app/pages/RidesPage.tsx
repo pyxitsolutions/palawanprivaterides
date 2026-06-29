@@ -89,7 +89,7 @@ export default function RidesPage() {
             Door-to-door transfers across Palawan — just your group, your driver, and the open road.
           </p>
           <p className="text-[#ffc84d] text-sm font-black mb-4">
-            Offseason rates — save ₱500 on PPS → El Nido, Port Barton & San Vicente
+            Offseason rates — save ₱500 on PPS ↔ El Nido, Port Barton & San Vicente
           </p>
           <PageTrustLine className="mb-6" />
 
