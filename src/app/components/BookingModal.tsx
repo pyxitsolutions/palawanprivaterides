@@ -3,7 +3,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { X, Calendar, Clock, MapPin, Users, MessageSquare, Car, Check, ChevronRight, ChevronLeft } from 'lucide-react';
 import { PolicyModal, type PolicyType } from './PolicyModal';
-import { getTourExtraFees } from '../utils/pricing';
+import { getTourExtraFees, applyOffseasonBookingDiscount, hasOffseasonDiscount } from '../utils/pricing';
 import { getStep1Errors } from '../utils/bookingValidation';
 import { sendBookingEmails, type BookingEmailParams } from '../utils/bookingEmailJs';
 
@@ -116,14 +116,16 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
   const vehiclesNeeded = isMultiVehicle ? Math.ceil(paxCount / MAX_VAN_CAPACITY) : 1;
   const vanPrice = pricing ? parseInt(pricing.find((p) => p.vehicle === 'Van')?.price ?? tourPrice) : 0;
 
-  const subtotal = isMultiVehicle
+  const rawSubtotal = isMultiVehicle
     ? vehiclesNeeded * vanPrice
     : !pricing && (tourType === 'Tour Package' || tourType === 'Transfer')
       ? basePrice * paxCount
       : basePrice;
+  const subtotal = applyOffseasonBookingDiscount(rawSubtotal, tourName, tourType);
   const envTotal = envFee * paxCount;
   const entranceTotal = entranceFee * paxCount;
   const grandTotal = subtotal + envTotal + entranceTotal;
+  const regularGrandTotal = rawSubtotal + envTotal + entranceTotal;
   const showTotal = !!formData.pax && !!selectedPrice;
 
   const getSelectedCapacity = () => {
@@ -571,7 +573,15 @@ export function BookingModal({ isOpen, onClose, tourName, tourPrice, tourType, p
                         <span className="text-sm font-semibold text-gray-700">
                           {isMultiVehicle ? 'Fleet Estimate' : (tourType === 'Tour Package' && !pricing) || tourType === 'Transfer' ? 'Estimated Total' : 'Total (flat rate)'}
                         </span>
-                        <span className="text-xl font-black text-primary">₱{grandTotal.toLocaleString()}</span>
+                        {hasOffseasonDiscount(tourName) && tourType === 'Private Ride' && grandTotal < regularGrandTotal ? (
+                          <div className="text-right">
+                            <p className="text-sm text-gray-400 line-through">₱{regularGrandTotal.toLocaleString()}</p>
+                            <p className="text-xl font-black text-primary">₱{grandTotal.toLocaleString()}</p>
+                            <p className="text-[10px] text-[#a66b08] font-bold">Offseason rate</p>
+                          </div>
+                        ) : (
+                          <span className="text-xl font-black text-primary">₱{grandTotal.toLocaleString()}</span>
+                        )}
                       </div>
                       {tourType === 'Transfer' && (
                         <p className="text-[10px] text-amber-600">⚠️ Minimum ₱550. Final rate may vary by drop-off location.</p>

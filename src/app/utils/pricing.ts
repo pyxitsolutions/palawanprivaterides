@@ -1,13 +1,29 @@
-export const PRIVATE_RIDE_PROMO_SAVINGS = 100;
+export const OFFSEASON_DISCOUNT_PER_BOOKING = 500;
 
-export function hasPromoRate(type: string): boolean {
-  return type === 'Private Ride';
+/** Outbound private rides from Puerto Princesa — offseason promo routes */
+export const OFFSEASON_ROUTE_NAMES = [
+  'PPS → El Nido',
+  'PPS → Port Barton',
+  'PPS → San Vicente',
+] as const;
+
+export function hasOffseasonDiscount(tourName: string): boolean {
+  return (OFFSEASON_ROUTE_NAMES as readonly string[]).includes(tourName);
 }
 
-/** Pre-promo flat rate: current flat/promo price + ₱100 savings */
-export function getPromoOriginalPrice(flatPromoPrice: number, type: string): number | null {
-  if (!hasPromoRate(type)) return null;
-  return flatPromoPrice + PRIVATE_RIDE_PROMO_SAVINGS;
+export function getOffseasonDiscountedPrice(regularPrice: number, tourName: string): number {
+  if (!hasOffseasonDiscount(tourName)) return regularPrice;
+  return Math.max(0, regularPrice - OFFSEASON_DISCOUNT_PER_BOOKING);
+}
+
+/** Apply ₱500 off once per private-ride booking (incl. multi-van fleet). */
+export function applyOffseasonBookingDiscount(
+  rideSubtotal: number,
+  tourName: string,
+  tourType: string,
+): number {
+  if (tourType !== 'Private Ride' || !hasOffseasonDiscount(tourName)) return rideSubtotal;
+  return Math.max(0, rideSubtotal - OFFSEASON_DISCOUNT_PER_BOOKING);
 }
 
 export interface TourExtraFees {

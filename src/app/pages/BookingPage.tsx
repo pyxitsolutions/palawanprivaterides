@@ -5,12 +5,11 @@ import 'react-phone-input-2/lib/style.css';
 import { Navbar } from '../components/Navbar';
 import { SiteFooter } from '../components/SiteFooter';
 import { PolicyModal, type PolicyType } from '../components/PolicyModal';
-import { PromoPrice } from '../components/PromoPrice';
 import { BookingStepIndicator, stepLabels } from '../components/booking/BookingStepIndicator';
 import { BookingSummaryPanel } from '../components/booking/BookingSummaryPanel';
 import { BookingMobileNav } from '../components/booking/BookingMobileNav';
 import { useCurrency } from '../context/CurrencyContext';
-import { getTourExtraFees, hasPromoRate } from '../utils/pricing';
+import { getTourExtraFees, applyOffseasonBookingDiscount, hasOffseasonDiscount } from '../utils/pricing';
 import { buildServiceWhatsAppUrl, getServiceListPath } from '../utils/serviceHelpers';
 import {
   clearBookingDraft,
@@ -195,14 +194,16 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, listHref, listLab
   const vehiclesNeeded = isMultiVehicle ? Math.ceil(paxCount / MAX_VAN_CAPACITY) : 1;
   const vanPrice = pricing ? parseInt(pricing.find((p) => p.vehicle === 'Van')?.price ?? tourPrice) : 0;
 
-  const subtotal = isMultiVehicle
+  const rawSubtotal = isMultiVehicle
     ? vehiclesNeeded * vanPrice
     : !pricing && (tourType === 'Tour Package' || tourType === 'Transfer')
       ? basePrice * paxCount
       : basePrice;
+  const subtotal = applyOffseasonBookingDiscount(rawSubtotal, tourName, tourType);
   const envTotal = envFee * paxCount;
   const entranceTotal = entranceFee * paxCount;
   const grandTotal = subtotal + envTotal + entranceTotal;
+  const regularGrandTotal = rawSubtotal + envTotal + entranceTotal;
   const showTotal = !!formData.pax && !!selectedPrice;
 
   const getSelectedCapacity = () => {
@@ -694,8 +695,12 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, listHref, listLab
                         <span className="font-semibold text-gray-700">
                           {isMultiVehicle ? 'Fleet Estimate' : (tourType === 'Tour Package' && !pricing) || tourType === 'Transfer' ? 'Estimated Total' : 'Total (flat rate)'}
                         </span>
-                        {hasPromoRate(tourType) && !isMultiVehicle ? (
-                          <PromoPrice amount={grandTotal} type={tourType} size="md" showSavings showPromoLabel={false} />
+                        {hasOffseasonDiscount(tourName) && tourType === 'Private Ride' && grandTotal < regularGrandTotal ? (
+                          <div className="text-right">
+                            <p className="text-sm text-gray-400 line-through">{convertPrice(regularGrandTotal)}</p>
+                            <p className="text-2xl font-black text-primary">{convertPrice(grandTotal)}</p>
+                            <p className="text-[11px] text-[#a66b08] font-bold">Offseason rate</p>
+                          </div>
                         ) : (
                           <span className="text-2xl font-black text-primary">{convertPrice(grandTotal)}</span>
                         )}
@@ -762,6 +767,7 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, listHref, listLab
                 typeLabel={typeLabel}
                 showTotal={showTotal}
                 grandTotal={grandTotal}
+                regularGrandTotal={regularGrandTotal}
                 convertPrice={convertPrice}
                 isMultiVehicle={isMultiVehicle}
                 vehiclesNeeded={vehiclesNeeded}
@@ -798,6 +804,7 @@ function BookingForm({ tourName, tourPrice, tourType, pricing, listHref, listLab
                 typeLabel={typeLabel}
                 showTotal={showTotal}
                 grandTotal={grandTotal}
+                regularGrandTotal={regularGrandTotal}
                 convertPrice={convertPrice}
                 isMultiVehicle={isMultiVehicle}
                 vehiclesNeeded={vehiclesNeeded}

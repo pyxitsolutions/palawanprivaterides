@@ -2,10 +2,10 @@ import { lazy, Suspense, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { PromoPrice } from './components/PromoPrice';
-import { hasPromoRate } from './utils/pricing';
+import { hasOffseasonDiscount } from './utils/pricing';
 import { tours } from './data/tours';
 import { HeroCarousel } from './components/HeroCarousel';
-import { HomePromoBanner } from './components/HomePromoBanner';
+import { OffseasonBanner } from './components/OffseasonBanner';
 import { ScrollToTopButton } from './components/ScrollToTopButton';
 import { SiteFooter } from './components/SiteFooter';
 
@@ -71,7 +71,7 @@ export default function App() {
       {/* Hero */}
       <section id="home">
         <HeroCarousel />
-        <HomePromoBanner />
+        <OffseasonBanner />
       </section>
 
       {/* Trust Badges */}
@@ -102,25 +102,24 @@ export default function App() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[
-              { route: 'Puerto Princesa → El Nido', tourName: 'PPS → El Nido', duration: '5–6 hrs', price: 6900, note: 'per booking' },
-              { route: 'Puerto Princesa → Port Barton', tourName: 'PPS → Port Barton', duration: '2–3 hrs', price: 5400, note: 'per booking' },
+              { route: 'Puerto Princesa → El Nido', tourName: 'PPS → El Nido', duration: '5–6 hrs', price: 7000, note: 'per booking' },
+              { route: 'Puerto Princesa → Port Barton', tourName: 'PPS → Port Barton', duration: '2–3 hrs', price: 5500, note: 'per booking' },
               { route: 'Airport / Hotel Transfer', tourName: 'Airport / Hotel Transfer', duration: 'Puerto Princesa', price: 550, note: 'per booking' },
             ].map((item) => {
               const tour = tours.find((t) => t.name === item.tourName);
+              const offseason = tour ? hasOffseasonDiscount(tour.name) : false;
               return (
                 <div key={item.route} className="bg-white rounded-2xl border border-gray-200 px-6 py-5 flex flex-col gap-1 hover:shadow-md transition-shadow">
                   <p className="font-bold text-gray-900 text-sm">{item.route}</p>
                   <p className="text-xs text-gray-400">{item.duration}</p>
                   <div className="mt-3 flex items-end justify-between">
                     <div>
-                      <p className="text-xs text-gray-400">
-                        {tour && hasPromoRate(tour.type) ? 'Promo rate from' : 'Starting from'}
-                      </p>
+                      <p className="text-xs text-gray-400">{offseason ? 'Offseason rate from' : 'Starting from'}</p>
                       <PromoPrice
                         amount={item.price}
-                        type={tour?.type ?? 'Transfer'}
+                        tourName={tour?.name}
                         size="md"
-                        showPromoLabel={false}
+                        showSavings
                       />
                       <p className="text-xs text-gray-400 mt-0.5">{item.note}</p>
                     </div>
@@ -406,7 +405,7 @@ export default function App() {
           </div>
           <div className="space-y-4">
             {[
-              { q: 'How much does a private van transfer from Puerto Princesa to El Nido cost?', a: 'Our private van transfers to El Nido start at ₱6,900 (sedan) up to ₱7,900 (van) depending on vehicle type. Unlike shared vans, you get the entire vehicle for your group — no strangers, no unnecessary detours.' },
+              { q: 'How much does a private van transfer from Puerto Princesa to El Nido cost?', a: 'Our private van transfers to El Nido start at ₱7,000 (sedan) up to ₱8,000 (van) depending on vehicle type. Unlike shared vans, you get the entire vehicle for your group — no strangers, no unnecessary detours.' },
               { q: 'How long is the drive from Puerto Princesa to El Nido?', a: 'The drive typically takes 5 to 6 hours depending on road conditions. We recommend an early morning departure to arrive before sunset and make the most of your first day.' },
               { q: 'Do you offer airport pickup in Puerto Princesa?', a: 'Yes. We provide on-time airport transfers from Puerto Princesa Airport to any hotel in the city or surrounding areas. Just share your flight details when booking and we will be there.' },
               { q: 'Can I book a private tour for my group in Palawan?', a: 'Absolutely. We offer private day tours including the Underground River, Honda Bay Island Hopping, Iwahig Firefly Watching, and Puerto Princesa City Tour — all fully private for your group.' },

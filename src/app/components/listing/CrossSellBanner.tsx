@@ -39,8 +39,8 @@ export function CrossSellBanner({ variant }: CrossSellBannerProps) {
         <div>
           <h2 className="font-black text-gray-900">Need a private transfer?</h2>
           <p className="text-sm text-gray-600 mt-1">
-            Door-to-door vans from Puerto Princesa to El Nido, Port Barton & San Vicente — promo from{' '}
-            <span className="font-bold">₱6,900</span> per booking.
+            Door-to-door vans from Puerto Princesa to El Nido, Port Barton & San Vicente — offseason from{' '}
+            <span className="font-bold">₱6,500</span> per booking.
           </p>
         </div>
       </div>

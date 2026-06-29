@@ -9,8 +9,8 @@ import { ServicePhotoGrid } from '../components/ServicePhotoGrid';
 import { ServiceFaq } from '../components/ServiceFaq';
 import { ServiceStickyCta } from '../components/ServiceStickyCta';
 import { useCurrency } from '../context/CurrencyContext';
-import { PromoBadge, PromoPrice } from '../components/PromoPrice';
-import { getPromoOriginalPrice, hasPromoRate } from '../utils/pricing';
+import { PromoPrice, OffseasonBadge } from '../components/PromoPrice';
+import { hasOffseasonDiscount } from '../utils/pricing';
 import { tours } from '../data/tours';
 import { buildServiceWhatsAppUrl, getRelatedTours, getServiceListPath } from '../utils/serviceHelpers';
 import {
@@ -30,43 +30,43 @@ export function slugify(s: string) {
 const SEO: Record<string, { metaTitle: string; metaDescription: string }> = {
   'pps-el-nido': {
     metaTitle: 'Puerto Princesa to El Nido Private Van Transfer | Palawan Private Rides',
-    metaDescription: 'Book a private van from Puerto Princesa to El Nido starting at ₱6,900 (promo from ₱7,000). Door-to-door service, no shared vans, trusted local drivers. Book online today!',
+    metaDescription: 'Book a private van from Puerto Princesa to El Nido starting at ₱7,000. Door-to-door service, no shared vans, trusted local drivers. Book online today!',
   },
   'el-nido-pps': {
     metaTitle: 'El Nido to Puerto Princesa Private Van Transfer | Palawan Private Rides',
-    metaDescription: 'Book a private van from El Nido to Puerto Princesa starting at ₱6,900 (promo from ₱7,000). Door-to-door service, no shared vans, trusted local drivers. Book online today!',
+    metaDescription: 'Book a private van from El Nido to Puerto Princesa starting at ₱7,000. Door-to-door service, no shared vans, trusted local drivers. Book online today!',
   },
   'pps-port-barton': {
     metaTitle: 'Puerto Princesa to Port Barton Private Transfer | Palawan Private Rides',
-    metaDescription: 'Private van transfer from Puerto Princesa to Port Barton starting at ₱5,400 (promo from ₱5,500). Comfortable, air-conditioned, door-to-door service. No shared vans. Book now!',
+    metaDescription: 'Private van transfer from Puerto Princesa to Port Barton starting at ₱5,500. Comfortable, air-conditioned, door-to-door service. No shared vans. Book now!',
   },
   'port-barton-pps': {
     metaTitle: 'Port Barton to Puerto Princesa Private Van Transfer | Palawan Private Rides',
-    metaDescription: 'Book a private van from Port Barton to Puerto Princesa starting at ₱5,400 (promo from ₱5,500). Door-to-door service, no shared vans, trusted local drivers. Book today!',
+    metaDescription: 'Book a private van from Port Barton to Puerto Princesa starting at ₱5,500. Door-to-door service, no shared vans, trusted local drivers. Book today!',
   },
   'pps-san-vicente': {
     metaTitle: 'Puerto Princesa to San Vicente Private Van Transfer | Palawan Private Rides',
-    metaDescription: 'Book a private van from Puerto Princesa to San Vicente starting at ₱5,900 (promo from ₱6,000). Direct, door-to-door transfer to Long Beach. No shared vans. Book today!',
+    metaDescription: 'Book a private van from Puerto Princesa to San Vicente starting at ₱6,000. Direct, door-to-door transfer to Long Beach. No shared vans. Book today!',
   },
   'san-vicente-pps': {
     metaTitle: 'San Vicente to Puerto Princesa Private Van Transfer | Palawan Private Rides',
-    metaDescription: 'Book a private van from San Vicente to Puerto Princesa starting at ₱5,900 (promo from ₱6,000). Door-to-door service, no shared vans, trusted local drivers. Book today!',
+    metaDescription: 'Book a private van from San Vicente to Puerto Princesa starting at ₱6,000. Door-to-door service, no shared vans, trusted local drivers. Book today!',
   },
   'pps-astoria-palawan': {
     metaTitle: 'Puerto Princesa to Astoria Palawan Private Transfer | Palawan Private Rides',
-    metaDescription: 'Private van transfer from Puerto Princesa to Astoria Palawan starting at ₱2,900 (promo from ₱3,000). Comfortable, on-time, door-to-door. Book your private ride today!',
+    metaDescription: 'Private van transfer from Puerto Princesa to Astoria Palawan starting at ₱3,000. Comfortable, on-time, door-to-door. Book your private ride today!',
   },
   'astoria-palawan-pps': {
     metaTitle: 'Astoria Palawan to Puerto Princesa Private Transfer | Palawan Private Rides',
-    metaDescription: 'Book a private van from Astoria Palawan to Puerto Princesa starting at ₱2,900 (promo from ₱3,000). Comfortable, on-time, door-to-door service. Book today!',
+    metaDescription: 'Book a private van from Astoria Palawan to Puerto Princesa starting at ₱3,000. Comfortable, on-time, door-to-door service. Book today!',
   },
   'pps-sabang-four-points': {
     metaTitle: 'Puerto Princesa to Sabang Private Van Transfer | Palawan Private Rides',
-    metaDescription: 'Private van from Puerto Princesa to Sabang starting at ₱3,400 (promo from ₱3,500). Perfect for Underground River day trips. Door-to-door, no shared vans. Book now!',
+    metaDescription: 'Private van from Puerto Princesa to Sabang starting at ₱3,500. Perfect for Underground River day trips. Door-to-door, no shared vans. Book now!',
   },
   'sabang-four-points-pps': {
     metaTitle: 'Sabang to Puerto Princesa Private Van Transfer | Palawan Private Rides',
-    metaDescription: 'Book a private van from Sabang to Puerto Princesa starting at ₱3,400 (promo from ₱3,500). Door-to-door service after your Underground River visit. No shared vans. Book today!',
+    metaDescription: 'Book a private van from Sabang to Puerto Princesa starting at ₱3,500. Door-to-door service after your Underground River visit. No shared vans. Book today!',
   },
   'airport-hotel-transfer': {
     metaTitle: 'Puerto Princesa Airport Transfer | Palawan Private Rides',
@@ -155,7 +155,7 @@ export default function ServicePage() {
   const startingPrice = tour.pricing
     ? Math.min(...tour.pricing.map((p) => parseInt(p.price)))
     : flatPrice;
-  const displayPrice = hasPromoRate(tour.type) ? flatPrice : startingPrice;
+  const displayPrice = flatPrice;
   const perLabel = tour.type === 'Tour Package' || tour.type === 'Transfer' ? 'per person' : 'per booking';
   const included = tour.whatsIncluded ?? DEFAULT_INCLUDED;
 
@@ -242,27 +242,13 @@ export default function ServicePage() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {tour.pricing.map((p) => {
                     const tierPrice = parseInt(p.price);
-                    const tierOriginal = getPromoOriginalPrice(tierPrice, tour.type);
-                    const tierPromo = hasPromoRate(tour.type) && tierOriginal !== null;
                     return (
                       <div
                         key={p.vehicle}
-                        className={`border rounded-2xl p-4 text-center transition-colors ${
-                          tierPromo
-                            ? 'border-[#e8a020]/40 bg-[#e8a020]/10 hover:border-[#e8a020]'
-                            : 'border-gray-200 hover:border-primary'
-                        }`}
+                        className="border border-gray-200 rounded-2xl p-4 text-center transition-colors hover:border-primary"
                       >
                         <p className="text-xs text-gray-500 mb-1">{p.vehicle}</p>
-                        {tierPromo ? (
-                          <>
-                            <p className="text-sm text-gray-400 line-through">{convertPrice(tierOriginal)}</p>
-                            <p className="text-xl font-black text-[#c8870f]">{convertPrice(tierPrice)}</p>
-                            <p className="text-xs font-black text-[#1a3728] mt-1">Promo rate</p>
-                          </>
-                        ) : (
-                          <p className="text-xl font-black text-primary">{convertPrice(tierPrice)}</p>
-                        )}
+                        <PromoPrice amount={tierPrice} tourName={tour.name} size="sm" showSavings={false} />
                         {p.capacity && <p className="text-xs text-gray-400 mt-1">Max {p.capacity} pax</p>}
                       </div>
                     );
@@ -298,16 +284,16 @@ export default function ServicePage() {
           {/* Right — sticky booking card */}
           <div className="lg:col-span-1">
             <div className="sticky top-24 bg-white border border-gray-200 rounded-2xl shadow-lg p-6">
-              {hasPromoRate(tour.type) && (
+              {hasOffseasonDiscount(tour.name) && (
                 <div className="mb-2">
-                  <PromoBadge />
+                  <OffseasonBadge />
                 </div>
               )}
               <p className="text-xs text-gray-400 mb-1">
-                {hasPromoRate(tour.type) ? 'Promo rate from' : 'Starting from'}
+                {hasOffseasonDiscount(tour.name) ? 'Offseason rate from' : 'Starting from'}
               </p>
               <div className="mb-1">
-                <PromoPrice amount={displayPrice} type={tour.type} size="lg" />
+                <PromoPrice amount={displayPrice} tourName={tour.name} size="lg" showSavings />
               </div>
               <p className="text-xs text-gray-400 mb-6">{perLabel}</p>
 
@@ -359,16 +345,9 @@ export default function ServicePage() {
                     <p className="font-bold text-gray-900 text-sm">{t.name}</p>
                     <div className="mt-1">
                       <PromoPrice
-                        amount={
-                          hasPromoRate(t.type)
-                            ? parseInt(t.price)
-                            : t.pricing
-                              ? Math.min(...t.pricing.map((p) => parseInt(p.price)))
-                              : parseInt(t.price)
-                        }
-                        type={t.type}
+                        amount={parseInt(t.price)}
+                        tourName={t.name}
                         size="sm"
-                        showPromoLabel={false}
                         showSavings={false}
                       />
                     </div>

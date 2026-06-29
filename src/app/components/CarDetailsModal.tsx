@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { X, Clock, MapPin, Users, ChevronLeft, ChevronRight, Check, MessageCircle } from 'lucide-react';
 import { useCurrency } from '../context/CurrencyContext';
-import { PromoBadge, PromoPrice } from './PromoPrice';
+import { PromoPrice, OffseasonBadge } from './PromoPrice';
 import { ServiceTourFeesBox } from './ServiceTourFeesBox';
-import { getPromoOriginalPrice, hasPromoRate } from '../utils/pricing';
+import { hasOffseasonDiscount } from '../utils/pricing';
 import { buildServiceWhatsAppUrl } from '../utils/serviceHelpers';
 
 interface PricingTier {
@@ -52,10 +52,7 @@ export function CarDetailsModal({ isOpen, onClose, tour, onBookNow, onViewDetail
   if (!isOpen) return null;
 
   const flatPrice = parseInt(tour.price);
-  const startingPrice = tour.pricing
-    ? Math.min(...tour.pricing.map((p) => parseInt(p.price)))
-    : flatPrice;
-  const displayPrice = hasPromoRate(tour.type) ? flatPrice : startingPrice;
+  const displayPrice = flatPrice;
 
   const showCollage = tour.images.length >= 3;
 
@@ -177,15 +174,15 @@ export function CarDetailsModal({ isOpen, onClose, tour, onBookNow, onViewDetail
           <div className="flex items-start justify-between gap-4">
             <h2 className="text-2xl font-black text-gray-900 leading-tight">{tour.name}</h2>
             <div className="text-right flex-shrink-0">
-              {hasPromoRate(tour.type) && (
+              {hasOffseasonDiscount(tour.name) && (
                 <div className="flex justify-end mb-1">
-                  <PromoBadge />
+                  <OffseasonBadge />
                 </div>
               )}
               <p className="text-[10px] text-gray-400">
-                {hasPromoRate(tour.type) ? 'Promo rate from' : 'Starting from'}
+                {hasOffseasonDiscount(tour.name) ? 'Offseason rate from' : 'Starting from'}
               </p>
-              <PromoPrice amount={displayPrice} type={tour.type} size="md" />
+              <PromoPrice amount={displayPrice} tourName={tour.name} size="md" showSavings />
             </div>
           </div>
 
@@ -223,24 +220,13 @@ export function CarDetailsModal({ isOpen, onClose, tour, onBookNow, onViewDetail
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 {tour.pricing.map((p, i) => {
                   const tierPrice = parseInt(p.price);
-                  const tierOriginal = getPromoOriginalPrice(tierPrice, tour.type);
-                  const tierPromo = hasPromoRate(tour.type) && tierOriginal !== null;
                   return (
                     <div
                       key={i}
-                      className={`border rounded-xl p-3 text-center ${
-                        tierPromo ? 'border-[#e8a020]/40 bg-[#e8a020]/10' : 'border-gray-200'
-                      }`}
+                      className="border border-gray-200 rounded-xl p-3 text-center"
                     >
                       <p className="text-xs text-gray-500 mb-1">{p.vehicle}</p>
-                      {tierPromo ? (
-                        <>
-                          <p className="text-xs text-gray-400 line-through">{convertPrice(tierOriginal)}</p>
-                          <p className="text-xl font-black text-[#c8870f]">{convertPrice(tierPrice)}</p>
-                        </>
-                      ) : (
-                        <p className="text-lg font-black text-primary">{convertPrice(tierPrice)}</p>
-                      )}
+                      <PromoPrice amount={tierPrice} tourName={tour.name} size="sm" showSavings={false} />
                       {p.capacity && <p className="text-[10px] text-gray-400 mt-0.5">Max {p.capacity} pax</p>}
                     </div>
                   );

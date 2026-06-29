@@ -78,7 +78,7 @@ export function BlogArticleBody({ sections }: BlogArticleBodyProps) {
                 <p className="text-white font-black text-sm">
                   {section.priceTitle ?? 'Private transfer rates'}
                 </p>
-                <p className="text-white/60 text-xs mt-0.5">Per booking · whole vehicle · promotional rate</p>
+                <p className="text-white/60 text-xs mt-0.5">Per booking · whole vehicle</p>
               </div>
               <ul className="divide-y divide-gray-200">
                 {section.priceRows.map((row) => (

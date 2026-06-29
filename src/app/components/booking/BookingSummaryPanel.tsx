@@ -1,5 +1,5 @@
 import { PromoPrice } from '../PromoPrice';
-import { hasPromoRate } from '../../utils/pricing';
+import { hasOffseasonDiscount } from '../../utils/pricing';
 
 interface BookingSummaryPanelProps {
   tourName: string;
@@ -7,6 +7,7 @@ interface BookingSummaryPanelProps {
   typeLabel: string;
   showTotal: boolean;
   grandTotal: number;
+  regularGrandTotal?: number;
   convertPrice: (n: number) => string;
   isMultiVehicle: boolean;
   vehiclesNeeded: number;
@@ -34,6 +35,7 @@ export function BookingSummaryPanel({
   typeLabel,
   showTotal,
   grandTotal,
+  regularGrandTotal,
   convertPrice,
   isMultiVehicle,
   vehiclesNeeded,
@@ -48,7 +50,9 @@ export function BookingSummaryPanel({
   entranceTotal,
   subtotal,
 }: BookingSummaryPanelProps) {
-  const showPromo = hasPromoRate(tourType);
+  const offseason = hasOffseasonDiscount(tourName) && tourType === 'Private Ride';
+  const showOffseasonTotal =
+    offseason && regularGrandTotal !== undefined && grandTotal < regularGrandTotal;
 
   return (
     <aside className="lg:sticky lg:top-24 h-fit">
@@ -103,8 +107,12 @@ export function BookingSummaryPanel({
                 <div className="flex justify-between items-center pt-1">
                   <span className="font-bold text-gray-800">Estimated total</span>
                   <div className="text-right">
-                    {showPromo && !isMultiVehicle ? (
-                      <PromoPrice amount={grandTotal} type={tourType} size="sm" showSavings showPromoLabel={false} />
+                    {showOffseasonTotal ? (
+                      <>
+                        <p className="text-xs text-gray-400 line-through">{convertPrice(regularGrandTotal!)}</p>
+                        <p className="text-xl font-black text-primary">{convertPrice(grandTotal)}</p>
+                        <p className="text-[10px] text-[#a66b08] font-bold">Offseason rate</p>
+                      </>
                     ) : (
                       <span className="text-xl font-black text-primary">{convertPrice(grandTotal)}</span>
                     )}
@@ -115,15 +123,9 @@ export function BookingSummaryPanel({
           ) : (
             <div>
               <p className="text-xs text-gray-500 mb-1">
-                {showPromo ? 'Promo rate from' : 'Starting from'}
+                {offseason ? 'Offseason rate from' : 'Starting from'}
               </p>
-              <PromoPrice
-                amount={basePrice}
-                type={tourType}
-                size="md"
-                showPromoLabel={showPromo}
-                showSavings={showPromo}
-              />
+              <PromoPrice amount={basePrice} tourName={tourName} size="md" showLabel={offseason} showSavings={offseason} />
               <p className="text-[11px] text-gray-400 mt-1">
                 {tourType === 'Tour Package' || tourType === 'Transfer' ? 'per person' : 'per booking'}
               </p>

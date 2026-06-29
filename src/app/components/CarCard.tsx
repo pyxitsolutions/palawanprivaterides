@@ -17,15 +17,10 @@ import {
   Users,
 } from 'lucide-react';
 import { CarDetailsModal } from './CarDetailsModal';
-import { PromoBadge } from './PromoPrice';
 import { slugify } from '../pages/ServicePage';
 import { useCurrency } from '../context/CurrencyContext';
-import {
-  formatTourExtraFeesNote,
-  getPromoOriginalPrice,
-  hasPromoRate,
-  PRIVATE_RIDE_PROMO_SAVINGS,
-} from '../utils/pricing';
+import { formatTourExtraFeesNote, hasOffseasonDiscount } from '../utils/pricing';
+import { OffseasonBadge, PromoPrice } from './PromoPrice';
 
 interface PricingTier {
   vehicle: string;
@@ -255,10 +250,9 @@ function PremiumCardShell({
   );
 }
 
-function PrivateRideCard(props: CardShellProps & { flatPrice: number; showPromo: boolean }) {
-  const { convertPrice } = useCurrency();
-  const { flatPrice, showPromo, displayPrice, type } = props;
-  const original = showPromo ? getPromoOriginalPrice(flatPrice, type) : null;
+function PrivateRideCard(props: CardShellProps) {
+  const { name, displayPrice } = props;
+  const offseason = hasOffseasonDiscount(name);
 
   return (
     <PremiumCardShell
@@ -269,7 +263,7 @@ function PrivateRideCard(props: CardShellProps & { flatPrice: number; showPromo:
             <Crown size={13} className="shrink-0" />
             Private Ride
           </span>
-          {showPromo && <PromoBadge className="!text-xs !px-3 !py-1.5" />}
+          {offseason && <OffseasonBadge className="!text-xs !px-3 !py-1.5" />}
         </>
       }
       subtitle="Private Transfer Service"
@@ -281,32 +275,16 @@ function PrivateRideCard(props: CardShellProps & { flatPrice: number; showPromo:
       durationLabel="Travel Duration"
       bookLabel="Book Your Ride"
       footer={
-        showPromo ? (
+        offseason ? (
           <div className="bg-[#1a3728] border-t border-[#e8a020]/40 px-4 py-2 text-center text-[11px] sm:text-xs font-semibold text-white/90">
-            Promotional rate — save{' '}
-            <span className="font-black text-[#e8a020]">{convertPrice(PRIVATE_RIDE_PROMO_SAVINGS)} per booking</span>
-            . Limited time.
+            Offseason rate — limited time
           </div>
         ) : undefined
       }
     >
-      {showPromo && original !== null ? (
-        <>
-          <p className="text-white/50 text-sm line-through mb-0.5">{convertPrice(original)}</p>
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-            <p className="text-[#e8a020] text-4xl sm:text-[2.75rem] font-black leading-none tracking-tight">
-              {convertPrice(displayPrice)}
-            </p>
-            <span className="inline-flex bg-[#1a3728] border border-[#e8a020] text-[#e8a020] text-xs sm:text-sm font-black px-3 py-1.5 rounded-md shadow-md uppercase tracking-wide">
-              Save {convertPrice(PRIVATE_RIDE_PROMO_SAVINGS)} / booking
-            </span>
-          </div>
-        </>
-      ) : (
-        <p className="text-[#e8a020] text-4xl sm:text-[2.75rem] font-black leading-none">
-          {convertPrice(displayPrice)}
-        </p>
-      )}
+      <div className="[&_p]:text-[#e8a020] [&_p]:text-4xl [&_p]:sm:text-[2.75rem] [&_p]:font-black">
+        <PromoPrice amount={displayPrice} tourName={name} size="lg" showSavings={false} />
+      </div>
     </PremiumCardShell>
   );
 }
@@ -381,9 +359,8 @@ export function CarCard({
 
   const tourData = { images, name, price, type, duration, pax, description, pricing, whatsIncluded, credit };
   const flatPrice = parseInt(price);
-  const showPromo = hasPromoRate(type);
   const startingPrice = pricing ? Math.min(...pricing.map((p) => parseInt(p.price))) : flatPrice;
-  const displayPrice = showPromo ? flatPrice : startingPrice;
+  const displayPrice = hasOffseasonDiscount(name) ? flatPrice : startingPrice;
   const perLabel = type === 'Tour Package' || type === 'Transfer' ? 'per person' : 'per booking';
 
   const handleBook = () => {
@@ -417,7 +394,7 @@ export function CarCard({
   };
 
   if (type === 'Private Ride') {
-    return <PrivateRideCard {...shared} flatPrice={flatPrice} showPromo={showPromo} />;
+    return <PrivateRideCard {...shared} />;
   }
 
   if (type === 'Tour Package') {

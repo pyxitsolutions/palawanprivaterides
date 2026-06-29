@@ -1,63 +1,71 @@
 import { useCurrency } from '../context/CurrencyContext';
-import { getPromoOriginalPrice, hasPromoRate, PRIVATE_RIDE_PROMO_SAVINGS } from '../utils/pricing';
+import {
+  getOffseasonDiscountedPrice,
+  hasOffseasonDiscount,
+  OFFSEASON_DISCOUNT_PER_BOOKING,
+} from '../utils/pricing';
 
 type Variant = 'dark' | 'light';
 type Size = 'sm' | 'md' | 'lg';
 
 interface PromoPriceProps {
+  /** Regular (pre-discount) price */
   amount: number;
-  type: string;
+  tourName?: string;
   variant?: Variant;
   size?: Size;
-  showPromoLabel?: boolean;
+  showLabel?: boolean;
   showSavings?: boolean;
+  /** @deprecated */
+  type?: string;
+  showPromoLabel?: boolean;
 }
 
-const priceSize: Record<Size, { promo: string; original: string; label: string; savings: string }> = {
+const priceSize: Record<Size, { main: string; original: string; label: string; savings: string }> = {
   sm: {
-    promo: 'text-xl font-black',
+    main: 'text-xl font-black',
     original: 'text-xs',
     label: 'text-[11px]',
     savings: 'text-[11px]',
   },
   md: {
-    promo: 'text-2xl font-black',
+    main: 'text-2xl font-black',
     original: 'text-sm',
     label: 'text-xs',
     savings: 'text-xs',
   },
   lg: {
-    promo: 'text-4xl font-black',
+    main: 'text-4xl font-black',
     original: 'text-base',
     label: 'text-sm',
     savings: 'text-sm',
   },
 };
 
-export function PromoBadge({ className = '' }: { className?: string }) {
+export function OffseasonBadge({ className = '' }: { className?: string }) {
   return (
     <span
       className={`inline-flex items-center bg-[#1a3728] border border-[#e8a020] text-[#e8a020] text-[11px] sm:text-xs font-black px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm ${className}`}
     >
-      Promo
+      Offseason
     </span>
   );
 }
 
 export function PromoPrice({
   amount,
-  type,
+  tourName,
   variant = 'light',
   size = 'md',
-  showPromoLabel = true,
+  showLabel = false,
   showSavings = true,
 }: PromoPriceProps) {
   const { convertPrice } = useCurrency();
-  const promo = hasPromoRate(type);
-  const original = promo ? getPromoOriginalPrice(amount, type) : null;
   const s = priceSize[size];
+  const offseason = tourName ? hasOffseasonDiscount(tourName) : false;
+  const discounted = tourName ? getOffseasonDiscountedPrice(amount, tourName) : amount;
 
-  const promoColor = variant === 'dark' ? 'text-[#e8a020]' : 'text-[#c8870f]';
+  const mainColor = variant === 'dark' ? 'text-[#e8a020]' : 'text-[#c8870f]';
   const originalColor = variant === 'dark' ? 'text-white/45' : 'text-gray-400';
   const labelColor = variant === 'dark' ? 'text-[#e8a020]' : 'text-[#1a3728]';
   const savingsBg =
@@ -65,22 +73,22 @@ export function PromoPrice({
       ? 'bg-[#e8a020]/25 text-[#ffc84d]'
       : 'bg-[#e8a020]/15 text-[#a66b08]';
 
-  if (!promo || original === null) {
-    return <p className={`${s.promo} ${promoColor}`}>{convertPrice(amount)}</p>;
+  if (!offseason) {
+    return <p className={`${s.main} ${mainColor} leading-none`}>{convertPrice(amount)}</p>;
   }
 
   return (
     <div>
-      {showPromoLabel && (
+      {showLabel && (
         <p className={`${s.label} font-black uppercase tracking-wider mb-0.5 ${labelColor}`}>
-          Promo rate
+          Offseason rate
         </p>
       )}
-      <p className={`${s.original} line-through ${originalColor}`}>{convertPrice(original)}</p>
-      <p className={`${s.promo} ${promoColor} leading-none`}>{convertPrice(amount)}</p>
+      <p className={`${s.original} line-through ${originalColor}`}>{convertPrice(amount)}</p>
+      <p className={`${s.main} ${mainColor} leading-none`}>{convertPrice(discounted)}</p>
       {showSavings && (
         <span className={`inline-block mt-1.5 ${s.savings} font-black px-2.5 py-1 rounded-full ${savingsBg}`}>
-          Save {convertPrice(PRIVATE_RIDE_PROMO_SAVINGS)} per booking
+          Save {convertPrice(OFFSEASON_DISCOUNT_PER_BOOKING)} per booking
         </span>
       )}
     </div>

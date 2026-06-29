@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useCurrency } from '../context/CurrencyContext';
+import { getOffseasonDiscountedPrice } from '../utils/pricing';
 import { PromoPrice } from './PromoPrice';
-import { hasPromoRate } from '../utils/pricing';
 import { tours } from '../data/tours';
 
 const RIDE_OPTIONS = tours.filter((t) => t.type === 'Private Ride' || t.type === 'Transfer');
@@ -9,6 +10,7 @@ const DEFAULT_CAPACITY: Record<string, number> = { 'Sedan/Hatchback': 3, 'SUV': 
 
 export function InstantQuote() {
   const navigate = useNavigate();
+  const { convertPrice } = useCurrency();
   const [serviceIdx, setServiceIdx] = useState(0);
   const [pax, setPax] = useState('');
   const [booking, setBooking] = useState(false);
@@ -25,7 +27,8 @@ export function InstantQuote() {
         const vansNeeded = Math.ceil(n / MAX_VAN);
         return {
           vehicle: `${vansNeeded}× Van`,
-          price: vansNeeded * vanPrice,
+          price: getOffseasonDiscountedPrice(vansNeeded * vanPrice, service.name),
+          regularPrice: vansNeeded * vanPrice,
           capacity: vansNeeded * MAX_VAN,
           isFleet: true,
         };
@@ -35,12 +38,19 @@ export function InstantQuote() {
         service.pricing[service.pricing.length - 1];
       return {
         vehicle: tier.vehicle,
-        price: parseInt(tier.price),
+        price: getOffseasonDiscountedPrice(parseInt(tier.price), service.name),
+        regularPrice: parseInt(tier.price),
         capacity: DEFAULT_CAPACITY[tier.vehicle] ?? 13,
         isFleet: false,
       };
     }
-    return { vehicle: 'Van', price: parseInt(service.price), capacity: 8, isFleet: false };
+    return {
+      vehicle: 'Van',
+      price: getOffseasonDiscountedPrice(parseInt(service.price), service.name),
+      regularPrice: parseInt(service.price),
+      capacity: 8,
+      isFleet: false,
+    };
   }, [service, pax]);
 
   return (
@@ -99,18 +109,14 @@ export function InstantQuote() {
                   {quote.vehicle}{' '}
                   <span className="text-xs font-normal text-gray-400">— max {quote.capacity} pax</span>
                 </p>
-                <div className="mt-1">
-                  <PromoPrice
-                    amount={quote.price}
-                    type={service.type}
-                    size="lg"
-                    showPromoLabel={hasPromoRate(service.type)}
-                    showSavings={hasPromoRate(service.type)}
-                  />
-                  <p className="text-xs text-gray-400 mt-1">
-                    {quote.isFleet ? 'estimated total' : 'per booking'}
-                  </p>
-                </div>
+                {quote.regularPrice && quote.regularPrice > quote.price ? (
+                  <PromoPrice amount={quote.regularPrice} tourName={service.name} size="lg" showSavings />
+                ) : (
+                  <p className="text-3xl font-black text-[#c8870f] mt-1">{convertPrice(quote.price)}</p>
+                )}
+                <p className="text-xs text-gray-400 mt-1">
+                  {quote.isFleet ? 'estimated total' : 'per booking'}
+                </p>
                 {quote.isFleet && (
                   <p className="text-xs text-amber-600 mt-1">
                     Final fleet arrangement confirmed via WhatsApp.

@@ -128,7 +128,7 @@ function BookNowModal({ onClose }: { onClose: () => void }) {
                   San Vicente & more
                 </p>
                 <p className="text-[#ffc84d] text-xs font-black mb-4">
-                  From {convertPrice(6900)} <span className="font-semibold text-white/70">per booking</span>
+                  From {convertPrice(7000)} <span className="font-semibold text-white/70">per booking</span>
                 </p>
                 <span className={ctaClass}>
                   View Rides <ArrowRight size={12} />

@@ -13,7 +13,7 @@ export const ROUTE_SEO = {
   '/rides': {
     title: 'Private Rides & Transfers in Palawan | Palawan Private Rides',
     description:
-      'Book private van transfers from Puerto Princesa to El Nido, Port Barton & San Vicente. Door-to-door, no shared vans. Promo from ₱6,900 per booking.',
+      'Book private van transfers from Puerto Princesa to El Nido, Port Barton & San Vicente. Door-to-door, no shared vans. Starting from ₱7,000 per booking.',
     heading: 'Private Rides & Transfers in Palawan',
     intro: 'Browse private van routes from Puerto Princesa to El Nido, Port Barton, San Vicente, Sabang, and airport transfers.',
   },
@@ -41,35 +41,35 @@ export const ROUTE_SEO = {
   '/services/pps-el-nido': {
     title: 'Puerto Princesa to El Nido Private Van Transfer | Palawan Private Rides',
     description:
-      'Book a private van from Puerto Princesa to El Nido starting at ₱6,900 (promo from ₱7,000). Door-to-door service, no shared vans, trusted local drivers. Book online today!',
+      'Book a private van from Puerto Princesa to El Nido starting at ₱7,000. Door-to-door service, no shared vans, trusted local drivers. Book online today!',
     heading: 'Puerto Princesa to El Nido Private Van Transfer',
     intro: 'Door-to-door private van transfer from Puerto Princesa to El Nido. No shared vans — your group only.',
   },
   '/services/pps-port-barton': {
     title: 'Puerto Princesa to Port Barton Private Transfer | Palawan Private Rides',
     description:
-      'Private van transfer from Puerto Princesa to Port Barton starting at ₱5,400 (promo from ₱5,500). Comfortable, air-conditioned, door-to-door service. No shared vans. Book now!',
+      'Private van transfer from Puerto Princesa to Port Barton starting at ₱5,500. Comfortable, air-conditioned, door-to-door service. No shared vans. Book now!',
     heading: 'Puerto Princesa to Port Barton Private Transfer',
     intro: 'Private van transfer from Puerto Princesa to Port Barton with trusted local drivers.',
   },
   '/services/pps-san-vicente': {
     title: 'Puerto Princesa to San Vicente Private Van Transfer | Palawan Private Rides',
     description:
-      'Book a private van from Puerto Princesa to San Vicente starting at ₱5,900 (promo from ₱6,000). Direct, door-to-door transfer to Long Beach. No shared vans. Book today!',
+      'Book a private van from Puerto Princesa to San Vicente starting at ₱6,000. Direct, door-to-door transfer to Long Beach. No shared vans. Book today!',
     heading: 'Puerto Princesa to San Vicente Private Van Transfer',
     intro: 'Private transfer from Puerto Princesa to San Vicente and Long Beach.',
   },
   '/services/pps-astoria-palawan': {
     title: 'Puerto Princesa to Astoria Palawan Private Transfer | Palawan Private Rides',
     description:
-      'Private van transfer from Puerto Princesa to Astoria Palawan starting at ₱2,900 (promo from ₱3,000). Comfortable, on-time, door-to-door. Book your private ride today!',
+      'Private van transfer from Puerto Princesa to Astoria Palawan starting at ₱3,000. Comfortable, on-time, door-to-door. Book your private ride today!',
     heading: 'Puerto Princesa to Astoria Palawan Private Transfer',
     intro: 'Private resort transfer between Puerto Princesa and Astoria Palawan.',
   },
   '/services/pps-sabang-four-points': {
     title: 'Puerto Princesa to Sabang Private Van Transfer | Palawan Private Rides',
     description:
-      'Private van from Puerto Princesa to Sabang starting at ₱3,400 (promo from ₱3,500). Perfect for Underground River day tours. Door-to-door, no shared vans. Book now!',
+      'Private van from Puerto Princesa to Sabang starting at ₱3,500. Perfect for Underground River day tours. Door-to-door, no shared vans. Book now!',
     heading: 'Puerto Princesa to Sabang Private Van Transfer',
     intro: 'Private transfer to Sabang for Underground River tours and resort stays.',
   },
@@ -146,21 +146,21 @@ export const ROUTE_SEO = {
   '/destinations/el-nido': {
     title: 'El Nido Palawan Private Van Transfer & Island Tours | Palawan Private Rides',
     description:
-      'Book private van transfers from Puerto Princesa to El Nido and island hopping tours. Starting at ₱6,900 (promo from ₱7,000). No shared vans. Trusted local drivers. Book now!',
+      'Book private van transfers from Puerto Princesa to El Nido and island hopping tours. Starting at ₱7,000. No shared vans. Trusted local drivers. Book now!',
     heading: 'El Nido, Palawan',
     intro: 'Private transfers and island tours to El Nido — lagoons, beaches, and limestone cliffs.',
   },
   '/destinations/port-barton': {
     title: 'Port Barton Palawan Private Van Transfer | Palawan Private Rides',
     description:
-      'Book a private van transfer from Puerto Princesa to Port Barton starting at ₱5,600. Comfortable, door-to-door, no shared vans. Book your Port Barton transfer today!',
+      'Book a private van transfer from Puerto Princesa to Port Barton starting at ₱5,500. Comfortable, door-to-door, no shared vans. Book your Port Barton transfer today!',
     heading: 'Port Barton, Palawan',
     intro: 'Quiet beaches and coral reefs — private transfers to Port Barton from Puerto Princesa.',
   },
   '/destinations/san-vicente': {
     title: 'San Vicente Palawan Private Van Transfer | Palawan Private Rides',
     description:
-      'Book a private van transfer from Puerto Princesa to San Vicente (Long Beach) starting at ₱6,100. No shared vans, door-to-door service. Book today!',
+      'Book a private van transfer from Puerto Princesa to San Vicente (Long Beach) starting at ₱6,000. No shared vans, door-to-door service. Book today!',
     heading: 'San Vicente, Palawan',
     intro: 'Private transfers to San Vicente and Long Beach — one of the longest white-sand beaches in the Philippines.',
   },
@@ -174,21 +174,21 @@ export const ROUTE_SEO = {
   '/destinations/sabang': {
     title: 'Sabang Palawan Transfer & Underground River Tour | Palawan Private Rides',
     description:
-      'Book a private van transfer from Puerto Princesa to Sabang (Four Points) starting at ₱3,600. Perfect for Underground River day tours. No shared vans. Book now!',
+      'Book a private van transfer from Puerto Princesa to Sabang (Four Points) starting at ₱3,500. Perfect for Underground River day tours. No shared vans. Book now!',
     heading: 'Sabang, Palawan',
     intro: 'Gateway to the UNESCO Underground River — private transfers from Puerto Princesa.',
   },
   '/blog/puerto-princesa-to-el-nido-guide': {
     title: 'Puerto Princesa to El Nido Travel Guide 2026 | Palawan Private Rides',
     description:
-      'Everything you need to know about getting from Puerto Princesa to El Nido — travel time, transport options, costs, and tips. Private van transfer starting at ₱6,900 (promo from ₱7,000 flat rate).',
+      'Everything you need to know about getting from Puerto Princesa to El Nido — travel time, transport options, costs, and tips. Private van transfer starting at ₱7,000 per booking.',
     heading: 'Puerto Princesa to El Nido: Complete Travel Guide',
     intro: 'Travel time, transport options, costs, and tips for the Puerto Princesa to El Nido route.',
   },
   '/blog/puerto-princesa-to-port-barton': {
     title: 'Puerto Princesa to Port Barton Travel Guide | Palawan Private Rides',
     description:
-      'Getting from Puerto Princesa to Port Barton? Transport options, travel time, and costs. Private transfer from ₱5,400 per booking (promo from ₱5,500).',
+      'Getting from Puerto Princesa to Port Barton? Transport options, travel time, and costs. Private transfer from ₱5,500 per booking.',
     heading: 'Puerto Princesa to Port Barton Travel Guide',
     intro: 'How to get from Puerto Princesa to Port Barton — routes, timing, and private transfer options.',
   },

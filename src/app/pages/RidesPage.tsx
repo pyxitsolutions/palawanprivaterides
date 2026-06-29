@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { Navbar } from '../components/Navbar';
 import { SiteFooter } from '../components/SiteFooter';
 import { ScrollToTopButton } from '../components/ScrollToTopButton';
-import { HomePromoBanner } from '../components/HomePromoBanner';
 import { InstantQuote } from '../components/InstantQuote';
+import { OffseasonBanner } from '../components/OffseasonBanner';
 import { PageTrustLine } from '../components/PageTrustLine';
 import { privateRides, tours } from '../data/tours';
 import {
@@ -49,7 +49,7 @@ export default function RidesPage() {
     setListingPageMeta(
       '/rides',
       'Private Rides & Transfers in Palawan | Palawan Private Rides',
-      'Book private van transfers from Puerto Princesa to El Nido, Port Barton & San Vicente. Door-to-door, no shared vans. Promo from ₱6,900 per booking.',
+      'Book private van transfers from Puerto Princesa to El Nido, Port Barton & San Vicente. Door-to-door, no shared vans. Starting from ₱7,000 per booking.',
     );
   }, []);
 
@@ -66,7 +66,7 @@ export default function RidesPage() {
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
-      <HomePromoBanner />
+      <OffseasonBanner />
 
       <section className="relative min-h-[55vh] flex items-end">
         <img
@@ -89,7 +89,7 @@ export default function RidesPage() {
             Door-to-door transfers across Palawan — just your group, your driver, and the open road.
           </p>
           <p className="text-[#ffc84d] text-sm font-black mb-4">
-            Promotional rates from {convertPrice(6900)} per booking
+            Offseason rates — save ₱500 on PPS → El Nido, Port Barton & San Vicente
           </p>
           <PageTrustLine className="mb-6" />
 

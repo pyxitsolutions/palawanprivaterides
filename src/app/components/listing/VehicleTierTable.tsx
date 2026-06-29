@@ -16,7 +16,7 @@ export function VehicleTierTable({ exampleFromPrice }: { exampleFromPrice: strin
       <h2 className="text-lg font-black text-gray-900 mb-1">Choose your vehicle size</h2>
       <p className="text-sm text-gray-500 mb-4">
         Private rides are priced <span className="font-semibold">per booking</span> (whole vehicle). Rates
-        vary by route — e.g. PPS → El Nido from {convertPrice(parseInt(exampleFromPrice))} promotional.
+        vary by route — e.g. PPS → El Nido from {convertPrice(parseInt(exampleFromPrice))}.
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {TIERS.map((tier) => (
